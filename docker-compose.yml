@@ -1,0 +1,26 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      # Optional: Hugging Face Hub repo holding the fine-tuned model.
+      PHONEME_MODEL_ID: ${PHONEME_MODEL_ID:-}
+    volumes:
+      - ./results:/app/results:ro
+      - history:/data
+      - hf-cache:/root/.cache/huggingface
+
+  web:
+    build:
+      context: web
+      args:
+        VITE_API_BASE: http://localhost:8000
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
+
+volumes:
+  history:
+  hf-cache:

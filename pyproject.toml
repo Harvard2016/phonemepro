@@ -1,0 +1,14 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = ["web", "results", "data"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = ["E501"]
+# Training scripts predate the lint setup; the served package and tests are held to it.
+exclude = ["src/*", "train_finetune.py", "train_multitask.py", "download_nltk.py"]

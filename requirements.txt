@@ -1,0 +1,11 @@
+# Runtime dependencies for the API server (tested on Python 3.12).
+fastapi==0.142.2
+uvicorn[standard]==0.54.0
+python-multipart==0.0.32
+torch==2.14.1
+transformers==5.19.0
+librosa==1.0.0
+soundfile==0.14.0
+numpy==2.5.3
+g2p-en==2.1.0
+nltk==3.10.3

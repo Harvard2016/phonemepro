@@ -1,0 +1,51 @@
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# Local databases and logs
+*.db
+*.sqlite
+*.sqlite3
+*.log
+
+# Audio/debug artifacts
+*.wav
+*.webm
+debug_*.wav
+
+# ML datasets and large training artifacts
+data/
+*.tar
+*.tar.gz
+*.zip
+results/
+checkpoints/
+*.safetensors
+*.bin
+*.pt
+*.pth
+
+# Generated plots / reports
+training_metrics.png
+
+# Frontend dependencies and build output
+web/node_modules/
+web/dist/
+web/.vite/
+
+# Environment files
+.env
+.env.*

@@ -1,0 +1,75 @@
+[
+  {
+    "word": "ship",
+    "target_phonemes": ["SH", "IH1", "P"],
+    "predicted_phonemes": ["SH", "IY1", "P"],
+    "score": 6.4,
+    "wer": 0.33,
+    "errors": [
+      {
+        "type": "substitute",
+        "expected": ["IH1"],
+        "heard": ["IY1"],
+        "tip": "Relax your tongue slightly — 'ih' as in 'sit'."
+      }
+    ],
+    "timestamp": "2026-04-12T09:15:00"
+  },
+  {
+    "word": "thin",
+    "target_phonemes": ["TH", "IH1", "N"],
+    "predicted_phonemes": ["T", "IH1", "N"],
+    "score": 5.9,
+    "wer": 0.33,
+    "errors": [
+      {
+        "type": "substitute",
+        "expected": ["TH"],
+        "heard": ["T"],
+        "tip": "Put your tongue between your teeth and push air — 'th' as in 'think'."
+      }
+    ],
+    "timestamp": "2026-04-12T09:18:00"
+  },
+  {
+    "word": "world",
+    "target_phonemes": ["W", "ER1", "L", "D"],
+    "predicted_phonemes": ["W", "ER1", "L", "D"],
+    "score": 9.3,
+    "wer": 0.0,
+    "errors": [],
+    "timestamp": "2026-04-12T09:22:00"
+  },
+  {
+    "word": "measure",
+    "target_phonemes": ["M", "EH1", "ZH", "ER0"],
+    "predicted_phonemes": ["M", "EH1", "SH", "ER0"],
+    "score": 6.8,
+    "wer": 0.25,
+    "errors": [
+      {
+        "type": "substitute",
+        "expected": ["ZH"],
+        "heard": ["SH"],
+        "tip": "Round your lips and push air with vibration — 'zh' as in 'measure'."
+      }
+    ],
+    "timestamp": "2026-04-12T09:27:00"
+  },
+  {
+    "word": "comfortable",
+    "target_phonemes": ["K", "AH1", "M", "F", "T", "ER0", "B", "AH0", "L"],
+    "predicted_phonemes": ["K", "AH1", "M", "F", "ER0", "B", "AH0", "L"],
+    "score": 6.1,
+    "wer": 0.11,
+    "errors": [
+      {
+        "type": "delete",
+        "expected": ["T"],
+        "heard": [],
+        "tip": "Try to articulate this clearly."
+      }
+    ],
+    "timestamp": "2026-04-12T09:33:00"
+  }
+]
