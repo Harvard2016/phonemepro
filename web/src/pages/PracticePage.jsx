@@ -169,7 +169,8 @@ function PracticePage() {
       // With "Help it learn" on, a clear take leaves a 256-number summary on this device. Never audio.
       attempt.kept = await considerTake({
         profile, targetAccent: accent, word: taken.word, score: scored.score, heard, quality,
-        soundsAttempted: scored.metrics.completeness, featureCount: heard.featureCount,
+        soundsAttempted: scored.metrics.completeness, soundsMatched: scored.metrics.accuracy,
+        featureCount: heard.featureCount,
       })
       refreshHistory()
 

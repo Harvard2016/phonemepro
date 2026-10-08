@@ -164,7 +164,7 @@ Nothing a visitor records leaves their device. There is no upload endpoint.
 - **Recordings** are held in memory for playback and dropped when the visitor moves on.
 - **Practice history** (words, scores, sounds heard) is in IndexedDB.
 - **A profile**, if the visitor fills it in on the first-visit screen: country, a broad region for the few countries that offer one, and the "Help it learn" switch, which is off unless they turn it on. It is in `localStorage` and can be reopened from "Your profile" in the footer to change or withdraw.
-- **Contributions**, only while the switch is on and a country is given, and only for takes that pass every check: speech found, signal-to-noise ratio of at least 20 dB, under 0.5% of samples at full scale, model confidence of at least 0.6, at least 70% of the target sounds attempted. At most 60 are kept per browser. Each is:
+- **Contributions**, only while the switch is on and a country is given, and only for takes that pass every check: speech found, signal-to-noise ratio of at least 20 dB, under 0.5% of samples at full scale, model confidence of at least 0.6, at least 70% of the target sounds attempted, and at least 50% heard as written (a different word still "attempts" every sound as a substitution, so this is what keeps a wrong word out). At most 60 are kept per browser. Each is:
 
 | Field | Meaning |
 |---|---|
@@ -172,14 +172,21 @@ Nothing a visitor records leaves their device. There is no upload endpoint.
 | `contributor` | Random id for the browser. Replaced when everything is deleted |
 | `country`, `region` | From the profile. `region` is a short code from a fixed list or empty, never typed text |
 | `target_accent` | `ga`, `rp` or `au`: the accent being practised. Empty for a normal-voice take |
-| `natural_voice` | True for the "say this in your normal voice" sentences on the profile screen |
-| `matches_home_accent` | True when the accent practised is the one native to the country (US and `ga`, GB and `rp`, AU and `au`) |
+| `natural_voice` | True for the five "say these in your normal voice" sentences on the profile screen |
+| `matches_home_accent` | True when the accent practised is the standard one of the country (US and `ga`, GB and `rp`, AU and `au`). A label only |
 | `word`, `score` | What was said and how it scored |
 | `features` | The 256 numbers. Never audio |
-| `quality` | Seconds of speech, signal-to-noise ratio, clipping, model confidence, share of sounds attempted |
+| `quality` | Seconds of speech, signal-to-noise ratio, clipping, model confidence, share of sounds attempted and matched |
 | `model_version` | Summaries from different models cannot be mixed |
 
-The labels matter because a person imitating an accent is not a sample of their home accent. `scripts/learn_regions.py ingest` therefore routes a take with `natural_voice` or `matches_home_accent` into its country's totals, and everything else into separate "country attempting accent" totals.
+The labels matter because a person imitating an accent is not a sample of their home accent. `scripts/learn_regions.py ingest` routes each take accordingly, and the Your data page shows the same routing for every stored take:
+
+| Take | Joins |
+|---|---|
+| Normal voice (`natural_voice`) | Native totals: the country's, and the region's when one was given (`GB` and `GB-SCT`) |
+| Any practice take | Attempt totals, per country and target accent (`GB>rp`, `GB>ga`, `US>ga`) |
+
+Only normal-voice takes are native. Someone from Scotland practising standard British, or an American practising General American, is aiming at a standard, so the take is an attempt like any other. `matches_home_accent` is stored as a label and plays no part in routing. To give one person more native data, the profile screen offers five short sentences to read in a normal voice, all optional.
 
 Regions are a dropdown of broad areas, offered only where accent varies a lot within the country. A small town plus a voice summary could point at one person, so there is nowhere to type one, and ingest refuses any value not in this list:
 
@@ -192,7 +199,7 @@ Regions are a dropdown of broad areas, offered only where accent varies a lot wi
 | Ireland | East (Leinster), South (Munster), West and north (Connacht, Ulster) |
 | India | North, South, East and Northeast, West and Central |
 
-Every other country has no region field, and "Rather not say" is always an option. The lists outside the US and UK are a first judgment, not drawn from data. A native-accent take with a region joins that region's totals (`GB-SCT`) as well as its country's (`GB`), so a region can be learned once enough people from it contribute. Attempts are kept per country only.
+Every other country has no region field, and "Rather not say" is always an option. The lists outside the US and UK are a first judgment, not drawn from data. A region can be learned once enough people from it record the normal-voice sentences. Attempts are kept per country, never per region.
 
 The **Your data** page (`/data`) lists every stored take with all of its labels, shows why each recent take was or was not kept, exports to a JSON file and deletes everything. To see how an export would be used:
 

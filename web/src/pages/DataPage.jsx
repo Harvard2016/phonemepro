@@ -95,6 +95,8 @@ function DataPage() {
         <div className="toolbar">
           <p className="prose">
             Each is a 256-number summary of one take plus its labels. No audio is kept, here or anywhere.
+            Only a normal-voice take counts as how your country or region sounds. Every practice take counts
+            as an attempt at its target accent, whatever your country.
           </p>
           <div className="toolbar__actions">
             <button
@@ -155,6 +157,7 @@ function DataPage() {
                     <div><dt>clipped</dt><dd>{(take.quality.clipped * 100).toFixed(2)}%</dd></div>
                     <div><dt>confidence</dt><dd>{take.quality.confidence}</dd></div>
                     <div><dt>sounds attempted</dt><dd>{take.quality.sounds_attempted}%</dd></div>
+                    <div><dt>sounds matched</dt><dd>{take.quality.sounds_matched ?? 'not recorded'}{take.quality.sounds_matched === undefined ? '' : '%'}</dd></div>
                     <div><dt>model_version</dt><dd>{take.model_version}</dd></div>
                     <div className="dataset__wide"><dt>joins totals</dt><dd>{use.keys.join(', ')}</dd></div>
                     <div className="dataset__wide"><dt>id</dt><dd>{take.id}</dd></div>

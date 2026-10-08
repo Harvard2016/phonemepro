@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest'
 import {
   buildContribution, checkEligibility, checkViability, exportContributions, HOME_ACCENT, MAX_STORED, routeOf, VIABILITY,
 } from './contributions'
+import { textEntry } from './lexicon'
+import { readingOf, SENTENCES } from './naturalVoice'
 import { normalizeProfile } from './profile'
 import { countries, isCountryCode } from '../lib/countries'
 import { isRegion, regionName, REGIONS, regionsOf } from '../lib/regions'
@@ -15,7 +17,7 @@ const fixture = JSON.parse(
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
 const features = Array.from({ length: 256 }, (_, i) => Math.sin(i) * 1.23456789)
 const cleanQuality = { foundSpeech: true, speechSeconds: 0.62, snrDb: 31.4, clipped: 0 }
-const good = { quality: cleanQuality, confidence: 0.9, soundsAttempted: 100, features, featureCount: 256 }
+const good = { quality: cleanQuality, confidence: 0.9, soundsAttempted: 100, soundsMatched: 100, features, featureCount: 256 }
 const profile = { seen: true, country: 'GB', region: 'ENG_N', contribute: true, contributor: '3f2b8c1e-5a47-4d09-9b61-7e0c2a4d8f13' }
 
 const failed = (input) => checkViability({ ...good, ...input }).checks.filter((c) => !c.passed).map((c) => c.id)
@@ -24,7 +26,7 @@ describe('checkViability', () => {
   it('passes a clean, confident, complete take and explains every check', () => {
     const { viable, checks } = checkViability(good)
     expect(viable).toBe(true)
-    expect(checks.map((c) => c.id)).toEqual(['speech', 'snr', 'clipping', 'confidence', 'attempted', 'features'])
+    expect(checks.map((c) => c.id)).toEqual(['speech', 'snr', 'clipping', 'confidence', 'attempted', 'matched', 'features'])
     expect(checks.every((c) => c.label && c.detail)).toBe(true)
   })
 
@@ -35,6 +37,8 @@ describe('checkViability', () => {
     expect(failed({ quality: { ...cleanQuality, clipped: 0.01 } })).toEqual(['clipping'])
     expect(failed({ confidence: 0.3 })).toEqual(['confidence'])
     expect(failed({ soundsAttempted: 50 })).toEqual(['attempted'])
+    // A different word: every sound "attempted" as a substitution, none matched.
+    expect(failed({ soundsAttempted: 100, soundsMatched: 0 })).toEqual(['matched'])
     expect(failed({ features: null })).toEqual(['features'])
     expect(failed({ features: features.slice(1) })).toEqual(['features'])
     expect(failed({ features: [NaN, ...features.slice(1)] })).toEqual(['features'])
@@ -48,6 +52,7 @@ describe('checkViability', () => {
       quality: { foundSpeech: true, speechSeconds: VIABILITY.minSpeechSeconds, snrDb: VIABILITY.minSnrDb, clipped: VIABILITY.maxClipped },
       confidence: VIABILITY.minConfidence,
       soundsAttempted: VIABILITY.minSoundsAttempted,
+      soundsMatched: VIABILITY.minSoundsMatched,
     }).viable).toBe(true)
   })
 })
@@ -64,7 +69,7 @@ describe('checkEligibility', () => {
 describe('buildContribution', () => {
   const build = (changes = {}) => buildContribution({
     profile, targetAccent: 'rp', naturalVoice: false, word: 'water', score: 8.4, features,
-    quality: cleanQuality, confidence: 0.9123, soundsAttempted: 100, modelVersion: 'abc', ...changes,
+    quality: cleanQuality, confidence: 0.9123, soundsAttempted: 100, soundsMatched: 90, modelVersion: 'abc', ...changes,
   })
 
   it('has exactly the fields of an exported take, and no audio', () => {
@@ -172,10 +177,58 @@ describe('regions', () => {
     expect(regionName('GB', 'Leeds')).toBeNull()
   })
 
-  it('sends a native take to its region as well as its country, and attempts to the country only', () => {
-    const take = fixture.export.takes[1]
-    expect(routeOf({ ...take, region: 'SCT' }).keys).toEqual(['GB', 'GB-SCT'])
-    expect(routeOf({ ...take, region: null }).keys).toEqual(['GB'])
-    expect(routeOf({ ...fixture.export.takes[2], region: 'SCT' }).keys).toEqual(['GB>ga'])
+  const scot = { ...profile, country: 'GB', region: 'SCT' }
+  const american = { ...profile, country: 'US', region: null }
+  const built = (who, targetAccent, naturalVoice = false) => buildContribution({
+    profile: who, targetAccent, naturalVoice, word: 'better', score: 8, features,
+    quality: cleanQuality, confidence: 0.9, soundsAttempted: 100, soundsMatched: 100, modelVersion: 'abc',
+  })
+  const route = (...args) => routeOf(built(...args))
+
+  it('treats a Scot practising British as an attempt', () => {
+    // Standard British is not how Scotland sounds, nor a sample of Britain: it is an imitation.
+    expect(route(scot, 'rp')).toMatchObject({ kind: 'attempt', keys: ['GB>rp'] })
+  })
+
+  it('treats an American practising American as an attempt', () => {
+    expect(route(american, 'ga')).toMatchObject({ kind: 'attempt', keys: ['US>ga'] })
+    expect(route({ ...american, region: 'S' }, 'ga')).toMatchObject({ kind: 'attempt', keys: ['US>ga'] })
+  })
+
+  it('treats a Scot in their normal voice as native to country and region', () => {
+    expect(route(scot, 'rp', true)).toMatchObject({ kind: 'native', keys: ['GB', 'GB-SCT'] })
+    expect(route({ ...scot, region: null }, 'rp', true)).toMatchObject({ kind: 'native', keys: ['GB'] })
+  })
+
+  it('stores the home-accent label without routing on it', () => {
+    for (const [country, accent] of Object.entries(HOME_ACCENT)) {
+      const take = built({ ...profile, country, region: null }, accent)
+      expect(take.matches_home_accent).toBe(true)
+      expect(routeOf(take)).toMatchObject({ kind: 'attempt', keys: [`${country}>${accent}`] })
+    }
+  })
+})
+
+describe('normal-voice sentences', () => {
+  const lexicon = JSON.parse(readFileSync(new URL('../../public/lexicon/lexicon.json', import.meta.url), 'utf8'))
+
+  it('offers five different short sentences the dictionary knows in every accent', () => {
+    expect(SENTENCES).toHaveLength(5)
+    expect(new Set(SENTENCES).size).toBe(5)
+    for (const sentence of SENTENCES) {
+      for (const accent of Object.keys(lexicon.accents)) {
+        expect(textEntry(lexicon, sentence, accent).phonemes.length).toBeGreaterThan(10)
+      }
+    }
+  })
+
+  it('measures a reading against whichever dictionary fits best', () => {
+    const british = textEntry(lexicon, SENTENCES[4], 'rp').phonemes
+    const heard = { phonemes: british, confidence: 0.9, margin: 0.8 }
+    expect(readingOf(lexicon, SENTENCES[4], heard)).toEqual({ soundsAttempted: 100, soundsMatched: 100 })
+    expect(readingOf(lexicon, SENTENCES[4], { ...heard, phonemes: british.slice(0, 5) }).soundsAttempted).toBeLessThan(40)
+    // Reading a different sentence attempts plenty of sounds and matches few.
+    const other = { ...heard, phonemes: textEntry(lexicon, SENTENCES[1], 'rp').phonemes }
+    expect(readingOf(lexicon, SENTENCES[4], other).soundsMatched).toBeLessThan(50)
   })
 })

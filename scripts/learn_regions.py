@@ -12,10 +12,10 @@ back, though like any voice-derived summary it may be characteristic of the
 speaker, so it is still treated as personal data until it is folded in.
 
 `ingest` reads files exported from the app's "Your data" page, checks every take,
-and adds each vector to running totals (pronunciation/region_totals.py). A take
-in the speaker's normal voice, or in the accent native to their country, joins
-that country's totals, and its region's when one was given. A take imitating another accent is not a sample of the
-speaker's home accent, so it joins separate "country attempting accent" totals.
+and adds each vector to running totals (pronunciation/region_totals.py). Only a
+take in the speaker's normal voice joins the totals for their country, and for
+their region when one was given. Every practice take is an imitation of its
+target accent, so it joins separate "country attempting accent" totals.
 Only the totals and a list of take ids already counted are kept. `simulate` runs
 the same path on VCTK speakers to show that a classifier built from totals alone works.
 """
@@ -56,8 +56,10 @@ REGIONS = {
     "IE": {"E": "East (Leinster)", "S": "South (Munster)", "W": "West and north (Connacht, Ulster)"},
     "IN": {"N": "North", "S": "South", "E": "East and Northeast", "W": "West and Central"},
 }
-# The practice accent native to a country. The web app holds the same table
-# (web/src/engine/contributions.js); both are pinned to tests/fixtures/contribution_export.json.
+# The practice accent that is the standard of a country. It only decides the stored
+# label `matches_home_accent`, which is checked here but plays no part in routing. The web app
+# holds the same table (web/src/engine/contributions.js); both are pinned to
+# tests/fixtures/contribution_export.json.
 HOME_ACCENT = {"US": "ga", "GB": "rp", "AU": "au"}
 # One person should not outweigh a region, so only this many takes count per contributor per run.
 MAX_TAKES_PER_CONTRIBUTOR = 40
@@ -162,7 +164,7 @@ def check_take(take, feature_set: str) -> tuple[dict | None, str | None]:
         return None, "bad labels"
     if (accent is not None) if natural else (accent not in ACCENTS):
         return None, "bad target accent"
-    # The label is recomputed rather than trusted: it decides which totals the take joins.
+    # The label is recomputed rather than trusted, so stored labels stay truthful.
     if matches != (not natural and HOME_ACCENT.get(country) == accent):
         return None, "labels disagree"
 
@@ -183,17 +185,18 @@ def check_take(take, feature_set: str) -> tuple[dict | None, str | None]:
 
 
 def route(take: dict) -> tuple[str, list[str]]:
-    """Which totals a take joins: ("native", [country, "country-region"]) or ("attempt", ["country>accent"]).
+    """Which totals a take joins: ("native", [country, ...]) or ("attempt", ["country>accent"]).
 
-    Someone imitating an accent is not a sample of their home accent. Only a take in
-    the speaker's normal voice, or one where the accent practised is the one native
-    to their country, says how that country sounds. Everything else is evidence of
-    how people from that country attempt the target accent.
+    Only a take in the speaker's normal voice says how a place sounds. Every practice
+    take is someone aiming at a target accent, so it is an attempt, even when the
+    target is the standard accent of the speaker's own country: a Scot practising
+    standard British, or an American practising General American, is still imitating
+    a standard.
 
-    A native take with a region joins the region's totals as well as the country's,
-    so a region can be learned once enough people from it contribute.
+      normal voice         -> native: country, and country-region when one was given
+      any practice take    -> attempt: country>target accent
     """
-    if take["natural_voice"] or take["matches_home_accent"]:
+    if take["natural_voice"]:
         keys = [take["country"]]
         if take["region"]:
             keys.append(f"{take['country']}-{take['region']}")

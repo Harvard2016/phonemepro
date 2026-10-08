@@ -63,11 +63,11 @@ def test_the_shared_fixture_is_accepted_and_routed_as_the_app_expects(run):
         assert take["region"] == raw["region"]
 
     summary = run(FIXTURE["export"]["takes"])
-    assert (summary["added"], summary["added_native"], summary["added_attempts"]) == (4, 2, 2)
+    assert (summary["added"], summary["added_native"], summary["added_attempts"]) == (7, 2, 5)
     assert summary["refused"] == {} and summary["files_skipped"] == {}
 
 
-def test_imitating_an_accent_never_counts_as_the_home_accent(run):
+def test_only_normal_voice_counts_as_native(run):
     contributor = str(uuid.uuid4())
     north = {"country": "GB", "region": "ENG_N"}
     takes = [
@@ -82,13 +82,17 @@ def test_imitating_an_accent_never_counts_as_the_home_accent(run):
 
     native, _ = load_totals(run.root / "native.npz")
     attempts, _ = load_totals(run.root / "attempts.npz")
-    assert {region: totals.count for region, totals in native.items()} == {"GB": 2, "GB-ENG_N": 2, "IN": 1}
-    assert {key: totals.count for key, totals in attempts.items()} == {"GB>ga": 1, "GB>au": 1, "IN>rp": 1}
+    # Only the normal-voice takes are native. Practising British in Britain is still an attempt.
+    assert {region: totals.count for region, totals in native.items()} == {"GB": 1, "GB-ENG_N": 1, "IN": 1}
+    assert np.allclose(native["GB"].total, takes[3]["features"])
+    assert np.allclose(native["GB-ENG_N"].total, takes[3]["features"])
+    assert {key: totals.count for key, totals in attempts.items()} == {"GB>rp": 1, "GB>ga": 1, "GB>au": 1, "IN>rp": 1}
+    assert np.allclose(attempts["GB>rp"].total, takes[0]["features"])
     assert np.allclose(native["IN"].total, takes[5]["features"])
 
     assert summary["countries"]["GB"] == {
-        "native_total": 2, "native_added": 2, "regions": {"ENG_N": {"total": 2, "added": 2}},
-        "attempts": {"au": {"total": 1, "added": 1}, "ga": {"total": 1, "added": 1}},
+        "native_total": 1, "native_added": 1, "regions": {"ENG_N": {"total": 1, "added": 1}},
+        "attempts": {"au": {"total": 1, "added": 1}, "ga": {"total": 1, "added": 1}, "rp": {"total": 1, "added": 1}},
         "contributors_this_run": 1, "ready": False,
     }
     assert summary["countries"]["IN"]["attempts"] == {"rp": {"total": 1, "added": 1}}
@@ -187,7 +191,9 @@ def test_one_contributor_cannot_outweigh_a_region(run):
 
 def test_a_country_is_ready_only_with_enough_native_takes_and_people(run):
     people = [str(uuid.uuid4()) for _ in range(3)]
-    native = [make_take(contributor=p, country="AU", target_accent="au", matches_home_accent=True) for p in people * 2]
+    native = [
+        make_take(contributor=p, country="AU", target_accent=None, natural_voice=True, score=None) for p in people * 2
+    ]
     attempts = [make_take(contributor=p, country="NZ", target_accent="au") for p in people * 2]
     summary = run(native + attempts, min_contributors=3, min_takes=6)
     assert summary["countries"]["AU"]["ready"] is True
@@ -206,41 +212,80 @@ def test_a_single_file_can_be_ingested_and_summarised(tmp_path, capsys):
     summary = ingest(path, tmp_path / "n.npz", tmp_path / "a.npz", tmp_path / "seen.txt", MODEL)
     print_summary(summary)
     printed = capsys.readouterr().out
-    assert "added 4 takes (2 native accent, 2 attempts)" in printed
-    assert any(line.split()[:3] == ["GB", "2", "2"] and "ga 1 (1)" in line for line in printed.splitlines())
-    assert any(line.split()[:3] == ["ENG_N", "2", "2"] and "England (North)" in line for line in printed.splitlines())
+    assert "added 7 takes (2 native accent, 5 attempts)" in printed
+    assert any(line.split()[:3] == ["GB", "2", "2"] and "ga 1 (1)" in line and "rp 2 (2)" in line for line in printed.splitlines())
+    assert any(line.split()[:3] == ["ENG_N", "1", "1"] and "England (North)" in line for line in printed.splitlines())
+    assert any(line.split()[:3] == ["SCT", "1", "1"] and "Scotland" in line for line in printed.splitlines())
     assert "Dry run" not in printed
     # Only hashed ids are remembered, never the ids themselves.
     seen = (tmp_path / "seen.txt").read_text()
-    assert len(seen.split()) == 4
+    assert len(seen.split()) == 7
     assert all(take["id"] not in seen for take in FIXTURE["export"]["takes"])
 
 
-def test_regions_are_fixed_codes_and_native_takes_join_their_region(run):
+SCOT = {"country": "GB", "region": "SCT"}
+VOICE = {"target_accent": None, "natural_voice": True, "score": None}
+
+
+def routed(**changes):
+    take, reason = check_take(make_take(**changes), MODEL)
+    assert reason is None
+    return route(take)
+
+
+def test_a_scot_practising_british_is_an_attempt():
+    # Standard British is not how Scotland sounds, nor a sample of Britain: it is an imitation.
+    assert routed(**SCOT, target_accent="rp", matches_home_accent=True) == ("attempt", ["GB>rp"])
+
+
+def test_an_american_practising_american_is_an_attempt():
+    assert routed(country="US", region=None, target_accent="ga", matches_home_accent=True) == ("attempt", ["US>ga"])
+    assert routed(country="US", region="S", target_accent="ga", matches_home_accent=True) == ("attempt", ["US>ga"])
+
+
+def test_a_scot_in_their_normal_voice_is_native_to_country_and_region():
+    assert routed(**SCOT, **VOICE) == ("native", ["GB", "GB-SCT"])
+    # Without a region there is only the country to join.
+    assert routed(country="GB", region=None, **VOICE) == ("native", ["GB"])
+
+
+def test_the_home_accent_label_is_stored_but_does_not_route():
+    for country, accent in HOME_ACCENT.items():
+        assert routed(country=country, region=None, target_accent=accent, matches_home_accent=True) == (
+            "attempt", [f"{country}>{accent}"])
+
+
+def test_native_totals_hold_normal_voice_takes_only(run):
     people = [str(uuid.uuid4()) for _ in range(2)]
-    scot = {"country": "GB", "target_accent": "rp", "matches_home_accent": True}
     takes = [
-        make_take(contributor=people[0], region="SCT", **scot),
-        make_take(contributor=people[1], region="SCT", **scot),
-        make_take(contributor=people[1], region="WLS", **scot),
-        make_take(contributor=people[0], region=None, **scot),  # "Rather not say"
-        make_take(contributor=people[0], country="GB", region="SCT", target_accent="ga"),  # an attempt
+        make_take(contributor=people[0], **SCOT, **VOICE),
+        make_take(contributor=people[1], **SCOT, **VOICE),
+        make_take(contributor=people[1], country="GB", region="WLS", **VOICE),
+        make_take(contributor=people[0], country="GB", region=None, **VOICE),  # "Rather not say"
+        make_take(contributor=people[0], **SCOT, target_accent="rp", matches_home_accent=True),
+        make_take(contributor=people[1], **SCOT, target_accent="rp", matches_home_accent=True),
+        make_take(contributor=people[0], **SCOT, target_accent="ga"),
+        make_take(country="US", region="S", target_accent="ga", matches_home_accent=True),
+        make_take(country="US", region="S", **VOICE),
         make_take(region="S"),  # India, South, attempting American
     ]
-    assert all(check_take(take, MODEL)[1] is None for take in takes)
     summary = run(takes)
 
     native, _ = load_totals(run.root / "native.npz")
     attempts, _ = load_totals(run.root / "attempts.npz")
-    assert {key: totals.count for key, totals in native.items()} == {"GB": 4, "GB-SCT": 2, "GB-WLS": 1}
-    # Attempts are kept per country only: a region attempting an accent is too thin a slice.
-    assert {key: totals.count for key, totals in attempts.items()} == {"GB>ga": 1, "IN>ga": 1}
+    assert {key: totals.count for key, totals in native.items()} == {
+        "GB": 4, "GB-SCT": 2, "GB-WLS": 1, "US": 1, "US-S": 1,
+    }
     assert np.allclose(native["GB-SCT"].total, np.add(takes[0]["features"], takes[1]["features"]))
+    assert np.allclose(native["US"].total, takes[8]["features"])
+    # Attempts are per country and target accent; region plays no part.
+    assert {key: totals.count for key, totals in attempts.items()} == {"GB>rp": 2, "GB>ga": 1, "US>ga": 1, "IN>ga": 1}
 
-    assert (summary["added"], summary["added_native"], summary["added_attempts"]) == (6, 4, 2)
+    assert (summary["added"], summary["added_native"], summary["added_attempts"]) == (10, 5, 5)
     assert summary["countries"]["GB"]["regions"] == {"SCT": {"total": 2, "added": 2}, "WLS": {"total": 1, "added": 1}}
+    assert summary["countries"]["US"]["regions"] == {"S": {"total": 1, "added": 1}}
     assert summary["countries"]["IN"]["regions"] == {}
-    assert sorted(summary["countries"]) == ["GB", "IN"]
+    assert sorted(summary["countries"]) == ["GB", "IN", "US"]
 
 
 def test_every_region_code_is_short_and_named():
@@ -258,9 +303,9 @@ def test_a_dry_run_reports_everything_and_writes_nothing(run, capsys):
 
     rehearsal = run(takes, dry_run=True)
     assert rehearsal["dry_run"] is True
-    assert (rehearsal["added"], rehearsal["added_native"], rehearsal["added_attempts"]) == (5, 2, 3)
+    assert (rehearsal["added"], rehearsal["added_native"], rehearsal["added_attempts"]) == (8, 2, 6)
     assert rehearsal["refused"] == {"wrong feature length": 1}
-    assert rehearsal["countries"]["GB"]["regions"] == {"ENG_N": {"total": 2, "added": 2}}
+    assert rehearsal["countries"]["GB"]["regions"] == {"ENG_N": {"total": 1, "added": 1}, "SCT": {"total": 1, "added": 1}}
     assert not any(path.exists() for path in outputs)
     print_summary(rehearsal)
     assert capsys.readouterr().out.startswith("Dry run: nothing was written.")
@@ -272,6 +317,6 @@ def test_a_dry_run_reports_everything_and_writes_nothing(run, capsys):
 
     # A later dry run sees what is already counted and still leaves every file alone.
     again = run([make_take()], dry_run=True)
-    assert (again["added"], again["duplicates"]) == (1, 5)
+    assert (again["added"], again["duplicates"]) == (1, 8)
     assert again["countries"]["IN"]["attempts"]["ga"] == {"total": 3, "added": 1}
     assert [path.read_bytes() for path in outputs] == before

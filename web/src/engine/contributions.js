@@ -22,18 +22,22 @@ export const VIABILITY = {
   maxClipped: 0.005, // loud but unclipped speech brushes full scale now and then; real clipping sits there
   minConfidence: 0.6,
   minSoundsAttempted: 70,
+  // A different word still "attempts" every sound, as substitutions. Requiring half the target
+  // sounds to be heard as written keeps a wrong word, or someone else talking, out.
+  minSoundsMatched: 50,
 }
 
-// The practice accent that is native to a country. A take counts as that
-// country's own accent only when the speaker chose this accent (or recorded in
-// their normal voice). Kept deliberately narrow; scripts/learn_regions.py holds the same table.
+// The practice accent that is the standard of a country. It only sets the stored label
+// `matches_home_accent`; it plays no part in what a take is used for (see routeOf).
+// scripts/learn_regions.py holds the same table.
 export const HOME_ACCENT = { US: 'ga', GB: 'rp', AU: 'au' }
 
 const run = (mode, work) => runIn('contributions', mode, work)
 
 // Every check with its outcome, so the "Your data" page can show why a take was or was not kept.
-// `quality` comes from engine/cleanup.js; `soundsAttempted` is the completeness metric (0..100).
-export function checkViability({ quality, confidence, soundsAttempted, features, featureCount }) {
+// `quality` comes from engine/cleanup.js; `soundsAttempted` and `soundsMatched` are the completeness
+// and accuracy metrics from engine/scoring.js (0..100).
+export function checkViability({ quality, confidence, soundsAttempted, soundsMatched, features, featureCount }) {
   const limits = VIABILITY
   const featuresOk = Boolean(features) && features.length === featureCount && Array.from(features).every(Number.isFinite)
   const checks = [
@@ -47,6 +51,8 @@ export function checkViability({ quality, confidence, soundsAttempted, features,
       `confidence ${confidence.toFixed(2)} (needs ${limits.minConfidence})`],
     ['attempted', 'Most target sounds attempted', soundsAttempted >= limits.minSoundsAttempted,
       `${Math.round(soundsAttempted)}% of target sounds (needs ${limits.minSoundsAttempted}%)`],
+    ['matched', 'Target sounds matched', soundsMatched >= limits.minSoundsMatched,
+      `${Math.round(soundsMatched)}% heard as written (needs ${limits.minSoundsMatched}%)`],
     ['features', 'Summary is well formed', featuresOk,
       featuresOk ? `${featureCount} finite numbers` : 'the model did not return a usable summary'],
   ].map(([id, label, passed, detail]) => ({ id, label, passed: Boolean(passed), detail }))
@@ -65,7 +71,7 @@ const round = (value, digits) => Math.round(value * 10 ** digits) / 10 ** digits
 
 // The stored record. `targetAccent` is null for a take in the speaker's normal voice.
 export function buildContribution({
-  profile, targetAccent, naturalVoice, word, score, features, quality, confidence, soundsAttempted, modelVersion,
+  profile, targetAccent, naturalVoice, word, score, features, quality, confidence, soundsAttempted, soundsMatched, modelVersion,
 }) {
   return {
     id: crypto.randomUUID(),
@@ -85,18 +91,28 @@ export function buildContribution({
       clipped: round(quality.clipped, 6),
       confidence: round(confidence, 3),
       sounds_attempted: Math.round(soundsAttempted),
+      sounds_matched: Math.round(soundsMatched),
     },
     model_version: modelVersion,
   }
 }
 
 // What a contribution will be used for once sharing exists. Mirrors `route` in scripts/learn_regions.py.
-// A native take with a region also joins that region's totals; attempts are kept per country.
+//
+//   normal voice         -> native: country, and country-region when one was given
+//   any practice take    -> attempt: country>target accent
+//
+// Only a take in the speaker's normal voice says how a place sounds. Every practice take is
+// someone aiming at a target, even when the target is their own country's standard accent.
 export function routeOf(contribution) {
   const { country, region } = contribution
-  if (contribution.natural_voice || contribution.matches_home_accent) {
+  if (contribution.natural_voice) {
     const place = regionName(country, region)
-    return { kind: 'native', keys: region ? [country, `${country}-${region}`] : [country], label: `how ${country}${place ? ` and ${place}` : ''} sounds` }
+    return {
+      kind: 'native',
+      keys: place ? [country, `${country}-${region}`] : [country],
+      label: `how ${country}${place ? ` and ${place}` : ''} sounds`,
+    }
   }
   return { kind: 'attempt', keys: [`${country}>${contribution.target_accent}`], label: `${country} attempting ${contribution.target_accent}` }
 }
@@ -157,9 +173,11 @@ export function clearDecisions() {
 
 // Decide what to do with one analysed take, store it if it qualifies, and log the outcome.
 // Returns { stored, reason, checks, contribution }.
-export async function considerTake({ profile, targetAccent, naturalVoice = false, word, score, heard, quality, soundsAttempted, featureCount }) {
+export async function considerTake({
+  profile, targetAccent, naturalVoice = false, word, score, heard, quality, soundsAttempted, soundsMatched, featureCount,
+}) {
   const { viable, checks } = checkViability({
-    quality, confidence: heard.confidence, soundsAttempted, features: heard.features, featureCount,
+    quality, confidence: heard.confidence, soundsAttempted, soundsMatched, features: heard.features, featureCount,
   })
   let contribution = null
   let stored = false
@@ -170,7 +188,7 @@ export async function considerTake({ profile, targetAccent, naturalVoice = false
   if (!reason) {
     contribution = buildContribution({
       profile, targetAccent, naturalVoice, word, score, features: heard.features, quality,
-      confidence: heard.confidence, soundsAttempted, modelVersion: heard.modelVersion,
+      confidence: heard.confidence, soundsAttempted, soundsMatched, modelVersion: heard.modelVersion,
     })
     try {
       stored = await saveContribution(contribution)

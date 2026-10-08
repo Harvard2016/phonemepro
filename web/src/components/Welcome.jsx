@@ -1,23 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { clearContributions, clearDecisions, considerTake, countContributions } from '../engine/contributions'
-import { textEntry } from '../engine/lexicon'
 import { recognize } from '../engine/model'
-import { scoreAttempt } from '../engine/scoring'
+import { readingOf, SENTENCES } from '../engine/naturalVoice'
 import { useRecorder } from '../hooks/useRecorder'
 import { countries } from '../lib/countries'
 import { isRegion, regionsOf } from '../lib/regions'
 import { useApp } from '../state'
-
-// Short, ordinary sentences. They are read in the speaker's own accent, not scored.
-const SENTENCES = ['the weather is very cold today', 'my mother walks in the garden']
-
-// How much of the sentence was attempted, against whichever dictionary fits the speaker best.
-function soundsAttempted(lexicon, sentence, heard) {
-  return Math.max(...Object.keys(lexicon.accents).map((accent) =>
-    scoreAttempt(textEntry(lexicon, sentence, accent).phonemes, heard.phonemes, heard.confidence, heard.margin)
-      .metrics.completeness))
-}
 
 // The first-visit screen, and later the place to change or withdraw what was said here.
 // Every part is optional and nothing on it leaves the device.
@@ -55,7 +44,7 @@ function WelcomeSheet() {
       const heard = await recognize(samples)
       setVoiceTakes((takes) => ({
         ...takes,
-        [sentence]: { heard, quality, soundsAttempted: soundsAttempted(lexicon, sentence, heard) },
+        [sentence]: { heard, quality, ...readingOf(lexicon, sentence, heard) },
       }))
     } catch (error) {
       setVoiceNote(error.message || 'The model could not analyze that recording.')
@@ -92,7 +81,8 @@ function WelcomeSheet() {
     for (const [sentence, take] of Object.entries(next.keepVoice ? voiceTakes : {})) {
       await considerTake({
         profile: saved, targetAccent: null, naturalVoice: true, word: sentence, score: null,
-        heard: take.heard, quality: take.quality, soundsAttempted: take.soundsAttempted, featureCount: take.heard.featureCount,
+        heard: take.heard, quality: take.quality, soundsAttempted: take.soundsAttempted, soundsMatched: take.soundsMatched,
+        featureCount: take.heard.featureCount,
       })
     }
     closeWelcome()
@@ -160,10 +150,12 @@ function WelcomeSheet() {
 
         <section className="welcome__part" aria-labelledby="welcome-voice">
           <p className="label">Two · optional</p>
-          <h3 id="welcome-voice" className="welcome__question">Say this in your normal voice</h3>
+          <h3 id="welcome-voice" className="welcome__question">Say these in your normal voice</h3>
           <p className="welcome__text">
-            Your own accent, not one you are practising. The recording is turned into a short summary and then
-            discarded. The summary is kept only if you turn on the switch below, apart from your practice takes.
+            Your own accent, not one you are practising. Read as many of the {SENTENCES.length} as you like, or none.
+            Each recording is turned into a short summary and then discarded. The summaries are kept only if you
+            turn on the switch below. These are the only takes that count as how your country or region sounds;
+            practice takes never do.
           </p>
           <ul className="welcome__sentences">
             {SENTENCES.map((sentence) => {

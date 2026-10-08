@@ -55,6 +55,7 @@ function PrivacyPage() {
           <li>a summary of the take as 256 numbers, worked out by the model;</li>
           <li>the labels you gave: your country and, if you chose one, a broad region from a fixed list;</li>
           <li>which accent you were practising, or that you were speaking in your normal voice;</li>
+          <li>whether the accent you were practising is the standard one of your country;</li>
           <li>the word, the score, how clean the take was, and which version of the model made the summary;</li>
           <li>a random id for the take and a random id for this browser. Neither is your name or an account.</li>
         </ul>
@@ -62,6 +63,14 @@ function PrivacyPage() {
           The summary is not audio and cannot be played back. It may still be characteristic of your voice,
           in the way a description of a face is not a photograph but is still about one person. Treat it as
           personal information. At most {MAX_STORED} takes are kept per browser.
+        </p>
+
+        <h2 className="section-title">What each kind of take would be used for</h2>
+        <p className="prose">
+          Only the sentences you read in your normal voice count as how your country or region sounds. A
+          practice take is you aiming at an accent, so it counts only as an attempt at that accent by someone
+          from your country, even when the accent is your own country’s standard one. You can read up to five
+          normal-voice sentences. All of them are optional.
         </p>
 
         <h2 className="section-title">Regions</h2>
