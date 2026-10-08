@@ -368,8 +368,9 @@
      "snr_db": 31.4,
      "clipped": 0.0,
      "confidence": 0.91,
-     "sounds_attempted": 100,
-     "sounds_matched": 90
+     "sounds_heard": 20,
+     "sounds_matched": null,
+     "sounds_same_class": null
     },
     "model_version": "fixture-model"
    },
@@ -647,8 +648,9 @@
      "snr_db": 31.4,
      "clipped": 0.0,
      "confidence": 0.91,
-     "sounds_attempted": 100,
-     "sounds_matched": 90
+     "sounds_heard": 4,
+     "sounds_matched": 75,
+     "sounds_same_class": 100
     },
     "model_version": "fixture-model"
    },
@@ -926,8 +928,9 @@
      "snr_db": 31.4,
      "clipped": 0.0,
      "confidence": 0.91,
-     "sounds_attempted": 100,
-     "sounds_matched": 90
+     "sounds_heard": 4,
+     "sounds_matched": 75,
+     "sounds_same_class": 100
     },
     "model_version": "fixture-model"
    },
@@ -1205,8 +1208,9 @@
      "snr_db": 31.4,
      "clipped": 0.0,
      "confidence": 0.91,
-     "sounds_attempted": 100,
-     "sounds_matched": 90
+     "sounds_heard": 4,
+     "sounds_matched": 75,
+     "sounds_same_class": 100
     },
     "model_version": "fixture-model"
    },
@@ -1484,8 +1488,9 @@
      "snr_db": 31.4,
      "clipped": 0.0,
      "confidence": 0.91,
-     "sounds_attempted": 100,
-     "sounds_matched": 90
+     "sounds_heard": 4,
+     "sounds_matched": 75,
+     "sounds_same_class": 100
     },
     "model_version": "fixture-model"
    },
@@ -1763,8 +1768,9 @@
      "snr_db": 31.4,
      "clipped": 0.0,
      "confidence": 0.91,
-     "sounds_attempted": 100,
-     "sounds_matched": 90
+     "sounds_heard": 4,
+     "sounds_matched": 75,
+     "sounds_same_class": 100
     },
     "model_version": "fixture-model"
    },
@@ -2042,8 +2048,9 @@
      "snr_db": 31.4,
      "clipped": 0.0,
      "confidence": 0.91,
-     "sounds_attempted": 100,
-     "sounds_matched": 90
+     "sounds_heard": 20,
+     "sounds_matched": null,
+     "sounds_same_class": null
     },
     "model_version": "fixture-model"
    }

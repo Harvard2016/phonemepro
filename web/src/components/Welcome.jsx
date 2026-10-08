@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { clearContributions, clearDecisions, considerTake, countContributions } from '../engine/contributions'
 import { recognize } from '../engine/model'
-import { readingOf, SENTENCES } from '../engine/naturalVoice'
+import { SENTENCES, targetSounds } from '../engine/naturalVoice'
 import { useRecorder } from '../hooks/useRecorder'
 import { countries } from '../lib/countries'
 import { isRegion, regionsOf } from '../lib/regions'
@@ -44,7 +44,7 @@ function WelcomeSheet() {
       const heard = await recognize(samples)
       setVoiceTakes((takes) => ({
         ...takes,
-        [sentence]: { heard, quality, ...readingOf(lexicon, sentence, heard) },
+        [sentence]: { heard, quality },
       }))
     } catch (error) {
       setVoiceNote(error.message || 'The model could not analyze that recording.')
@@ -52,7 +52,7 @@ function WelcomeSheet() {
       setAnalysing(false)
       setActive(null)
     }
-  }, [ensureModel, lexicon])
+  }, [ensureModel])
 
   const handleVoiceError = useCallback((message) => {
     setVoiceNote(message)
@@ -81,7 +81,7 @@ function WelcomeSheet() {
     for (const [sentence, take] of Object.entries(next.keepVoice ? voiceTakes : {})) {
       await considerTake({
         profile: saved, targetAccent: null, naturalVoice: true, word: sentence, score: null,
-        heard: take.heard, quality: take.quality, soundsAttempted: take.soundsAttempted, soundsMatched: take.soundsMatched,
+        heard: take.heard, quality: take.quality, targetSounds: targetSounds(lexicon, sentence),
         featureCount: take.heard.featureCount,
       })
     }

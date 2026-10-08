@@ -156,8 +156,9 @@ function DataPage() {
                     <div><dt>snr</dt><dd>{take.quality.snr_db} dB</dd></div>
                     <div><dt>clipped</dt><dd>{(take.quality.clipped * 100).toFixed(2)}%</dd></div>
                     <div><dt>confidence</dt><dd>{take.quality.confidence}</dd></div>
-                    <div><dt>sounds attempted</dt><dd>{take.quality.sounds_attempted}%</dd></div>
-                    <div><dt>sounds matched</dt><dd>{take.quality.sounds_matched ?? 'not recorded'}{take.quality.sounds_matched === undefined ? '' : '%'}</dd></div>
+                    <div><dt>sounds heard</dt><dd>{take.quality.sounds_heard ?? 'not recorded'}</dd></div>
+                    <div><dt>heard as written</dt><dd>{take.quality.sounds_matched == null ? 'not compared' : `${take.quality.sounds_matched}%`}</dd></div>
+                    <div><dt>same sound class</dt><dd>{take.quality.sounds_same_class == null ? 'not compared' : `${take.quality.sounds_same_class}%`}</dd></div>
                     <div><dt>model_version</dt><dd>{take.model_version}</dd></div>
                     <div className="dataset__wide"><dt>joins totals</dt><dd>{use.keys.join(', ')}</dd></div>
                     <div className="dataset__wide"><dt>id</dt><dd>{take.id}</dd></div>

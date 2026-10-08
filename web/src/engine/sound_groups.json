@@ -1,0 +1,16 @@
+{
+ "comment": "Broad sound classes for deciding whether a target sound was attempted. Read by web/src/engine/soundMatch.js and pronunciation/sound_match.py; both are pinned to tests/fixtures/sound_match_cases.json. Any vowel counts for any vowel. Two consonants count for each other when they share a group. The groups are common accent substitutions (think/tink/sink/fink, this/dis/zis, final devoicing, ship/sip, chair/share, sing/sin). V~W and L~R were added to the original list.",
+ "vowels": ["AA", "AE", "AH", "AO", "AW", "AY", "EH", "ER", "EY", "IH", "IY", "OW", "OY", "UH", "UW"],
+ "groups": [
+  ["TH", "T", "D", "S", "Z", "F"],
+  ["DH", "D", "Z"],
+  ["T", "D"],
+  ["P", "B"],
+  ["K", "G"],
+  ["S", "Z", "SH"],
+  ["CH", "SH", "JH"],
+  ["N", "NG", "M"],
+  ["V", "W"],
+  ["L", "R"]
+ ]
+}

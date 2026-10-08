@@ -14,6 +14,7 @@ import { buildInsights } from '../engine/insights'
 import { recordingUrl, textEntry } from '../engine/lexicon'
 import { recognize } from '../engine/model'
 import { scoreAttempt } from '../engine/scoring'
+import { soundsSameClass } from '../engine/soundMatch'
 import { useRecorder } from '../hooks/useRecorder'
 import { playClip, speak } from '../lib/audio'
 import { basePhoneme, toIpa } from '../lib/phonemes'
@@ -169,7 +170,7 @@ function PracticePage() {
       // With "Help it learn" on, a clear take leaves a 256-number summary on this device. Never audio.
       attempt.kept = await considerTake({
         profile, targetAccent: accent, word: taken.word, score: scored.score, heard, quality,
-        soundsAttempted: scored.metrics.completeness, soundsMatched: scored.metrics.accuracy,
+        soundsMatched: scored.metrics.accuracy, soundsSameClass: soundsSameClass(taken.phonemes, heard.phonemes),
         featureCount: heard.featureCount,
       })
       refreshHistory()

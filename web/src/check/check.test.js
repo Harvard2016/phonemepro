@@ -22,8 +22,8 @@ const run = (id, heard, store = createMemoryStore(), changes = {}) =>
 const spoken = (id) => saying(step(id).word, step(id).accent ?? 'rp')
 
 describe('the step table', () => {
-  it('has ten steps in order, each with an instruction', () => {
-    expect(STEPS.map((s) => s.id)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+  it('has eleven steps in order, each with an instruction', () => {
+    expect(STEPS.map((s) => s.id)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
     expect(STEPS.every((s) => s.title && s.say && s.how)).toBe(true)
     expect(STEPS.filter((s) => s.kind === 'take').every((s) => Object.keys(s.expect).length > 0)).toBe(true)
   })
@@ -38,8 +38,8 @@ describe('the step table', () => {
   it('describes each setup in words', () => {
     expect(describeSetup(step(3), { ga: 'American' })).toBe('Profile US · South · sharing on · target American')
     expect(describeSetup(step(4))).toBe('Profile GB · Scotland · sharing on · normal voice')
-    expect(describeSetup(step(9), { ga: 'American' })).toBe('Profile GB · sharing off · target American')
-    expect(describeSetup(step(10))).toMatch(/earlier steps/)
+    expect(describeSetup(step(10), { ga: 'American' })).toBe('Profile GB · sharing off · target American')
+    expect(describeSetup(step(11))).toMatch(/earlier steps/)
   })
 })
 
@@ -77,7 +77,7 @@ describe('steps 1 to 4: labels and routing', () => {
   })
 })
 
-describe('steps 5 to 9', () => {
+describe('steps 5 to 10', () => {
   it('step 5 passes only when silence is refused with a retake notice', async () => {
     const refused = retakeOutcome({ reason: 'silent', quality: { foundSpeech: false, snrDb: 0 } })
     expect(refused).toMatchObject({ kept: false, reason: 'no speech', retake_notice: true, scored: false })
@@ -90,38 +90,62 @@ describe('steps 5 to 9', () => {
     const wrong = await run(6, saying('banana'))
     expect(wrong).toMatchObject({ kept: false, scored: true })
     expect(wrong.failed_checks).toContain('matched')
-    expect(wrong.reason).toMatch(/target sounds matched/)
+    expect(wrong.reason).toMatch(/recognisably the target word/)
     expect(evaluateStep(step(6), wrong).status).toBe('pass')
     expect(evaluateStep(step(6), await run(6, saying('water'))).status).toBe('fail')
   })
 
-  it('step 7 passes only when the first sound heard is F', async () => {
-    expect(evaluateStep(step(7), await run(7, saying('fish'))).status).toBe('pass')
+  it('step 7 keeps a strong accent that step 6 would not confuse with another word', async () => {
+    const heavy = (phonemes) => ({ ...saying('water'), phonemes })
+    // Non-rhotic, flapped, a different vowel: half the sounds are still heard as written.
+    for (const phonemes of [['W', 'AA1', 'T', 'AH0'], ['V', 'AO1', 'T', 'AH0'], ['W', 'AH1', 'T'], ['W', 'AO1', 'D', 'AH0']]) {
+      const outcome = await run(7, heavy(phonemes))
+      expect(outcome).toMatchObject({ kept: true, kind: 'attempt', joins: ['GB>ga'] })
+      expect(evaluateStep(step(7), outcome).status).toBe('pass')
+    }
+    // The measured limit: with only one sound in four as written, the take is dropped.
+    const tooFar = await run(7, heavy(['W', 'AA1', 'D', 'AH0']))
+    expect(tooFar).toMatchObject({ kept: false, failed_checks: ['matched'] })
+    expect(evaluateStep(step(7), tooFar).status).toBe('fail')
+    // And the same rule still refuses a different word.
+    expect((await run(7, saying('banana'))).kept).toBe(false)
+  })
+
+  it('a normal-voice reading in a strong accent is kept without any dictionary match', async () => {
+    const unlike = { ...saying(step(4).word, 'rp'), phonemes: Array.from({ length: 18 }, (_, i) => (i % 2 ? 'AH0' : 'K')) }
+    const outcome = await run(4, unlike)
+    expect(outcome).toMatchObject({ kept: true, natural_voice: true, joins: ['GB', 'GB-SCT'] })
+    const tooShort = await run(4, { ...unlike, phonemes: ['DH', 'AH0', 'W'] })
+    expect(tooShort).toMatchObject({ kept: false, failed_checks: ['length'] })
+  })
+
+  it('step 8 passes only when the first sound heard is F', async () => {
+    expect(evaluateStep(step(8), await run(8, saying('fish'))).status).toBe('pass')
     const clipped = { ...saying('fish'), phonemes: ['IH1', 'SH'] }
-    const evaluation = evaluateStep(step(7), await run(7, clipped))
+    const evaluation = evaluateStep(step(8), await run(8, clipped))
     expect(evaluation.status).toBe('fail')
     expect(evaluation.rows).toEqual([{ label: 'first sound heard', expected: 'F', actual: 'IH', pass: false }])
   })
 
-  it('step 8 reports and never judges', async () => {
-    const kept = evaluateStep(step(8), await run(8, spoken(8)))
+  it('step 9 reports and never judges', async () => {
+    const kept = evaluateStep(step(9), await run(9, spoken(9)))
     expect(kept.status).toBe('info')
     expect(kept.rows.map((row) => [row.label, row.actual])).toEqual([
       ['signal-to-noise (dB)', '38.2'], ['kept', 'yes'], ['reason not kept', 'none'], ['retake notice shown', 'no'],
     ])
-    const refused = evaluateStep(step(8), retakeOutcome({ reason: 'noisy', quality: { ...quality, snrDb: 6.5 } }))
+    const refused = evaluateStep(step(9), retakeOutcome({ reason: 'noisy', quality: { ...quality, snrDb: 6.5 } }))
     expect(refused.status).toBe('info')
     expect(refused.rows.map((row) => row.actual)).toEqual(['6.5', 'no', 'too noisy to score', 'yes'])
   })
 
-  it('step 9 passes when the take is scored and nothing is stored', async () => {
+  it('step 10 passes when the take is scored and nothing is stored', async () => {
     const store = createMemoryStore()
-    const outcome = await run(9, spoken(9), store)
+    const outcome = await run(10, spoken(10), store)
     expect(outcome).toMatchObject({ scored: true, kept: false, stored_added: 0, reason: '"Help it learn" is off' })
     expect(outcome.score).toBeGreaterThan(8)
     expect(store.all()).toEqual([])
-    expect(evaluateStep(step(9), outcome).status).toBe('pass')
-    expect(evaluateStep(step(9), { ...outcome, kept: true, stored_added: 1, reason: null }).status).toBe('fail')
+    expect(evaluateStep(step(10), outcome).status).toBe('pass')
+    expect(evaluateStep(step(10), { ...outcome, kept: true, stored_added: 1, reason: null }).status).toBe('fail')
   })
 })
 
@@ -139,7 +163,7 @@ describe('the sandbox store', () => {
   })
 })
 
-describe('step 10: the export', () => {
+describe('the last step: the export', () => {
   const session = async () => {
     const store = createMemoryStore()
     const kept = {}
@@ -209,10 +233,10 @@ describe('formatResults', () => {
       const outcome = await run(id, spoken(id), store)
       results[id] = { outcome, evaluation: evaluateStep(step(id), outcome) }
     }
-    const clipped = await run(7, { ...saying('fish'), phonemes: ['IH1', 'SH'] }, store)
-    results[7] = { outcome: clipped, evaluation: evaluateStep(step(7), clipped) }
+    const clipped = await run(8, { ...saying('fish'), phonemes: ['IH1', 'SH'] }, store)
+    results[8] = { outcome: clipped, evaluation: evaluateStep(step(8), clipped) }
     const noisy = retakeOutcome({ reason: 'noisy', quality: { ...quality, snrDb: 6.5 } })
-    results[8] = { outcome: noisy, evaluation: evaluateStep(step(8), noisy) }
+    results[9] = { outcome: noisy, evaluation: evaluateStep(step(9), noisy) }
 
     const text = formatResults(results, { modelVersion: MODEL, when: new Date('2026-10-08T12:00:00Z') })
     const lines = text.split('\n')
@@ -220,11 +244,11 @@ describe('formatResults', () => {
     expect(lines).toContain(' 1. PASS    From Britain, practising American')
     expect(lines).toContain('      ✓ joins totals: expected GB>ga, got GB>ga')
     expect(lines).toContain(' 2. SKIPPED From Britain, practising British')
-    expect(lines).toContain(' 7. FAIL    A soft first sound')
+    expect(lines).toContain(' 8. FAIL    A soft first sound')
     expect(lines).toContain('      ✕ first sound heard: expected F, got IH')
-    expect(lines).toContain(' 8. INFO    A noisy room')
+    expect(lines).toContain(' 9. INFO    A noisy room')
     expect(lines).toContain('        signal-to-noise (dB): expected not judged, got 6.5')
     expect(lines.some((line) => line.includes('heard B EH1 T ER0 · score'))).toBe(true)
-    expect(lines.at(-1)).toBe('Passed 2, failed 1, informational 1, skipped 6.')
+    expect(lines.at(-1)).toBe('Passed 2, failed 1, informational 1, skipped 7.')
   })
 })

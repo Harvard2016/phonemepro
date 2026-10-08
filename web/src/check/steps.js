@@ -58,29 +58,35 @@ export const STEPS = [
   {
     id: 6, kind: 'take', title: 'The wrong word',
     profile: { country: 'GB', region: null, contribute: true }, accent: 'ga', word: 'water',
-    say: 'Say “banana”', how: 'The target word is “water”. Say “banana” instead, clearly.',
+    say: 'Say “banana”', how: 'The target word is “water”. Say “banana” instead, clearly. A different word must not be kept.',
     expect: { kept: false, failed_includes: 'matched' },
   },
   {
-    id: 7, kind: 'take', title: 'A soft first sound',
+    id: 7, kind: 'take', title: 'A strong accent',
+    profile: { country: 'GB', region: null, contribute: true }, accent: 'ga', word: 'water',
+    say: 'Say “water” in a strong accent', how: 'Put on a deliberately heavy accent of any kind. It is still “water”, so it should be kept.',
+    expect: { kept: true, kind: 'attempt', joins: ['GB>ga'] },
+  },
+  {
+    id: 8, kind: 'take', title: 'A soft first sound',
     profile: { country: 'GB', region: null, contribute: true }, accent: 'ga', word: 'fish',
     say: 'Say “fish”', how: 'Start speaking the moment you press space. The first sound must survive.',
     expect: { first_sound: 'F' },
   },
   {
-    id: 8, kind: 'info', title: 'A noisy room',
+    id: 9, kind: 'info', title: 'A noisy room',
     profile: { country: 'GB', region: null, contribute: true }, accent: 'ga', word: 'water',
     say: 'Say “water” over noise', how: 'Play music or run a fan nearby, then say it. Nothing here passes or fails.',
     report: ['snr_db', 'kept', 'reason', 'retake_notice'],
   },
   {
-    id: 9, kind: 'take', title: 'Sharing switched off',
+    id: 10, kind: 'take', title: 'Sharing switched off',
     profile: { country: 'GB', region: null, contribute: false }, accent: 'ga', word: 'water',
     say: 'Say “water”', how: 'Once, clearly. It should be scored and nothing should be kept.',
     expect: { scored: true, kept: false, reason: SHARING_OFF, stored_added: 0 },
   },
   {
-    id: 10, kind: 'export', title: 'What an export would contain',
+    id: 11, kind: 'export', title: 'What an export would contain',
     say: 'No recording', how: 'Checks everything kept during this session against the ingest rules.',
   },
 ]
@@ -164,7 +170,7 @@ export function refusalOf(take, modelVersion) {
   return null
 }
 
-// Step 10. Export everything the session kept, read it back as ingest would, and confirm each
+// The last step. Export everything the session kept, read it back as ingest would, and confirm each
 // take from steps 1 to 4 is routed the way the table predicted.
 // `kept` maps a step id to the id of the take that step stored.
 export function checkExport(takes, kept, modelVersion) {
@@ -183,7 +189,7 @@ export function checkExport(takes, kept, modelVersion) {
     { label: 'takes ingest would refuse', expected: 'none', actual: show(refusals), pass: refusals.length === 0 },
     { label: 'audio in the export', expected: 'none', actual: show(audioKeys), pass: audioKeys.length === 0 },
   ]
-  const routed = STEPS.filter((step) => step.expect?.joins)
+  const routed = STEPS.filter((step) => step.expect?.joins && 'natural_voice' in step.expect)
   for (const step of routed) {
     const take = exported.find((candidate) => candidate.id === kept[step.id])
     rows.push({

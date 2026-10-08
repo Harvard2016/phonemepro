@@ -3,7 +3,6 @@
 // gives more of the speaker's own accent. They are ordinary sentences built from
 // words that differ between accents (weather, bath, car, water).
 import { textEntry } from './lexicon'
-import { scoreAttempt } from './scoring'
 
 export const SENTENCES = [
   'the weather is very cold today',
@@ -13,14 +12,10 @@ export const SENTENCES = [
   'i park the car near the water',
 ]
 
-// How much of the sentence was attempted and matched, against whichever dictionary fits the
-// speaker best. Nobody is being scored here: the dictionaries only tell whether this sentence
-// was read at all. Returns { soundsAttempted, soundsMatched }, each 0..100.
-export function readingOf(lexicon, sentence, heard) {
-  const metrics = Object.keys(lexicon.accents).map((accent) =>
-    scoreAttempt(textEntry(lexicon, sentence, accent).phonemes, heard.phonemes, heard.confidence, heard.margin).metrics)
-  return {
-    soundsAttempted: Math.max(...metrics.map((m) => m.completeness)),
-    soundsMatched: Math.max(...metrics.map((m) => m.accuracy)),
-  }
+// The fewest and most sounds the sentence has across the accent dictionaries. A reading is
+// only checked for being about this long: it is never compared with a dictionary, because
+// a strong accent is exactly what these takes are for.
+export function targetSounds(lexicon, sentence) {
+  const counts = Object.keys(lexicon.accents).map((accent) => textEntry(lexicon, sentence, accent).phonemes.length)
+  return [Math.min(...counts), Math.max(...counts)]
 }

@@ -1,0 +1,1490 @@
+[
+ {
+  "note": "exact",
+  "target": [
+   "W",
+   "AO1",
+   "T",
+   "ER0"
+  ],
+  "heard": [
+   "W",
+   "AO1",
+   "T",
+   "ER0"
+  ],
+  "expected": 100
+ },
+ {
+  "note": "stress ignored",
+  "target": [
+   "W",
+   "AO1",
+   "T",
+   "ER0"
+  ],
+  "heard": [
+   "W",
+   "AO0",
+   "T",
+   "ER1"
+  ],
+  "expected": 100
+ },
+ {
+  "note": "non-rhotic: vowel for vowel",
+  "target": [
+   "W",
+   "AO1",
+   "T",
+   "ER0"
+  ],
+  "heard": [
+   "W",
+   "AO1",
+   "T",
+   "AH0"
+  ],
+  "expected": 100
+ },
+ {
+  "note": "flapped t heard as d",
+  "target": [
+   "W",
+   "AO1",
+   "T",
+   "ER0"
+  ],
+  "heard": [
+   "W",
+   "AA1",
+   "D",
+   "ER0"
+  ],
+  "expected": 100
+ },
+ {
+  "note": "think as tink",
+  "target": [
+   "TH",
+   "IH1",
+   "NG",
+   "K"
+  ],
+  "heard": [
+   "T",
+   "IH1",
+   "NG",
+   "K"
+  ],
+  "expected": 100
+ },
+ {
+  "note": "think as sink",
+  "target": [
+   "TH",
+   "IH1",
+   "NG",
+   "K"
+  ],
+  "heard": [
+   "S",
+   "IY1",
+   "N",
+   "K"
+  ],
+  "expected": 100
+ },
+ {
+  "note": "think as fink",
+  "target": [
+   "TH",
+   "IH1",
+   "NG",
+   "K"
+  ],
+  "heard": [
+   "F",
+   "IH1",
+   "NG",
+   "K"
+  ],
+  "expected": 100
+ },
+ {
+  "note": "this as dis",
+  "target": [
+   "DH",
+   "IH1",
+   "S"
+  ],
+  "heard": [
+   "D",
+   "IY1",
+   "S"
+  ],
+  "expected": 100
+ },
+ {
+  "note": "this as zis",
+  "target": [
+   "DH",
+   "IH1",
+   "S"
+  ],
+  "heard": [
+   "Z",
+   "IH1",
+   "Z"
+  ],
+  "expected": 100
+ },
+ {
+  "note": "very as wery",
+  "target": [
+   "V",
+   "EH1",
+   "R",
+   "IY0"
+  ],
+  "heard": [
+   "W",
+   "EH1",
+   "R",
+   "IY0"
+  ],
+  "expected": 100
+ },
+ {
+  "note": "right as light",
+  "target": [
+   "R",
+   "AY1",
+   "T"
+  ],
+  "heard": [
+   "L",
+   "AY1",
+   "T"
+  ],
+  "expected": 100
+ },
+ {
+  "note": "ship as sip",
+  "target": [
+   "SH",
+   "IH1",
+   "P"
+  ],
+  "heard": [
+   "S",
+   "IY1",
+   "B"
+  ],
+  "expected": 100
+ },
+ {
+  "note": "chair as share",
+  "target": [
+   "CH",
+   "EH1",
+   "R"
+  ],
+  "heard": [
+   "SH",
+   "EH1",
+   "R"
+  ],
+  "expected": 100
+ },
+ {
+  "note": "sing as sin",
+  "target": [
+   "S",
+   "IH1",
+   "NG"
+  ],
+  "heard": [
+   "S",
+   "IH1",
+   "N"
+  ],
+  "expected": 100
+ },
+ {
+  "note": "dog as dok",
+  "target": [
+   "D",
+   "AO1",
+   "G"
+  ],
+  "heard": [
+   "D",
+   "AO1",
+   "K"
+  ],
+  "expected": 100
+ },
+ {
+  "note": "dropped final sound",
+  "target": [
+   "W",
+   "AO1",
+   "T",
+   "ER0"
+  ],
+  "heard": [
+   "W",
+   "AH1",
+   "T"
+  ],
+  "expected": 75
+ },
+ {
+  "note": "extra sounds do not count against",
+  "target": [
+   "W",
+   "AO1",
+   "T",
+   "ER0"
+  ],
+  "heard": [
+   "AH0",
+   "W",
+   "AO1",
+   "T",
+   "ER0",
+   "F"
+  ],
+  "expected": 100
+ },
+ {
+  "note": "wrong word: banana for water",
+  "target": [
+   "W",
+   "AO1",
+   "T",
+   "ER0"
+  ],
+  "heard": [
+   "B",
+   "AH0",
+   "N",
+   "AE1",
+   "N",
+   "AH0"
+  ],
+  "expected": 50
+ },
+ {
+  "note": "wrong word: fish for water",
+  "target": [
+   "W",
+   "AO1",
+   "T",
+   "ER0"
+  ],
+  "heard": [
+   "F",
+   "IH1",
+   "SH"
+  ],
+  "expected": 0
+ },
+ {
+  "note": "wrong word: hello for water",
+  "target": [
+   "W",
+   "AO1",
+   "T",
+   "ER0"
+  ],
+  "heard": [
+   "HH",
+   "AH0",
+   "L",
+   "OW1"
+  ],
+  "expected": 50
+ },
+ {
+  "note": "wrong word: butter for water",
+  "target": [
+   "W",
+   "AO1",
+   "T",
+   "ER0"
+  ],
+  "heard": [
+   "B",
+   "AH1",
+   "T",
+   "ER0"
+  ],
+  "expected": 75
+ },
+ {
+  "note": "consonant for vowel",
+  "target": [
+   "K",
+   "AE1",
+   "T"
+  ],
+  "heard": [
+   "K",
+   "T",
+   "T"
+  ],
+  "expected": 67
+ },
+ {
+  "note": "unrelated consonants",
+  "target": [
+   "K",
+   "AE1",
+   "T"
+  ],
+  "heard": [
+   "M",
+   "AE1",
+   "L"
+  ],
+  "expected": 33
+ },
+ {
+  "note": "the model cannot hear ZH",
+  "target": [
+   "V",
+   "IH1",
+   "ZH",
+   "AH0",
+   "N"
+  ],
+  "heard": [
+   "V",
+   "IH1",
+   "JH",
+   "AH0",
+   "N"
+  ],
+  "expected": 100
+ },
+ {
+  "note": "the model cannot hear ZH, dropped",
+  "target": [
+   "V",
+   "IH1",
+   "ZH",
+   "AH0",
+   "N"
+  ],
+  "heard": [
+   "V",
+   "IH1",
+   "AH0",
+   "N"
+  ],
+  "expected": 100
+ },
+ {
+  "note": "nothing heard",
+  "target": [
+   "K",
+   "AE1",
+   "T"
+  ],
+  "heard": [],
+  "expected": 0
+ },
+ {
+  "note": "no target",
+  "target": [],
+  "heard": [
+   "K"
+  ],
+  "expected": 0
+ },
+ {
+  "note": "groups are not chained: P is not T",
+  "target": [
+   "P",
+   "AE1",
+   "T"
+  ],
+  "heard": [
+   "T",
+   "AE1",
+   "P"
+  ],
+  "expected": 33
+ },
+ {
+  "note": "a group works both ways",
+  "target": [
+   "T",
+   "IH1",
+   "N"
+  ],
+  "heard": [
+   "TH",
+   "IH1",
+   "N"
+  ],
+  "expected": 100
+ },
+ {
+  "note": "rounding of a third",
+  "target": [
+   "K",
+   "AE1",
+   "T"
+  ],
+  "heard": [
+   "K",
+   "L",
+   "L"
+  ],
+  "expected": 33
+ },
+ {
+  "note": "rounding of two thirds",
+  "target": [
+   "K",
+   "AE1",
+   "T"
+  ],
+  "heard": [
+   "K",
+   "AE1",
+   "L"
+  ],
+  "expected": 67
+ },
+ {
+  "note": "random 0",
+  "target": [
+   "Z",
+   "ZH",
+   "NG",
+   "HH"
+  ],
+  "heard": [
+   "IH0",
+   "DH",
+   "NG",
+   "HH"
+  ],
+  "expected": 75
+ },
+ {
+  "note": "random 1",
+  "target": [
+   "W",
+   "TH",
+   "ZH",
+   "D",
+   "AA1",
+   "AE1"
+  ],
+  "heard": [
+   "W",
+   "ZH",
+   "Z",
+   "V"
+  ],
+  "expected": 33
+ },
+ {
+  "note": "random 2",
+  "target": [
+   "N",
+   "Z",
+   "K",
+   "DH",
+   "Z"
+  ],
+  "heard": [
+   "N",
+   "Z",
+   "DH",
+   "R",
+   "D"
+  ],
+  "expected": 60
+ },
+ {
+  "note": "random 3",
+  "target": [
+   "T",
+   "G"
+  ],
+  "heard": [],
+  "expected": 0
+ },
+ {
+  "note": "random 4",
+  "target": [
+   "W",
+   "TH",
+   "SH",
+   "P",
+   "F",
+   "OY1",
+   "F",
+   "ZH"
+  ],
+  "heard": [
+   "W",
+   "TH",
+   "IY0",
+   "TH",
+   "AE1",
+   "N",
+   "F",
+   "ZH"
+  ],
+  "expected": 62
+ },
+ {
+  "note": "random 5",
+  "target": [
+   "M",
+   "IH0",
+   "DH"
+  ],
+  "heard": [
+   "M",
+   "V",
+   "IH0",
+   "D"
+  ],
+  "expected": 100
+ },
+ {
+  "note": "random 6",
+  "target": [
+   "CH"
+  ],
+  "heard": [
+   "R",
+   "DH"
+  ],
+  "expected": 0
+ },
+ {
+  "note": "random 7",
+  "target": [
+   "B",
+   "AA1"
+  ],
+  "heard": [
+   "AA1",
+   "S"
+  ],
+  "expected": 0
+ },
+ {
+  "note": "random 8",
+  "target": [
+   "UW1",
+   "T",
+   "Y"
+  ],
+  "heard": [
+   "UW1",
+   "HH",
+   "T",
+   "DH"
+  ],
+  "expected": 67
+ },
+ {
+  "note": "random 9",
+  "target": [
+   "IY0",
+   "B",
+   "M",
+   "Y"
+  ],
+  "heard": [
+   "M",
+   "P",
+   "M",
+   "T"
+  ],
+  "expected": 50
+ },
+ {
+  "note": "random 10",
+  "target": [
+   "D",
+   "IY0",
+   "AA1",
+   "L",
+   "M"
+  ],
+  "heard": [
+   "D",
+   "S",
+   "AA1",
+   "ER0",
+   "M",
+   "T"
+  ],
+  "expected": 60
+ },
+ {
+  "note": "random 11",
+  "target": [
+   "JH",
+   "N",
+   "P",
+   "AA1",
+   "R",
+   "V",
+   "DH",
+   "HH"
+  ],
+  "heard": [
+   "JH",
+   "N",
+   "P",
+   "AA1",
+   "R",
+   "V",
+   "NG",
+   "HH"
+  ],
+  "expected": 88
+ },
+ {
+  "note": "random 12",
+  "target": [
+   "OY1",
+   "T",
+   "NG",
+   "AH0",
+   "W"
+  ],
+  "heard": [
+   "R",
+   "NG",
+   "HH",
+   "W"
+  ],
+  "expected": 60
+ },
+ {
+  "note": "random 13",
+  "target": [
+   "R",
+   "K",
+   "D",
+   "ER0"
+  ],
+  "heard": [
+   "JH",
+   "K",
+   "D",
+   "ER0"
+  ],
+  "expected": 75
+ },
+ {
+  "note": "random 14",
+  "target": [
+   "V",
+   "HH",
+   "B"
+  ],
+  "heard": [
+   "T",
+   "HH",
+   "D"
+  ],
+  "expected": 33
+ },
+ {
+  "note": "random 15",
+  "target": [
+   "SH",
+   "IH0",
+   "N",
+   "G",
+   "JH"
+  ],
+  "heard": [
+   "Z",
+   "N",
+   "B",
+   "IH0",
+   "CH"
+  ],
+  "expected": 40
+ },
+ {
+  "note": "random 16",
+  "target": [
+   "HH",
+   "P",
+   "ER0",
+   "R",
+   "CH"
+  ],
+  "heard": [
+   "HH",
+   "UW1",
+   "V",
+   "K",
+   "CH"
+  ],
+  "expected": 40
+ },
+ {
+  "note": "random 17",
+  "target": [
+   "ER0",
+   "ER0",
+   "Y",
+   "HH",
+   "IH0"
+  ],
+  "heard": [
+   "ER0",
+   "DH",
+   "HH",
+   "Z",
+   "IH0"
+  ],
+  "expected": 40
+ },
+ {
+  "note": "random 18",
+  "target": [
+   "B",
+   "NG",
+   "UW1",
+   "D",
+   "CH",
+   "V",
+   "AH0",
+   "P"
+  ],
+  "heard": [
+   "UW1",
+   "NG",
+   "UW1",
+   "CH",
+   "SH",
+   "TH",
+   "V",
+   "AH0",
+   "TH"
+  ],
+  "expected": 50
+ },
+ {
+  "note": "random 19",
+  "target": [
+   "AE1",
+   "AE1",
+   "N",
+   "SH",
+   "ZH"
+  ],
+  "heard": [
+   "Y",
+   "Z",
+   "AE1",
+   "N",
+   "ER0",
+   "NG",
+   "HH"
+  ],
+  "expected": 60
+ },
+ {
+  "note": "random 20",
+  "target": [
+   "Y",
+   "L",
+   "Z",
+   "CH"
+  ],
+  "heard": [
+   "F",
+   "NG"
+  ],
+  "expected": 25
+ },
+ {
+  "note": "random 21",
+  "target": [
+   "D"
+  ],
+  "heard": [
+   "G",
+   "NG",
+   "AE1"
+  ],
+  "expected": 0
+ },
+ {
+  "note": "random 22",
+  "target": [
+   "IH0",
+   "G",
+   "SH"
+  ],
+  "heard": [
+   "IH0",
+   "SH"
+  ],
+  "expected": 67
+ },
+ {
+  "note": "random 23",
+  "target": [
+   "UW1",
+   "IY0"
+  ],
+  "heard": [
+   "AH0",
+   "IY0"
+  ],
+  "expected": 100
+ },
+ {
+  "note": "random 24",
+  "target": [
+   "D",
+   "AE1",
+   "IY0",
+   "R",
+   "ZH",
+   "AA1",
+   "T"
+  ],
+  "heard": [
+   "D",
+   "W",
+   "DH",
+   "R",
+   "ZH",
+   "UW1",
+   "T"
+  ],
+  "expected": 71
+ },
+ {
+  "note": "random 25",
+  "target": [
+   "CH",
+   "K"
+  ],
+  "heard": [
+   "K",
+   "IH0"
+  ],
+  "expected": 0
+ },
+ {
+  "note": "random 26",
+  "target": [
+   "R",
+   "R",
+   "D",
+   "NG",
+   "Z",
+   "NG",
+   "V"
+  ],
+  "heard": [
+   "S",
+   "AE1",
+   "AE1",
+   "UW1",
+   "ER0",
+   "NG",
+   "V"
+  ],
+  "expected": 29
+ },
+ {
+  "note": "random 27",
+  "target": [
+   "K",
+   "HH",
+   "TH",
+   "B"
+  ],
+  "heard": [
+   "K",
+   "TH",
+   "B"
+  ],
+  "expected": 75
+ },
+ {
+  "note": "random 28",
+  "target": [
+   "ZH",
+   "HH",
+   "SH",
+   "Z"
+  ],
+  "heard": [
+   "ZH",
+   "HH",
+   "T",
+   "Z"
+  ],
+  "expected": 75
+ },
+ {
+  "note": "random 29",
+  "target": [
+   "Z",
+   "HH",
+   "V",
+   "N",
+   "IY0"
+  ],
+  "heard": [
+   "Z",
+   "T",
+   "HH",
+   "N",
+   "IY0"
+  ],
+  "expected": 60
+ },
+ {
+  "note": "random 30",
+  "target": [
+   "IY0",
+   "T",
+   "OY1",
+   "IH0",
+   "V",
+   "AH0",
+   "Z",
+   "ER0"
+  ],
+  "heard": [
+   "IY0",
+   "T",
+   "OY1",
+   "IH0",
+   "L",
+   "AH0",
+   "Z",
+   "T"
+  ],
+  "expected": 75
+ },
+ {
+  "note": "random 31",
+  "target": [
+   "UW1",
+   "AA1",
+   "CH",
+   "IY0",
+   "SH",
+   "Z",
+   "JH",
+   "NG"
+  ],
+  "heard": [
+   "M",
+   "IH0",
+   "CH",
+   "IY0",
+   "DH",
+   "Z",
+   "JH",
+   "TH"
+  ],
+  "expected": 62
+ },
+ {
+  "note": "random 32",
+  "target": [
+   "HH"
+  ],
+  "heard": [],
+  "expected": 0
+ },
+ {
+  "note": "random 33",
+  "target": [
+   "F",
+   "AA1",
+   "D",
+   "W",
+   "N",
+   "AE1",
+   "NG"
+  ],
+  "heard": [
+   "DH",
+   "AA1",
+   "D",
+   "W",
+   "R",
+   "AE1",
+   "NG",
+   "ER0"
+  ],
+  "expected": 71
+ },
+ {
+  "note": "random 34",
+  "target": [
+   "K",
+   "G",
+   "AA1",
+   "R",
+   "N",
+   "IY0"
+  ],
+  "heard": [
+   "K",
+   "UW1",
+   "T",
+   "R",
+   "TH",
+   "IY0"
+  ],
+  "expected": 50
+ },
+ {
+  "note": "random 35",
+  "target": [
+   "V",
+   "CH",
+   "R",
+   "R",
+   "AA1",
+   "S"
+  ],
+  "heard": [
+   "V",
+   "CH",
+   "NG",
+   "R",
+   "ZH",
+   "R",
+   "D",
+   "S"
+  ],
+  "expected": 83
+ },
+ {
+  "note": "random 36",
+  "target": [
+   "Y",
+   "F",
+   "CH",
+   "P",
+   "NG",
+   "T",
+   "T",
+   "TH"
+  ],
+  "heard": [
+   "L",
+   "CH",
+   "CH",
+   "SH",
+   "ER0",
+   "T",
+   "SH",
+   "AA1"
+  ],
+  "expected": 25
+ },
+ {
+  "note": "random 37",
+  "target": [
+   "ER0"
+  ],
+  "heard": [
+   "NG"
+  ],
+  "expected": 0
+ },
+ {
+  "note": "random 38",
+  "target": [
+   "AH0",
+   "JH",
+   "G"
+  ],
+  "heard": [
+   "K",
+   "AH0",
+   "M"
+  ],
+  "expected": 0
+ },
+ {
+  "note": "random 39",
+  "target": [
+   "V",
+   "DH"
+  ],
+  "heard": [
+   "N"
+  ],
+  "expected": 0
+ },
+ {
+  "note": "random 40",
+  "target": [
+   "IY0",
+   "V",
+   "AE1"
+  ],
+  "heard": [
+   "P",
+   "P",
+   "AH0"
+  ],
+  "expected": 33
+ },
+ {
+  "note": "random 41",
+  "target": [
+   "CH",
+   "R",
+   "SH",
+   "SH",
+   "D",
+   "V"
+  ],
+  "heard": [
+   "CH",
+   "UW1",
+   "OY1",
+   "ER0",
+   "OY1",
+   "V"
+  ],
+  "expected": 33
+ },
+ {
+  "note": "random 42",
+  "target": [
+   "S",
+   "SH",
+   "N"
+  ],
+  "heard": [
+   "S",
+   "UW1",
+   "HH",
+   "N"
+  ],
+  "expected": 67
+ },
+ {
+  "note": "random 43",
+  "target": [
+   "AA1",
+   "HH",
+   "DH",
+   "S",
+   "AH0"
+  ],
+  "heard": [
+   "M",
+   "SH",
+   "DH",
+   "S",
+   "AH0"
+  ],
+  "expected": 60
+ },
+ {
+  "note": "random 44",
+  "target": [
+   "P",
+   "N",
+   "P",
+   "T"
+  ],
+  "heard": [
+   "OY1",
+   "N",
+   "N",
+   "T"
+  ],
+  "expected": 50
+ },
+ {
+  "note": "random 45",
+  "target": [
+   "DH"
+  ],
+  "heard": [
+   "R"
+  ],
+  "expected": 0
+ },
+ {
+  "note": "random 46",
+  "target": [
+   "S",
+   "S",
+   "IH0",
+   "AH0"
+  ],
+  "heard": [
+   "AH0",
+   "S"
+  ],
+  "expected": 25
+ },
+ {
+  "note": "random 47",
+  "target": [
+   "IH0",
+   "K"
+  ],
+  "heard": [
+   "W",
+   "K",
+   "SH"
+  ],
+  "expected": 50
+ },
+ {
+  "note": "random 48",
+  "target": [
+   "CH",
+   "G",
+   "IY0"
+  ],
+  "heard": [
+   "CH",
+   "D",
+   "HH",
+   "IY0",
+   "B"
+  ],
+  "expected": 67
+ },
+ {
+  "note": "random 49",
+  "target": [
+   "R",
+   "Z",
+   "R",
+   "F",
+   "Z",
+   "F"
+  ],
+  "heard": [
+   "R",
+   "TH",
+   "Z",
+   "R",
+   "R",
+   "L",
+   "F"
+  ],
+  "expected": 67
+ },
+ {
+  "note": "random 50",
+  "target": [
+   "ZH",
+   "Z",
+   "T",
+   "K",
+   "T",
+   "K",
+   "TH",
+   "L"
+  ],
+  "heard": [
+   "ZH",
+   "NG",
+   "B",
+   "K",
+   "N",
+   "T",
+   "S",
+   "NG"
+  ],
+  "expected": 38
+ },
+ {
+  "note": "random 51",
+  "target": [
+   "T",
+   "L",
+   "CH",
+   "V",
+   "SH",
+   "AH0",
+   "K"
+  ],
+  "heard": [
+   "CH",
+   "P",
+   "SH",
+   "R",
+   "JH"
+  ],
+  "expected": 29
+ },
+ {
+  "note": "random 52",
+  "target": [
+   "AH0",
+   "G",
+   "B"
+  ],
+  "heard": [
+   "AH0",
+   "B"
+  ],
+  "expected": 67
+ },
+ {
+  "note": "random 53",
+  "target": [
+   "ZH",
+   "V",
+   "JH",
+   "IH0",
+   "Y",
+   "P",
+   "CH"
+  ],
+  "heard": [
+   "ZH",
+   "V",
+   "JH",
+   "SH",
+   "TH",
+   "IH0",
+   "V",
+   "P",
+   "CH"
+  ],
+  "expected": 86
+ },
+ {
+  "note": "random 54",
+  "target": [
+   "B",
+   "M",
+   "ER0",
+   "Y",
+   "K",
+   "P",
+   "SH"
+  ],
+  "heard": [
+   "W",
+   "V",
+   "Y",
+   "D",
+   "Y",
+   "K",
+   "P",
+   "SH"
+  ],
+  "expected": 57
+ },
+ {
+  "note": "random 55",
+  "target": [
+   "HH",
+   "SH",
+   "T",
+   "P",
+   "D",
+   "TH",
+   "TH"
+  ],
+  "heard": [
+   "Z",
+   "K",
+   "P",
+   "D",
+   "F"
+  ],
+  "expected": 57
+ },
+ {
+  "note": "random 56",
+  "target": [
+   "B"
+  ],
+  "heard": [
+   "IY0"
+  ],
+  "expected": 0
+ },
+ {
+  "note": "random 57",
+  "target": [
+   "IH0",
+   "R",
+   "TH",
+   "OY1",
+   "K",
+   "OY1",
+   "OY1",
+   "L"
+  ],
+  "heard": [
+   "IH0",
+   "D",
+   "K",
+   "OY1",
+   "OY1",
+   "ER0"
+  ],
+  "expected": 62
+ },
+ {
+  "note": "random 58",
+  "target": [
+   "JH"
+  ],
+  "heard": [
+   "IY0"
+  ],
+  "expected": 0
+ },
+ {
+  "note": "random 59",
+  "target": [
+   "JH",
+   "CH",
+   "IH0",
+   "N",
+   "UW1",
+   "B",
+   "P",
+   "JH"
+  ],
+  "heard": [
+   "JH",
+   "UW1",
+   "G",
+   "N",
+   "NG",
+   "UW1",
+   "B",
+   "P",
+   "D"
+  ],
+  "expected": 62
+ }
+]

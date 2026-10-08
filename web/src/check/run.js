@@ -2,8 +2,9 @@
 // against a sandbox store, and reports what happened in the terms the step table uses.
 import { considerTake, routeOf } from '../engine/contributions'
 import { textEntry } from '../engine/lexicon'
-import { readingOf } from '../engine/naturalVoice'
+import { targetSounds } from '../engine/naturalVoice'
 import { scoreAttempt, stripStress } from '../engine/scoring'
+import { soundsSameClass } from '../engine/soundMatch'
 
 const RETAKE_REASONS = { silent: 'no speech', noisy: 'too noisy to score', short: 'too short' }
 
@@ -29,21 +30,22 @@ export function retakeOutcome(detail = {}) {
 export async function settleTake({ step, lexicon, heard, quality, store, contributor }) {
   const profile = { seen: true, ...step.profile, contributor: step.profile.contribute ? contributor : null }
   let score = null
-  let metrics
+  let measures
   if (step.naturalVoice) {
-    metrics = readingOf(lexicon, step.word, heard)
+    measures = { targetSounds: targetSounds(lexicon, step.word) }
   } else {
-    const scored = scoreAttempt(textEntry(lexicon, step.word, step.accent).phonemes, heard.phonemes, heard.confidence, heard.margin, {
+    const target = textEntry(lexicon, step.word, step.accent).phonemes
+    const scored = scoreAttempt(target, heard.phonemes, heard.confidence, heard.margin, {
       nativeScore: heard.nativeScore ?? null, spans: heard.spans ?? null,
     })
     score = scored.score
-    metrics = { soundsAttempted: scored.metrics.completeness, soundsMatched: scored.metrics.accuracy }
+    measures = { soundsMatched: scored.metrics.accuracy, soundsSameClass: soundsSameClass(target, heard.phonemes) }
   }
 
   const before = store.all().length
   const decision = await considerTake({
     profile, targetAccent: step.accent, naturalVoice: Boolean(step.naturalVoice), word: step.word, score,
-    heard, quality, ...metrics, featureCount: heard.featureCount, store,
+    heard, quality, ...measures, featureCount: heard.featureCount, store,
   })
   const take = decision.contribution
   const route = take ? routeOf(take) : null
@@ -73,8 +75,9 @@ export async function settleTake({ step, lexicon, heard, quality, store, contrib
       `snr ${quality.snrDb} dB`,
       `clipped ${(quality.clipped * 100).toFixed(2)}%`,
       `confidence ${heard.confidence.toFixed(2)}`,
-      `attempted ${Math.round(metrics.soundsAttempted)}%`,
-      `matched ${Math.round(metrics.soundsMatched)}%`,
+      step.naturalVoice
+        ? `${heard.phonemes.length} sounds for a sentence of ${measures.targetSounds.join(' to ')}`
+        : `heard as written ${Math.round(measures.soundsMatched)}% · same class ${Math.round(measures.soundsSameClass)}%`,
     ].filter(Boolean).join(' · '),
   }
 }

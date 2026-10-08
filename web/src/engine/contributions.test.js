@@ -4,7 +4,7 @@ import {
   buildContribution, checkEligibility, checkViability, exportContributions, HOME_ACCENT, MAX_STORED, routeOf, VIABILITY,
 } from './contributions'
 import { textEntry } from './lexicon'
-import { readingOf, SENTENCES } from './naturalVoice'
+import { SENTENCES, targetSounds } from './naturalVoice'
 import { normalizeProfile } from './profile'
 import { countries, isCountryCode } from '../lib/countries'
 import { isRegion, regionName, REGIONS, regionsOf } from '../lib/regions'
@@ -17,7 +17,8 @@ const fixture = JSON.parse(
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
 const features = Array.from({ length: 256 }, (_, i) => Math.sin(i) * 1.23456789)
 const cleanQuality = { foundSpeech: true, speechSeconds: 0.62, snrDb: 31.4, clipped: 0 }
-const good = { quality: cleanQuality, confidence: 0.9, soundsAttempted: 100, soundsMatched: 100, features, featureCount: 256 }
+const good = { quality: cleanQuality, confidence: 0.9, soundsMatched: 100, features, featureCount: 256 }
+const goodVoice = { quality: cleanQuality, confidence: 0.9, naturalVoice: true, soundsHeard: 20, targetSounds: [19, 20], features, featureCount: 256 }
 const profile = { seen: true, country: 'GB', region: 'ENG_N', contribute: true, contributor: '3f2b8c1e-5a47-4d09-9b61-7e0c2a4d8f13' }
 
 const failed = (input) => checkViability({ ...good, ...input }).checks.filter((c) => !c.passed).map((c) => c.id)
@@ -26,7 +27,7 @@ describe('checkViability', () => {
   it('passes a clean, confident, complete take and explains every check', () => {
     const { viable, checks } = checkViability(good)
     expect(viable).toBe(true)
-    expect(checks.map((c) => c.id)).toEqual(['speech', 'snr', 'clipping', 'confidence', 'attempted', 'matched', 'features'])
+    expect(checks.map((c) => c.id)).toEqual(['speech', 'snr', 'clipping', 'confidence', 'matched', 'features'])
     expect(checks.every((c) => c.label && c.detail)).toBe(true)
   })
 
@@ -36,9 +37,9 @@ describe('checkViability', () => {
     expect(failed({ quality: { ...cleanQuality, snrDb: VIABILITY.minSnrDb - 0.1 } })).toEqual(['snr'])
     expect(failed({ quality: { ...cleanQuality, clipped: 0.01 } })).toEqual(['clipping'])
     expect(failed({ confidence: 0.3 })).toEqual(['confidence'])
-    expect(failed({ soundsAttempted: 50 })).toEqual(['attempted'])
-    // A different word: every sound "attempted" as a substitution, none matched.
-    expect(failed({ soundsAttempted: 100, soundsMatched: 0 })).toEqual(['matched'])
+    // A different word: nothing heard as written.
+    expect(failed({ soundsMatched: 0 })).toEqual(['matched'])
+    expect(failed({ soundsMatched: 25 })).toEqual(['matched'])
     expect(failed({ features: null })).toEqual(['features'])
     expect(failed({ features: features.slice(1) })).toEqual(['features'])
     expect(failed({ features: [NaN, ...features.slice(1)] })).toEqual(['features'])
@@ -51,9 +52,43 @@ describe('checkViability', () => {
       ...good,
       quality: { foundSpeech: true, speechSeconds: VIABILITY.minSpeechSeconds, snrDb: VIABILITY.minSnrDb, clipped: VIABILITY.maxClipped },
       confidence: VIABILITY.minConfidence,
-      soundsAttempted: VIABILITY.minSoundsAttempted,
       soundsMatched: VIABILITY.minSoundsMatched,
     }).viable).toBe(true)
+  })
+})
+
+describe('checkViability for a strong accent', () => {
+  it('keeps a practice take with only some sounds heard as written', () => {
+    // "water" heard as W AA D AH would be 25%; W AH T as 50%. The bar was measured, not guessed.
+    expect(VIABILITY.minSoundsMatched).toBe(30)
+    expect(checkViability({ ...good, soundsMatched: 50 }).viable).toBe(true)
+    expect(checkViability({ ...good, soundsMatched: 33 }).viable).toBe(true)
+  })
+})
+
+describe('checkViability in a normal voice', () => {
+  const failedVoice = (input) => checkViability({ ...goodVoice, ...input }).checks.filter((c) => !c.passed).map((c) => c.id)
+
+  it('never compares the reading with a dictionary', () => {
+    const { viable, checks } = checkViability(goodVoice)
+    expect(viable).toBe(true)
+    expect(checks.map((c) => c.id)).toEqual(['speech', 'snr', 'clipping', 'confidence', 'length', 'features'])
+    // Whatever was or was not "matched" is irrelevant.
+    expect(checkViability({ ...goodVoice, soundsMatched: 0 }).viable).toBe(true)
+  })
+
+  it('only asks that the reading is about as long as the sentence', () => {
+    expect(failedVoice({ soundsHeard: 10 })).toEqual([])
+    expect(failedVoice({ soundsHeard: 40 })).toEqual([])
+    expect(failedVoice({ soundsHeard: 9 })).toEqual(['length'])
+    expect(failedVoice({ soundsHeard: 41 })).toEqual(['length'])
+    expect(failedVoice({ soundsHeard: 0 })).toEqual(['length'])
+    expect(checkViability({ ...goodVoice, soundsHeard: 9 }).checks.find((c) => c.id === 'length').detail)
+      .toBe('9 sounds heard (needs 10 to 40)')
+  })
+
+  it('still needs clean, confident audio', () => {
+    expect(failedVoice({ quality: { ...cleanQuality, snrDb: 5 }, confidence: 0.2 })).toEqual(['snr', 'confidence'])
   })
 })
 
@@ -69,13 +104,15 @@ describe('checkEligibility', () => {
 describe('buildContribution', () => {
   const build = (changes = {}) => buildContribution({
     profile, targetAccent: 'rp', naturalVoice: false, word: 'water', score: 8.4, features,
-    quality: cleanQuality, confidence: 0.9123, soundsAttempted: 100, soundsMatched: 90, modelVersion: 'abc', ...changes,
+    quality: cleanQuality, confidence: 0.9123, soundsHeard: 4, soundsMatched: 75, soundsSameClass: 100, modelVersion: 'abc', ...changes,
   })
 
   it('has exactly the fields of an exported take, and no audio', () => {
     const take = build()
     expect(Object.keys(take)).toEqual(Object.keys(fixture.export.takes[0]))
     expect(Object.keys(take.quality)).toEqual(Object.keys(fixture.export.takes[0].quality))
+    expect(take.quality).toMatchObject({ sounds_heard: 4, sounds_matched: 75, sounds_same_class: 100 })
+    expect(build({ naturalVoice: true, soundsHeard: 20 }).quality).toMatchObject({ sounds_heard: 20, sounds_matched: null, sounds_same_class: null })
     expect(take.id).toMatch(UUID)
     expect(take.id).not.toBe(build().id)
     expect(take.features).toHaveLength(256)
@@ -181,7 +218,7 @@ describe('regions', () => {
   const american = { ...profile, country: 'US', region: null }
   const built = (who, targetAccent, naturalVoice = false) => buildContribution({
     profile: who, targetAccent, naturalVoice, word: 'better', score: 8, features,
-    quality: cleanQuality, confidence: 0.9, soundsAttempted: 100, soundsMatched: 100, modelVersion: 'abc',
+    quality: cleanQuality, confidence: 0.9, soundsHeard: 4, soundsMatched: 100, soundsSameClass: 100, modelVersion: 'abc',
   })
   const route = (...args) => routeOf(built(...args))
 
@@ -222,13 +259,13 @@ describe('normal-voice sentences', () => {
     }
   })
 
-  it('measures a reading against whichever dictionary fits best', () => {
-    const british = textEntry(lexicon, SENTENCES[4], 'rp').phonemes
-    const heard = { phonemes: british, confidence: 0.9, margin: 0.8 }
-    expect(readingOf(lexicon, SENTENCES[4], heard)).toEqual({ soundsAttempted: 100, soundsMatched: 100 })
-    expect(readingOf(lexicon, SENTENCES[4], { ...heard, phonemes: british.slice(0, 5) }).soundsAttempted).toBeLessThan(40)
-    // Reading a different sentence attempts plenty of sounds and matches few.
-    const other = { ...heard, phonemes: textEntry(lexicon, SENTENCES[1], 'rp').phonemes }
-    expect(readingOf(lexicon, SENTENCES[4], other).soundsMatched).toBeLessThan(50)
+  it('gives the range of lengths a sentence has across the dictionaries', () => {
+    for (const sentence of SENTENCES) {
+      const [fewest, most] = targetSounds(lexicon, sentence)
+      expect(fewest).toBeGreaterThan(10)
+      expect(most).toBeGreaterThanOrEqual(fewest)
+      expect(most - fewest).toBeLessThan(4)
+    }
+    expect(targetSounds(lexicon, SENTENCES[0])).toEqual([20, 20])
   })
 })

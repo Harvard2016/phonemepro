@@ -112,6 +112,43 @@ Limits of this measurement:
 - The cleanup steps were chosen on the same 120 utterances they are reported on.
 - An earlier run on 200 utterances with a different set of variants is kept in `Docs/model/capture_results_first_run.json`. Its clean error rate (22.9%) is not comparable with the 19.6% here because the utterance sets differ. It is the only run that tested a second person talking in the background, 12 dB quieter: 84.9% phoneme error raw, 77.5% after tight trimming. Nothing tried removes a second voice. The app does not yet detect one, so such a take is scored and scored badly.
 
+### Is a take the target word?
+
+A practice take is kept for learning only if it is recognisably the target word. The rule has to let a strong accent through and keep a different word out, and practice words are short, so there is little to go on. Three rules were measured on model transcriptions already on disk (`scripts/evaluate_match.py`, `Docs/model/match_threshold.json`): SpeechOcean762 words that annotators scored 5 out of 10 or lower, VCTK Scottish and Irish speakers against the American dictionary, and the same transcriptions scored against a different word of the same length. Share of takes kept, by the share of target sounds required.
+
+Sounds heard **exactly as written**:
+
+| Single words, 3 to 5 sounds | Takes | ≥30% | ≥40% | ≥50% | ≥60% | ≥70% |
+|---|---|---|---|---|---|---|
+| Learners rated 5/10 or lower | 852 | 75.6% | 56.8% | 52.8% | 42.8% | 21.6% |
+| Scottish speakers | 2,879 | 97.9% | 90.3% | 89.1% | 85.8% | 62.7% |
+| Irish speakers | 1,848 | 97.6% | 89.3% | 87.5% | 83.8% | 61.2% |
+| A different word | 13,147 | 14.8% | 3.8% | 2.9% | 2.0% | 0.2% |
+
+Sounds heard as the **same broad class** (any vowel for a vowel, consonants within accent-swap groups such as th/t/s/f):
+
+| Single words, 3 to 5 sounds | Takes | ≥30% | ≥40% | ≥50% | ≥60% | ≥70% |
+|---|---|---|---|---|---|---|
+| Learners rated 5/10 or lower | 852 | 86.7% | 77.1% | 75.0% | 67.8% | 46.4% |
+| Scottish speakers | 2,879 | 98.8% | 93.6% | 93.1% | 91.6% | 79.3% |
+| Irish speakers | 1,848 | 98.4% | 93.0% | 92.5% | 90.9% | 77.2% |
+| A different word | 13,147 | 59.2% | 29.4% | 26.0% | 19.8% | 4.1% |
+
+What the app does as a result:
+
+- **Keeps a practice take when at least 30% of its target sounds are heard as written.** This keeps 76% of low-rated learner words and 98% of Scottish and Irish words, and lets through 15% of wrong words. So 24% of genuine, heavily accented learner words are still dropped, and about 2% of native Scottish and Irish ones.
+- **Does not use the class-based match to decide.** It was expected to be kinder to accents, and it is, but it lets wrong words through much faster: at 60% it keeps 68% of low-rated learner words and 20% of wrong words, where the exact rule at 30% keeps more of the first and fewer of the second. Any vowel standing for any vowel is too loose on a four-sound word. The class-based share is still recorded with each take (`sounds_same_class`) so it can be judged again on real contributions.
+- **Dropped two earlier checks.** Requiring 50% as written kept only 53% of low-rated learner words. Requiring "70% of sounds attempted", where any sound in the right place counted, kept 88% of wrong words and so rejected almost nothing it was meant to.
+- **Never compares a normal-voice take with a dictionary.** There is no right way to sound in your own voice. Such a take only has to be between half and twice as long, in sounds heard, as the sentence shown.
+
+Limits of this measurement:
+
+- VCTK's three Indian speakers are not cached on disk, so Indian English was not measured.
+- Words were cut out of sentences by aligning the transcription to the dictionary, not by time, so sounds near word boundaries can land on the wrong word. This makes genuine words look worse than a single recorded word would.
+- A low human score does not always mean a strong accent; some of those words were simply misread.
+- Wrong words that share sounds with the target ("butter" for "water") pass. With 3-sound targets 21% of wrong words pass, against 4% for 4-sound and 8% for 5-sound targets.
+- On whole utterances the rules are much easier to tell apart: at 30% as written, 95% of low-rated utterances are kept and 4% of wrong ones.
+
 ### Learning regions from totals
 
 Can the app learn what a region sounds like without keeping anyone's recordings, or even a row per person? Each take is reduced to 256 numbers: the mean and spread of encoder layer 6 over the take, standardized and projected onto fixed directions fitted on VCTK training speakers. For each region only three things are kept: a count, the sum of the vectors, and the sum of their outer products. A vector is added to the totals and dropped. Those totals are exactly what a linear discriminant needs.
@@ -164,7 +201,7 @@ Nothing a visitor records leaves their device. There is no upload endpoint.
 - **Recordings** are held in memory for playback and dropped when the visitor moves on.
 - **Practice history** (words, scores, sounds heard) is in IndexedDB.
 - **A profile**, if the visitor fills it in on the first-visit screen: country, a broad region for the few countries that offer one, and the "Help it learn" switch, which is off unless they turn it on. It is in `localStorage` and can be reopened from "Your profile" in the footer to change or withdraw.
-- **Contributions**, only while the switch is on and a country is given, and only for takes that pass every check: speech found, signal-to-noise ratio of at least 20 dB, under 0.5% of samples at full scale, model confidence of at least 0.6, at least 70% of the target sounds attempted, and at least 50% heard as written (a different word still "attempts" every sound as a substitution, so this is what keeps a wrong word out). At most 60 are kept per browser. Each is:
+- **Contributions**, only while the switch is on and a country is given, and only for takes that pass every check: speech found, signal-to-noise ratio of at least 20 dB, under 0.5% of samples at full scale, model confidence of at least 0.6, and recognisably the target: for a practice take at least 30% of the target sounds heard as written, for a normal-voice take about the length of the sentence shown (see [Is a take the target word?](#is-a-take-the-target-word)). At most 60 are kept per browser. Each is:
 
 | Field | Meaning |
 |---|---|
@@ -176,7 +213,7 @@ Nothing a visitor records leaves their device. There is no upload endpoint.
 | `matches_home_accent` | True when the accent practised is the standard one of the country (US and `ga`, GB and `rp`, AU and `au`). A label only |
 | `word`, `score` | What was said and how it scored |
 | `features` | The 256 numbers. Never audio |
-| `quality` | Seconds of speech, signal-to-noise ratio, clipping, model confidence, share of sounds attempted and matched |
+| `quality` | Seconds of speech, signal-to-noise ratio, clipping, model confidence, number of sounds heard, and for practice takes the share heard as written and the share in the same sound class |
 | `model_version` | Summaries from different models cannot be mixed |
 
 The labels matter because a person imitating an accent is not a sample of their home accent. `scripts/learn_regions.py ingest` routes each take accordingly, and the Your data page shows the same routing for every stored take:
@@ -236,6 +273,8 @@ python -m scripts.learn_regions fit-projection  # the 256-number accent summary
 python -m scripts.learn_regions simulate        # region learning from totals, on VCTK
 python -m scripts.evaluate_capture              # recording cleanup table
 python -m scripts.make_cleanup_fixtures         # after changing pronunciation/audio_cleanup.py
+python -m scripts.evaluate_match                # rule for "is this take the target word"
+python -m scripts.make_sound_match_fixtures     # after changing web/src/engine/sound_groups.json
 python -m scripts.export_onnx                   # browser model into web/public/model/
 ```
 
@@ -260,7 +299,7 @@ src/, train_*.py        original training code
 Docs/                   requirements, architecture notes, evaluation results
 ```
 
-Scoring exists twice, in Python (`pronunciation/scoring.py`) and JavaScript (`web/src/engine/scoring.js`). Both are tested against the same 72 cases in `tests/fixtures/scoring_cases.json`. Recording cleanup is paired the same way (`pronunciation/audio_cleanup.py`, `web/src/engine/cleanup.js`, 17 cases in `tests/fixtures/cleanup_cases.json`), and the contribution format and its routing are pinned by `tests/fixtures/contribution_export.json`.
+Scoring exists twice, in Python (`pronunciation/scoring.py`) and JavaScript (`web/src/engine/scoring.js`). Both are tested against the same 72 cases in `tests/fixtures/scoring_cases.json`. Recording cleanup is paired the same way (`pronunciation/audio_cleanup.py`, `web/src/engine/cleanup.js`, 17 cases in `tests/fixtures/cleanup_cases.json`), the sound classes (`pronunciation/sound_match.py`, `web/src/engine/soundMatch.js`) by 91 cases in `tests/fixtures/sound_match_cases.json`, and the contribution format and its routing by `tests/fixtures/contribution_export.json`.
 
 ## Development
 
@@ -273,7 +312,7 @@ CI runs both, builds the site and the Docker images, and boots the optional API 
 
 ### Checking labels by voice
 
-With the dev server running, http://localhost:5173/check walks through ten steps. Each sets up its own made-up profile, says what to say, runs the take through the same cleanup, model, scoring and keeping rules as the app, and shows pass or fail with expected against actual for every label. It ends with a summary that can be copied as plain text.
+With the dev server running, http://localhost:5173/check walks through eleven steps. Each sets up its own made-up profile, says what to say, runs the take through the same cleanup, model, scoring and keeping rules as the app, and shows pass or fail with expected against actual for every label. It ends with a summary that can be copied as plain text.
 
 | Step | Say | Expected |
 |---|---|---|
@@ -282,11 +321,12 @@ With the dev server running, http://localhost:5173/check walks through ten steps
 | 3 | Profile US, South, target American: "better" | Kept, attempt, joins `US>ga`, not `US` or `US-S` |
 | 4 | Profile GB, Scotland: a sentence in a normal voice | Kept, native, joins `GB` and `GB-SCT` |
 | 5 | Nothing | Not kept, no speech, retake notice |
-| 6 | "banana" when the target is "water" | Not kept, target sounds not matched |
-| 7 | "fish" | First sound heard is F, so the start was not clipped |
-| 8 | "water" over music or a fan | Reported only: measured signal-to-noise ratio and whether it was kept |
-| 9 | Sharing off: "water" | Scored, nothing stored |
-| 10 | Nothing | Everything kept this session is valid for ingest and routed as steps 1 to 4 predicted |
+| 6 | "banana" when the target is "water" | Not kept: not recognisably the target word |
+| 7 | "water" in a deliberately strong accent | Kept, attempt, joins `GB>ga` |
+| 8 | "fish" | First sound heard is F, so the start was not clipped |
+| 9 | "water" over music or a fan | Reported only: measured signal-to-noise ratio and whether it was kept |
+| 10 | Sharing off: "water" | Scored, nothing stored |
+| 11 | Nothing | Everything kept this session is valid for ingest and routed as steps 1 to 4 predicted |
 
 The page is a sandbox. Takes go to a store in memory, so the real profile, contributions and practice history are never read or written, and everything is gone on leaving the page. It exists only in development: the route and its code are left out of `npm run build`. The expected values are one table in `web/src/check/steps.js`, and the pass or fail logic is unit-tested without a microphone in `web/src/check/check.test.js`.
 

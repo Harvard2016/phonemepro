@@ -21,10 +21,15 @@ export const VIABILITY = {
   minSnrDb: 20,
   maxClipped: 0.005, // loud but unclipped speech brushes full scale now and then; real clipping sits there
   minConfidence: 0.6,
-  minSoundsAttempted: 70,
-  // A different word still "attempts" every sound, as substitutions. Requiring half the target
-  // sounds to be heard as written keeps a wrong word, or someone else talking, out.
-  minSoundsMatched: 50,
+  // Practice takes: at least this share of the target sounds heard exactly as written. Measured
+  // by scripts/evaluate_match.py (Docs/model/match_threshold.json) on single words: it keeps 76%
+  // of words from learners rated 5/10 or lower and 98% from Scottish and Irish speakers, and lets
+  // through 15% of wrong words. A looser, class-based match was tried and separated them worse.
+  minSoundsMatched: 30,
+  // Normal-voice takes are not compared with any dictionary: there is no right way to sound.
+  // They only have to be about as long as the sentence that was shown.
+  minLengthRatio: 0.5,
+  maxLengthRatio: 2,
 }
 
 // The practice accent that is the standard of a country. It only sets the stored label
@@ -35,9 +40,13 @@ export const HOME_ACCENT = { US: 'ga', GB: 'rp', AU: 'au' }
 const run = (mode, work) => runIn('contributions', mode, work)
 
 // Every check with its outcome, so the "Your data" page can show why a take was or was not kept.
-// `quality` comes from engine/cleanup.js; `soundsAttempted` and `soundsMatched` are the completeness
-// and accuracy metrics from engine/scoring.js (0..100).
-export function checkViability({ quality, confidence, soundsAttempted, soundsMatched, features, featureCount }) {
+// `quality` comes from engine/cleanup.js. A practice take passes `soundsMatched`, the share of
+// target sounds heard as written (0..100). A normal-voice take passes `soundsHeard`, how many
+// sounds the model heard, and `targetSounds`, the [fewest, most] sounds its sentence has across
+// the accent dictionaries.
+export function checkViability({
+  quality, confidence, naturalVoice = false, soundsMatched, soundsHeard, targetSounds, features, featureCount,
+}) {
   const limits = VIABILITY
   const featuresOk = Boolean(features) && features.length === featureCount && Array.from(features).every(Number.isFinite)
   const checks = [
@@ -49,14 +58,21 @@ export function checkViability({ quality, confidence, soundsAttempted, soundsMat
       `${(quality.clipped * 100).toFixed(2)}% of samples at full scale (limit ${limits.maxClipped * 100}%)`],
     ['confidence', 'Model was confident', confidence >= limits.minConfidence,
       `confidence ${confidence.toFixed(2)} (needs ${limits.minConfidence})`],
-    ['attempted', 'Most target sounds attempted', soundsAttempted >= limits.minSoundsAttempted,
-      `${Math.round(soundsAttempted)}% of target sounds (needs ${limits.minSoundsAttempted}%)`],
-    ['matched', 'Target sounds matched', soundsMatched >= limits.minSoundsMatched,
-      `${Math.round(soundsMatched)}% heard as written (needs ${limits.minSoundsMatched}%)`],
-    ['features', 'Summary is well formed', featuresOk,
-      featuresOk ? `${featureCount} finite numbers` : 'the model did not return a usable summary'],
-  ].map(([id, label, passed, detail]) => ({ id, label, passed: Boolean(passed), detail }))
-  return { viable: checks.every((check) => check.passed), checks }
+  ]
+  if (naturalVoice) {
+    const fewest = Math.ceil(limits.minLengthRatio * targetSounds[0])
+    const most = Math.floor(limits.maxLengthRatio * targetSounds[1])
+    checks.push(['length', 'About as long as the sentence', soundsHeard >= fewest && soundsHeard <= most,
+      `${soundsHeard} sounds heard (needs ${fewest} to ${most})`])
+  } else {
+    checks.push(['matched', 'Recognisably the target word', soundsMatched >= limits.minSoundsMatched,
+      `${Math.round(soundsMatched)}% of target sounds heard as written (needs ${limits.minSoundsMatched}%)`])
+  }
+  checks.push(['features', 'Summary is well formed', featuresOk,
+    featuresOk ? `${featureCount} finite numbers` : 'the model did not return a usable summary'])
+
+  const labelled = checks.map(([id, label, passed, detail]) => ({ id, label, passed: Boolean(passed), detail }))
+  return { viable: labelled.every((check) => check.passed), checks: labelled }
 }
 
 // Whether this browser is set up to keep takes at all, apart from how good a take is.
@@ -71,7 +87,8 @@ const round = (value, digits) => Math.round(value * 10 ** digits) / 10 ** digits
 
 // The stored record. `targetAccent` is null for a take in the speaker's normal voice.
 export function buildContribution({
-  profile, targetAccent, naturalVoice, word, score, features, quality, confidence, soundsAttempted, soundsMatched, modelVersion,
+  profile, targetAccent, naturalVoice, word, score, features, quality, confidence, soundsHeard, soundsMatched, soundsSameClass,
+  modelVersion,
 }) {
   return {
     id: crypto.randomUUID(),
@@ -90,8 +107,10 @@ export function buildContribution({
       snr_db: quality.snrDb,
       clipped: round(quality.clipped, 6),
       confidence: round(confidence, 3),
-      sounds_attempted: Math.round(soundsAttempted),
-      sounds_matched: Math.round(soundsMatched),
+      sounds_heard: soundsHeard,
+      // Against the target word. A normal-voice take is not compared with a dictionary.
+      sounds_matched: naturalVoice ? null : Math.round(soundsMatched),
+      sounds_same_class: naturalVoice ? null : Math.round(soundsSameClass),
     },
     model_version: modelVersion,
   }
@@ -196,11 +215,12 @@ export function createMemoryStore() {
 // Decide what to do with one analysed take, store it if it qualifies, and log the outcome.
 // Returns { stored, reason, checks, contribution }.
 export async function considerTake({
-  profile, targetAccent, naturalVoice = false, word, score, heard, quality, soundsAttempted, soundsMatched, featureCount,
-  store = deviceStore,
+  profile, targetAccent, naturalVoice = false, word, score, heard, quality, soundsMatched, soundsSameClass, targetSounds,
+  featureCount, store = deviceStore,
 }) {
   const { viable, checks } = checkViability({
-    quality, confidence: heard.confidence, soundsAttempted, soundsMatched, features: heard.features, featureCount,
+    quality, confidence: heard.confidence, naturalVoice, soundsMatched, soundsHeard: heard.phonemes.length, targetSounds,
+    features: heard.features, featureCount,
   })
   let contribution = null
   let stored = false
@@ -211,7 +231,8 @@ export async function considerTake({
   if (!reason) {
     contribution = buildContribution({
       profile, targetAccent, naturalVoice, word, score, features: heard.features, quality,
-      confidence: heard.confidence, soundsAttempted, soundsMatched, modelVersion: heard.modelVersion,
+      confidence: heard.confidence, soundsHeard: heard.phonemes.length, soundsMatched, soundsSameClass,
+      modelVersion: heard.modelVersion,
     })
     try {
       stored = await store.save(contribution)
