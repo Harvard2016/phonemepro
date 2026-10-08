@@ -1,10 +1,9 @@
-// Browser recordings arrive as WebM/MP4; the model wants 16 kHz mono PCM.
-
-const TARGET_RATE = 16000
+// Playback helpers: a WAV of the learner's take, reference recordings, and a synthetic fallback.
 
 export const createAudioContext = () => new (window.AudioContext || window.webkitAudioContext)()
 
-function encodeWav(samples, sampleRate) {
+// 16-bit mono WAV, so a take can be played back and sliced by time.
+export function encodeWav(samples, sampleRate) {
   const buffer = new ArrayBuffer(44 + samples.length * 2)
   const view = new DataView(buffer)
   const writeText = (offset, text) => {
@@ -30,25 +29,6 @@ function encodeWav(samples, sampleRate) {
     view.setInt16(44 + i * 2, sample < 0 ? sample * 0x8000 : sample * 0x7fff, true)
   }
   return new Blob([buffer], { type: 'audio/wav' })
-}
-
-// Decode a recording to 16 kHz mono samples for the model, plus a WAV blob for playback.
-export async function toTake(blob) {
-  const context = createAudioContext()
-  try {
-    const decoded = await context.decodeAudioData(await blob.arrayBuffer())
-    const frames = Math.max(1, Math.ceil(decoded.duration * TARGET_RATE))
-    const offline = new OfflineAudioContext(1, frames, TARGET_RATE)
-    const source = offline.createBufferSource()
-    source.buffer = decoded
-    source.connect(offline.destination)
-    source.start()
-    const rendered = await offline.startRendering()
-    const samples = rendered.getChannelData(0)
-    return { samples, seconds: samples.length / TARGET_RATE, wav: encodeWav(samples, TARGET_RATE) }
-  } finally {
-    context.close()
-  }
 }
 
 const VOICE_LANGUAGE = { ga: 'en-US', rp: 'en-GB', au: 'en-AU' }

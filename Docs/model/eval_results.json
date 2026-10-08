@@ -439,5 +439,17 @@
     },
     "applied": false,
     "chosen_anchor": 1.0
+  },
+  "region_totals": {
+    "method": "linear discriminant built only from per-accent counts, sums and sums of outer products",
+    "features": 256,
+    "kilobytes_kept_per_region": 514,
+    "train_vectors": {
+      "Southern English": 1440,
+      "American": 1680,
+      "Scottish": 1320
+    },
+    "test_accuracy_one_second": 0.664,
+    "test_accuracy_full_utterance": 0.78
   }
 }

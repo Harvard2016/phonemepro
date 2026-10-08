@@ -90,6 +90,11 @@ export async function recognize(samples) {
   return {
     ...decoded,
     nativeScore: output.score.data[0],
+    // The fixed 256-number accent summary of this take (scripts/learn_regions.py), and
+    // the model that produced it: summaries from different models cannot be mixed.
+    features: output.accent_features ? Array.from(output.accent_features.data) : null,
+    featureCount: meta.features ?? 0,
+    modelVersion: meta.version,
     accents: meta.accents
       .map((accent, index) => ({ ...accent, share: accentShares[index] }))
       .sort((a, b) => b.share - a.share),

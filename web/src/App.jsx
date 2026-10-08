@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react'
 import { BrowserRouter, NavLink, Route, Routes, useLocation } from 'react-router-dom'
 import { AnimatePresence, MotionConfig, motion } from 'motion/react'
 import ErrorBoundary from './ErrorBoundary'
+import Welcome from './components/Welcome'
 import CreditsPage from './pages/CreditsPage'
+import DataPage from './pages/DataPage'
 import HistoryPage from './pages/HistoryPage'
 import ModelInfoPage from './pages/ModelInfoPage'
 import PracticePage from './pages/PracticePage'
+import PrivacyPage from './pages/PrivacyPage'
 import { AppProvider, useApp } from './state'
 
 const NAV = [
@@ -31,6 +34,7 @@ function ModelStatus() {
 }
 
 function Shell() {
+  const { openWelcome } = useApp()
   const location = useLocation()
   const [scrolled, setScrolled] = useState(false)
 
@@ -73,6 +77,8 @@ function Shell() {
                 <Route path="/history" element={<HistoryPage />} />
                 <Route path="/model" element={<ModelInfoPage />} />
                 <Route path="/credits" element={<CreditsPage />} />
+                <Route path="/data" element={<DataPage />} />
+                <Route path="/privacy" element={<PrivacyPage />} />
                 <Route path="*" element={<PracticePage />} />
               </Routes>
             </motion.div>
@@ -82,8 +88,15 @@ function Shell() {
 
       <footer className="colophon">
         <span>Runs in your browser. Your voice never leaves this device.</span>
-        <NavLink to="/credits">Credits, data and voices</NavLink>
+        <span className="colophon__links">
+          <button type="button" className="colophon__button" onClick={openWelcome}>Your profile</button>
+          <NavLink to="/data">Your data</NavLink>
+          <NavLink to="/privacy">Privacy</NavLink>
+          <NavLink to="/credits">Credits, data and voices</NavLink>
+        </span>
       </footer>
+
+      <Welcome />
 
       <svg className="grain" aria-hidden="true">
         <filter id="grain-filter">

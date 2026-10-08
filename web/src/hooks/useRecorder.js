@@ -1,36 +1,73 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { createAudioContext, toTake } from '../lib/audio'
+import { cancelTake, finishTake, startTake } from '../audio/mic'
+import { cleanTake, SAMPLE_RATE } from '../engine/cleanup'
+import { encodeWav } from '../lib/audio'
 
-const MIN_BLOB_BYTES = 1200
+// Below this the model mishears too much for the feedback to mean anything: with noise
+// 5 dB below the speech it gets four sounds in ten wrong (Docs/model/capture_results.json).
+export const MIN_PRACTICE_SNR_DB = 10
 
 export const RECORDER_ERRORS = {
   permission: 'Microphone access is needed to listen. Allow it in your browser and try again.',
   short: "I couldn't catch that. Hold record a little longer and speak a bit slower.",
-  decode: "I couldn't read that recording. Try once more.",
+  silent: "I didn't hear any speech in that take. Move closer to the microphone and try again.",
+  noisy: 'There was too much background noise to hear you clearly. Find a quieter spot, or move closer, and try again.',
+  failed: 'The microphone stopped unexpectedly. Try once more.',
 }
 
-// Records from the microphone and hands back 16 kHz samples plus a WAV blob for playback.
+// Records from the shared microphone session, cleans the take, and hands back
+// 16 kHz samples, a WAV blob of the same samples for playback, and how clean the take was.
 // `analyserRef` exposes a live AnalyserNode while recording, for the waveform.
 export function useRecorder({ onComplete, onError }) {
   const [isStarting, setIsStarting] = useState(false)
   const [isRecording, setIsRecording] = useState(false)
   const analyserRef = useRef(null)
-  const recorderRef = useRef(null)
   const wantedRef = useRef(false)
+  const liveRef = useRef(false)
   const callbacksRef = useRef({ onComplete, onError })
 
   useEffect(() => {
     callbacksRef.current = { onComplete, onError }
   })
 
-  const start = useCallback(async () => {
+  const finish = useCallback(async () => {
+    liveRef.current = false
+    analyserRef.current = null
+    setIsRecording(false)
+    let captured
+    try {
+      captured = await finishTake()
+    } catch {
+      callbacksRef.current.onError(RECORDER_ERRORS.failed)
+      return
+    }
+    if (!captured) return
+    if (captured.length === 0) {
+      callbacksRef.current.onError(RECORDER_ERRORS.short)
+      return
+    }
+
+    const { samples, ...quality } = cleanTake(captured)
+    if (!quality.foundSpeech) {
+      callbacksRef.current.onError(RECORDER_ERRORS.silent)
+    } else if (quality.snrDb < MIN_PRACTICE_SNR_DB) {
+      callbacksRef.current.onError(RECORDER_ERRORS.noisy)
+    } else {
+      callbacksRef.current.onComplete({
+        samples, seconds: samples.length / SAMPLE_RATE, wav: encodeWav(samples, SAMPLE_RATE), quality,
+      })
+    }
+  }, [])
+
+  // `preRoll: false` drops what the microphone heard before now, for when the app itself was just playing audio.
+  const start = useCallback(async ({ preRoll = true } = {}) => {
     if (wantedRef.current) return
     wantedRef.current = true
     setIsStarting(true)
 
-    let stream
+    let analyser
     try {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      analyser = await startTake({ preRoll })
     } catch {
       wantedRef.current = false
       setIsStarting(false)
@@ -40,52 +77,30 @@ export function useRecorder({ onComplete, onError }) {
 
     // The key or button may have been released while the permission prompt was open.
     if (!wantedRef.current) {
-      stream.getTracks().forEach((track) => track.stop())
+      cancelTake()
+      setIsStarting(false)
       return
     }
-
-    const context = createAudioContext()
-    const analyser = context.createAnalyser()
-    analyser.fftSize = 2048
-    context.createMediaStreamSource(stream).connect(analyser)
+    liveRef.current = true
     analyserRef.current = analyser
-
-    const recorder = new MediaRecorder(stream)
-    const chunks = []
-    recorder.ondataavailable = (event) => {
-      if (event.data.size > 0) chunks.push(event.data)
-    }
-    recorder.onstop = async () => {
-      stream.getTracks().forEach((track) => track.stop())
-      analyserRef.current = null
-      context.close()
-
-      const blob = new Blob(chunks, { type: recorder.mimeType })
-      if (blob.size < MIN_BLOB_BYTES) {
-        callbacksRef.current.onError(RECORDER_ERRORS.short)
-        return
-      }
-      try {
-        callbacksRef.current.onComplete(await toTake(blob))
-      } catch {
-        callbacksRef.current.onError(RECORDER_ERRORS.decode)
-      }
-    }
-
-    recorderRef.current = recorder
-    recorder.start()
     setIsStarting(false)
     setIsRecording(true)
   }, [])
 
   const stop = useCallback(() => {
     wantedRef.current = false
-    if (recorderRef.current?.state === 'recording') recorderRef.current.stop()
     setIsStarting(false)
-    setIsRecording(false)
-  }, [])
+    if (liveRef.current) finish()
+  }, [finish])
 
-  useEffect(() => stop, [stop])
+  // Leaving the page abandons a take in progress.
+  useEffect(() => () => {
+    wantedRef.current = false
+    if (liveRef.current) {
+      liveRef.current = false
+      cancelTake()
+    }
+  }, [])
 
   return { isStarting, isRecording, start, stop, analyserRef }
 }

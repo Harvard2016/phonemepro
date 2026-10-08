@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { DEFAULT_ACCENT, loadLexicon, practiceWords } from './engine/lexicon'
 import { loadModel } from './engine/model'
+import { loadProfile, storeProfile } from './engine/profile'
 
 const ACCENT_KEY = 'phonemepro.accent'
 const AppContext = createContext(null)
@@ -13,12 +14,15 @@ const storedAccent = () => {
   }
 }
 
-// Shared app state: the chosen accent, the dictionaries, and the in-browser model.
+// Shared app state: the chosen accent, the dictionaries, the in-browser model, and the visitor's profile.
 export function AppProvider({ children }) {
   const [accent, setAccentState] = useState(() => storedAccent() ?? DEFAULT_ACCENT)
   const [lexicon, setLexicon] = useState(null)
   const [lexiconError, setLexiconError] = useState(null)
   const [model, setModel] = useState({ status: 'idle', progress: 0, error: null })
+  const [profile, setProfile] = useState(loadProfile)
+  // The welcome screen opens by itself once, on the first visit.
+  const [welcomeOpen, setWelcomeOpen] = useState(() => !loadProfile().seen)
 
   const requestLexicon = useCallback(() => {
     loadLexicon().then(setLexicon).catch(() => setLexiconError('The dictionary did not load. Check your connection.'))
@@ -55,12 +59,27 @@ export function AppProvider({ children }) {
       })
   }, [])
 
+  // Returns the profile as stored, for callers that act on it straight away.
+  const saveProfile = useCallback((next) => {
+    const stored = storeProfile(next)
+    setProfile(stored)
+    return stored
+  }, [])
+  const openWelcome = useCallback(() => setWelcomeOpen(true), [])
+  const closeWelcome = useCallback(() => setWelcomeOpen(false), [])
+
   const activeAccent = lexicon && !lexicon.accents[accent] ? DEFAULT_ACCENT : accent
   const words = useMemo(() => (lexicon ? practiceWords(lexicon, activeAccent) : null), [lexicon, activeAccent])
 
   const value = useMemo(
-    () => ({ accent: activeAccent, setAccent, lexicon, lexiconError, fetchLexicon, words, model, ensureModel }),
-    [activeAccent, setAccent, lexicon, lexiconError, fetchLexicon, words, model, ensureModel],
+    () => ({
+      accent: activeAccent, setAccent, lexicon, lexiconError, fetchLexicon, words, model, ensureModel,
+      profile, saveProfile, welcomeOpen, openWelcome, closeWelcome,
+    }),
+    [
+      activeAccent, setAccent, lexicon, lexiconError, fetchLexicon, words, model, ensureModel,
+      profile, saveProfile, welcomeOpen, openWelcome, closeWelcome,
+    ],
   )
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }

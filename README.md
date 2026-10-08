@@ -10,6 +10,8 @@ Everything runs in your browser. A fine-tuned wav2vec 2.0 model transcribes your
 - **A guess at your accent.** An accent head says whether a take sounds closest to Southern English, American or Scottish.
 - **Your own text.** Any word or phrase of up to eight words from the dictionary.
 - **History that stays with you.** Attempts are stored in the browser (IndexedDB), survive refreshes and closed tabs, and can be saved to a file and imported elsewhere.
+- **Takes cleaned before scoring.** The microphone stays open between takes so the first sound is not lost, and each take is trimmed and noise-reduced on the device. If there is no speech or too much noise, the app asks for another take instead of scoring it.
+- **Optional, off by default: help it learn.** A visitor can say where they are from and agree to keep a 256-number summary of each clear take, labelled by whose accent it is. It is not audio, it stays in the browser, and nothing uploads it. See [What the app keeps](#what-the-app-keeps).
 
 ## Credits
 
@@ -82,6 +84,47 @@ The gentle setting is safe but barely moves anything; the others cost learners m
 
 The model is exported to ONNX with the transformer's weights quantized to 8 bits: 123 MB, downloaded once and cached. On 300 test utterances it scores 23.43% phoneme error against 23.37% at full precision. Quantizing the convolutional front end too would save 27 MB but raised the error rate to 31%. A take is analysed in about half a second on a laptop.
 
+It has four outputs: phoneme logits, the learned score, the accent guess, and a 256-number accent summary (see [Learning regions from totals](#learning-regions-from-totals)). Quantization moves the summary by 0.046 on average, where each number has a spread of about 1.
+
+### Recording cleanup
+
+What a messy recording does to the model, and which cleanup steps help. 120 SpeechOcean762 test utterances were degraded the way a laptop take is degraded, then scored raw and after each step (`scripts/evaluate_capture.py`, `Docs/model/capture_results.json`). Phoneme error rate, lower is better:
+
+| Recording | Raw | Rumble filter | Trim, 0.12 s margin | Trim, 0.5 s margin | Noise reduction | Trim 0.5 s + noise reduction |
+|---|---|---|---|---|---|---|
+| Clean | 19.6% | 19.8% | 21.5% | 19.8% | 19.7% | 20.0% |
+| 0.7 s of quiet room either side | 23.2% | 23.3% | 24.2% | 23.6% | 21.8% | **21.1%** |
+| Noise 25 dB below the speech | 24.3% | 24.2% | 25.1% | 24.0% | 22.8% | **21.9%** |
+| Noise 15 dB below | 31.4% | 31.2% | 31.6% | 29.0% | 26.5% | **25.8%** |
+| Noise 5 dB below | 59.5% | 58.7% | 59.2% | 54.2% | 40.5% | **40.1%** |
+| First 100 ms missing | 20.1% | 20.1% | 21.5% | 19.9% | 19.8% | 19.8% |
+
+What the app does as a result:
+
+- **Trims with half a second of quiet each side, then reduces steady noise.** This is the last column. It is the best or within a point of the best on every degraded recording and costs 0.4 points on clean audio.
+- **Does not trim tightly.** A 0.12 s margin made clean audio worse (19.6% to 21.5%) and moved the learned score by 1.3 points on the 0 to 10 scale, against 0.06 points for the 0.5 s margin. The training clips have quiet at both ends and the model expects it.
+- **Does not filter rumble.** A 70 Hz high-pass changed nothing measurable. It is still used to find where the speech is.
+- **Asks for a retake rather than scoring a bad take.** Even after cleanup the model gets four sounds in ten wrong when noise is 5 dB below the speech. A take with no speech found, or a measured signal-to-noise ratio under 10 dB, is not scored.
+
+Limits of this measurement:
+
+- The noise is synthetic white noise, and the 120 utterances are sentences from learners, not single words. Real rooms and real microphones will differ. The browser's own noise suppression also runs before this cleanup, which the experiment does not model.
+- The cleanup steps were chosen on the same 120 utterances they are reported on.
+- An earlier run on 200 utterances with a different set of variants is kept in `Docs/model/capture_results_first_run.json`. Its clean error rate (22.9%) is not comparable with the 19.6% here because the utterance sets differ. It is the only run that tested a second person talking in the background, 12 dB quieter: 84.9% phoneme error raw, 77.5% after tight trimming. Nothing tried removes a second voice. The app does not yet detect one, so such a take is scored and scored badly.
+
+### Learning regions from totals
+
+Can the app learn what a region sounds like without keeping anyone's recordings, or even a row per person? Each take is reduced to 256 numbers: the mean and spread of encoder layer 6 over the take, standardized and projected onto fixed directions fitted on VCTK training speakers. For each region only three things are kept: a count, the sum of the vectors, and the sum of their outer products. A vector is added to the totals and dropped. Those totals are exactly what a linear discriminant needs.
+
+Measured on the same held-out VCTK speakers as the accent head (`python -m scripts.learn_regions simulate`, the `region_totals` section of `Docs/model/eval_results.json`):
+
+| | From totals alone | Trained accent head |
+|---|---|---|
+| Whole sentences | 78.0% | 78.6% |
+| One-second clips | 66.4% | 70.3% |
+
+Storage is fixed at 514 KB per region however many people contribute. This has only been tested with three accents and native speakers reading sentences. It has not been tested on contributions from the app, because sharing is not switched on and there are none.
+
 ## The accent dictionaries
 
 | Accent | Source |
@@ -114,6 +157,38 @@ The model, dictionaries and reference recordings are in `web/public/`, so there 
 
 The app is a static site. On Vercel, import the repository, set the root directory to `web`, and deploy; `web/vercel.json` adds the single-page routing and the headers that let the model use several threads. Any static host works.
 
+### What the app keeps
+
+Nothing a visitor records leaves their device. There is no upload endpoint.
+
+- **Recordings** are held in memory for playback and dropped when the visitor moves on.
+- **Practice history** (words, scores, sounds heard) is in IndexedDB.
+- **A profile**, if the visitor fills it in on the first-visit screen: country, optional region or city, and the "Help it learn" switch, which is off unless they turn it on. It is in `localStorage` and can be reopened from "Your profile" in the footer to change or withdraw.
+- **Contributions**, only while the switch is on and a country is given, and only for takes that pass every check: speech found, signal-to-noise ratio of at least 20 dB, under 0.5% of samples at full scale, model confidence of at least 0.6, at least 70% of the target sounds attempted. At most 60 are kept per browser. Each is:
+
+| Field | Meaning |
+|---|---|
+| `id`, `created` | Random id and time of the take |
+| `contributor` | Random id for the browser. Replaced when everything is deleted |
+| `country`, `region` | From the profile |
+| `target_accent` | `ga`, `rp` or `au`: the accent being practised. Empty for a normal-voice take |
+| `natural_voice` | True for the "say this in your normal voice" sentences on the profile screen |
+| `matches_home_accent` | True when the accent practised is the one native to the country (US and `ga`, GB and `rp`, AU and `au`) |
+| `word`, `score` | What was said and how it scored |
+| `features` | The 256 numbers. Never audio |
+| `quality` | Seconds of speech, signal-to-noise ratio, clipping, model confidence, share of sounds attempted |
+| `model_version` | Summaries from different models cannot be mixed |
+
+The labels matter because a person imitating an accent is not a sample of their home accent. `scripts/learn_regions.py ingest` therefore routes a take with `natural_voice` or `matches_home_accent` into its country's totals, and everything else into separate "country attempting accent" totals.
+
+The **Your data** page (`/data`) lists every stored take with all of its labels, shows why each recent take was or was not kept, exports to a JSON file and deletes everything. To see how an export would be used:
+
+```bash
+python -m scripts.learn_regions ingest phonemepro-contributions-2026-10-08.json
+```
+
+This checks every take, folds the valid ones into `results/region_totals.npz` and `results/attempt_totals.npz`, and prints a per-country summary. The 256 numbers cannot be played back but may still be characteristic of a voice, so they are treated as personal data. The notice at `/privacy` is interim and has not had legal review.
+
 ### History without a server
 
 History lives in the visitor's browser. It survives refreshes, closed tabs and restarts. It does not follow them to another device or survive clearing site data, so the History page has "Save a backup" and "Import a backup". Syncing across devices would need accounts and a database, which this project deliberately avoids.
@@ -137,6 +212,10 @@ python -m scripts.accent_data index             # VCTK accent subset
 python -m scripts.accent_data features
 python -m scripts.accent_data layers
 python -m scripts.train_accent_head             # accent head and the accent tables above
+python -m scripts.learn_regions fit-projection  # the 256-number accent summary
+python -m scripts.learn_regions simulate        # region learning from totals, on VCTK
+python -m scripts.evaluate_capture              # recording cleanup table
+python -m scripts.make_cleanup_fixtures         # after changing pronunciation/audio_cleanup.py
 python -m scripts.export_onnx                   # browser model into web/public/model/
 ```
 
@@ -146,11 +225,13 @@ The PyTorch weights for the phoneme model, score head and accent head are attach
 
 ```
 web/                    the app (React + Vite)
-  src/engine/           in-browser model, CTC decoding, scoring, dictionaries, history
+  src/engine/           in-browser model, CTC decoding, scoring, recording cleanup, dictionaries,
+                        history, profile and contributions
+  src/audio/            microphone session and capture worklet
   public/model/         exported model, vocabulary, evaluation report
   public/lexicon/       accent dictionaries and the practice word bank
   public/audio/         human reference recordings and their credits
-pronunciation/          Python reference: scoring, dictionaries, model loading
+pronunciation/          Python reference: scoring, recording cleanup, region totals, dictionaries, model loading
 scripts/                evaluation, heads, dictionaries, reference audio, export
 tests/                  pytest suite and the fixtures shared with the JavaScript tests
 api.py, db.py           optional FastAPI server with the same scoring
@@ -158,7 +239,7 @@ src/, train_*.py        original training code
 Docs/                   requirements, architecture notes, evaluation results
 ```
 
-Scoring exists twice, in Python (`pronunciation/scoring.py`) and JavaScript (`web/src/engine/scoring.js`). Both are tested against the same 72 cases in `tests/fixtures/scoring_cases.json`.
+Scoring exists twice, in Python (`pronunciation/scoring.py`) and JavaScript (`web/src/engine/scoring.js`). Both are tested against the same 72 cases in `tests/fixtures/scoring_cases.json`. Recording cleanup is paired the same way (`pronunciation/audio_cleanup.py`, `web/src/engine/cleanup.js`, 17 cases in `tests/fixtures/cleanup_cases.json`), and the contribution format and its routing are pinned by `tests/fixtures/contribution_export.json`.
 
 ## Development
 

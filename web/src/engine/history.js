@@ -2,37 +2,11 @@
 // closed tabs without an account or a server. It stays on this device; export and
 // import move it between browsers.
 
-const DB_NAME = 'phonemepro'
-const STORE = 'attempts'
+import { run as runIn } from './db'
+
 const EXPORT_VERSION = 1
 
-let opening = null
-
-function open() {
-  if (!opening) {
-    opening = new Promise((resolve, reject) => {
-      const request = indexedDB.open(DB_NAME, 1)
-      request.onupgradeneeded = () => {
-        request.result.createObjectStore(STORE, { keyPath: 'id', autoIncrement: true })
-      }
-      request.onsuccess = () => resolve(request.result)
-      request.onerror = () => reject(request.error)
-    })
-    opening.catch(() => { opening = null })
-  }
-  return opening
-}
-
-async function run(mode, work) {
-  const db = await open()
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(STORE, mode)
-    const result = work(transaction.objectStore(STORE))
-    transaction.oncomplete = () => resolve(result?.result ?? result)
-    transaction.onerror = () => reject(transaction.error)
-    transaction.onabort = () => reject(transaction.error)
-  })
-}
+const run = (mode, work) => runIn('attempts', mode, work)
 
 // Keep only what the History page and insights need; audio is never stored.
 export function saveAttempt({ word, accent, target_phonemes, predicted_phonemes, score, wer, errors }) {

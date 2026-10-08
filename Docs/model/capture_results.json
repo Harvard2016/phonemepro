@@ -1,0 +1,167 @@
+{
+  "utterances": 120,
+  "conditions": {
+    "clean": {
+      "speech_not_found": 0,
+      "raw": {
+        "per": 0.1957,
+        "score_shift_points": 0.0
+      },
+      "filter_only": {
+        "per": 0.1984,
+        "score_shift_points": 0.02
+      },
+      "trim_0.12s": {
+        "per": 0.2146,
+        "score_shift_points": 1.27
+      },
+      "trim_0.5s": {
+        "per": 0.1984,
+        "score_shift_points": 0.06
+      },
+      "denoise_only": {
+        "per": 0.1973,
+        "score_shift_points": 0.17
+      },
+      "trim_0.5s_denoise": {
+        "per": 0.2,
+        "score_shift_points": 0.19
+      }
+    },
+    "silence_around": {
+      "speech_not_found": 0,
+      "raw": {
+        "per": 0.2318,
+        "score_shift_points": 0.45
+      },
+      "filter_only": {
+        "per": 0.2334,
+        "score_shift_points": 0.4
+      },
+      "trim_0.12s": {
+        "per": 0.242,
+        "score_shift_points": 1.72
+      },
+      "trim_0.5s": {
+        "per": 0.2356,
+        "score_shift_points": 0.46
+      },
+      "denoise_only": {
+        "per": 0.2183,
+        "score_shift_points": 0.53
+      },
+      "trim_0.5s_denoise": {
+        "per": 0.2108,
+        "score_shift_points": 0.32
+      }
+    },
+    "noise_25db": {
+      "speech_not_found": 0,
+      "raw": {
+        "per": 0.2431,
+        "score_shift_points": 0.43
+      },
+      "filter_only": {
+        "per": 0.242,
+        "score_shift_points": 0.38
+      },
+      "trim_0.12s": {
+        "per": 0.2512,
+        "score_shift_points": 1.96
+      },
+      "trim_0.5s": {
+        "per": 0.2404,
+        "score_shift_points": 0.52
+      },
+      "denoise_only": {
+        "per": 0.228,
+        "score_shift_points": 0.55
+      },
+      "trim_0.5s_denoise": {
+        "per": 0.2194,
+        "score_shift_points": 0.41
+      }
+    },
+    "noise_15db": {
+      "speech_not_found": 0,
+      "raw": {
+        "per": 0.3143,
+        "score_shift_points": 0.5
+      },
+      "filter_only": {
+        "per": 0.3116,
+        "score_shift_points": 0.44
+      },
+      "trim_0.12s": {
+        "per": 0.3164,
+        "score_shift_points": 2.25
+      },
+      "trim_0.5s": {
+        "per": 0.29,
+        "score_shift_points": 0.76
+      },
+      "denoise_only": {
+        "per": 0.2647,
+        "score_shift_points": 0.57
+      },
+      "trim_0.5s_denoise": {
+        "per": 0.2582,
+        "score_shift_points": 0.59
+      }
+    },
+    "noise_5db": {
+      "speech_not_found": 0,
+      "raw": {
+        "per": 0.5951,
+        "score_shift_points": 0.91
+      },
+      "filter_only": {
+        "per": 0.5871,
+        "score_shift_points": 0.81
+      },
+      "trim_0.12s": {
+        "per": 0.5925,
+        "score_shift_points": 3.14
+      },
+      "trim_0.5s": {
+        "per": 0.5423,
+        "score_shift_points": 1.6
+      },
+      "denoise_only": {
+        "per": 0.4054,
+        "score_shift_points": 0.76
+      },
+      "trim_0.5s_denoise": {
+        "per": 0.4011,
+        "score_shift_points": 1.0
+      }
+    },
+    "late_start": {
+      "speech_not_found": 0,
+      "raw": {
+        "per": 0.2005,
+        "score_shift_points": 0.07
+      },
+      "filter_only": {
+        "per": 0.2005,
+        "score_shift_points": 0.07
+      },
+      "trim_0.12s": {
+        "per": 0.2146,
+        "score_shift_points": 1.28
+      },
+      "trim_0.5s": {
+        "per": 0.1989,
+        "score_shift_points": 0.08
+      },
+      "denoise_only": {
+        "per": 0.1984,
+        "score_shift_points": 0.2
+      },
+      "trim_0.5s_denoise": {
+        "per": 0.1978,
+        "score_shift_points": 0.2
+      }
+    }
+  }
+}

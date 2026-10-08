@@ -459,6 +459,288 @@ code {
   pointer-events: none;
 }
 
+.colophon__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+}
+
+.colophon__button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+/* ── Welcome ─────────────────────────────────────────────────────────── */
+
+.welcome {
+  width: min(44rem, calc(100vw - 2 * var(--gutter)));
+  max-height: calc(100dvh - 2 * var(--gutter));
+  padding: 0;
+  overflow-y: auto;
+  border: 1px solid var(--rule-strong);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0.6rem 0.6rem 0 var(--rule);
+}
+
+.welcome::backdrop {
+  background: color-mix(in srgb, var(--paper-deep) 82%, transparent);
+  backdrop-filter: blur(3px);
+}
+
+.welcome__sheet {
+  padding: clamp(1.5rem, 5vw, 3rem);
+}
+
+.welcome__title {
+  margin: 0.5rem 0 0.9rem;
+  font-family: var(--font-display);
+  font-size: clamp(2.1rem, 6vw, 3.4rem);
+  font-weight: 420;
+  font-variation-settings: 'SOFT' 50;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.welcome__lede,
+.welcome__text {
+  max-width: 36rem;
+  color: var(--ink-soft);
+}
+
+.welcome__text {
+  margin-top: 0.6rem;
+  font-size: 0.9rem;
+}
+
+.welcome__text a {
+  color: var(--ink);
+  text-underline-offset: 0.25em;
+}
+
+.welcome__part {
+  margin-top: 2rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--rule-strong);
+}
+
+.welcome__question {
+  margin: 0.3rem 0 0.8rem;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+}
+
+.welcome__fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 2rem;
+}
+
+.welcome__field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.welcome__field select {
+  width: 100%;
+  min-width: 0;
+  color: var(--ink);
+}
+
+.welcome__sentences {
+  display: grid;
+  gap: 0.9rem;
+  margin: 1.1rem 0 0.75rem;
+  padding: 0;
+  list-style: none;
+}
+
+.welcome__sentence {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.1rem 1rem;
+}
+
+.welcome__sentence .record--small {
+  grid-row: span 2;
+}
+
+.welcome__say {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  line-height: 1.25;
+}
+
+.welcome .record--small {
+  width: 2.9rem;
+  height: 2.9rem;
+  box-shadow: none;
+}
+
+.welcome .record--small .record__dot {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.welcome__note {
+  max-width: 36rem;
+  margin-top: 0.6rem;
+  padding-left: 0.75rem;
+  border-left: 3px solid var(--red);
+  font-size: 0.9rem;
+}
+
+.welcome__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.75rem;
+  margin-top: 2.25rem;
+}
+
+/* ── Your data ───────────────────────────────────────────────────────── */
+
+.spec + .button {
+  margin-top: 1.5rem;
+}
+
+.mono,
+.dataset dd {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  overflow-wrap: anywhere;
+}
+
+.dataset {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dataset__row {
+  padding: 1.1rem 0 1.25rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.dataset__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 1rem;
+}
+
+.dataset__head .tag {
+  margin-left: 0;
+  font-family: var(--font-mono);
+}
+
+.tag--accent {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.dataset__word {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1.1;
+}
+
+.dataset__labels {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 0.6rem 1.5rem;
+  margin: 0.9rem 0 0;
+}
+
+.dataset__labels dt {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+
+.dataset__labels dd {
+  margin: 0;
+}
+
+.dataset__labels small {
+  color: var(--ink-soft);
+}
+
+.dataset__wide {
+  grid-column: span 2;
+}
+
+.dataset__features {
+  margin-top: 0.8rem;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--ink-soft);
+}
+
+.dataset__features summary {
+  cursor: pointer;
+}
+
+.dataset__features p {
+  margin-top: 0.5rem;
+  max-height: 9rem;
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+}
+
+.checks {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.88rem;
+}
+
+.checks__mark {
+  display: inline-block;
+  width: 1.2rem;
+  font-family: var(--font-mono);
+}
+
+.checks__item--failed {
+  color: var(--red);
+}
+
+.checks__detail {
+  margin-left: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--ink-soft);
+}
+
+ul.prose {
+  padding-left: 1.2rem;
+  list-style: disc;
+}
+
+.prose + .section-title {
+  margin-top: 2.5rem;
+}
+
+.result__kept {
+  margin-top: 0.75rem;
+}
+
 /* ── States ──────────────────────────────────────────────────────────── */
 
 .state {
@@ -776,7 +1058,10 @@ code {
 }
 
 .stage__voice a,
+.page__lede a,
+.prose a,
 .colophon a,
+.result__kept a,
 .closest__note a,
 .spec a,
 .credits a {
@@ -1782,6 +2067,14 @@ code {
 }
 
 @media (max-width: 600px) {
+  .welcome__fields {
+    grid-template-columns: 1fr;
+  }
+
+  .dataset__wide {
+    grid-column: auto;
+  }
+
   .masthead {
     flex-wrap: wrap;
   }

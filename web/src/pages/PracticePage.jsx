@@ -9,6 +9,7 @@ import TakeTimeline from '../components/TakeTimeline'
 import Waveform from '../components/Waveform'
 import { countToday, getHistory, saveAttempt } from '../engine/history'
 import { withAccentCoaching } from '../engine/coaching'
+import { considerTake } from '../engine/contributions'
 import { buildInsights } from '../engine/insights'
 import { recordingUrl, textEntry } from '../engine/lexicon'
 import { recognize } from '../engine/model'
@@ -40,7 +41,7 @@ const isTypingTarget = (target) =>
   && (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A'].includes(target.tagName))
 
 function PracticePage() {
-  const { accent, setAccent, lexicon, lexiconError, fetchLexicon, words, model, ensureModel } = useApp()
+  const { accent, setAccent, lexicon, lexiconError, fetchLexicon, words, model, ensureModel, profile } = useApp()
   const [level, setLevel] = useState('medium')
   const [word, setWord] = useState(null)
   const [result, setResult] = useState(null)
@@ -132,7 +133,7 @@ function PracticePage() {
     if (next) showWord(next)
   }, [levelWords, showWord])
 
-  const handleTake = useCallback(async ({ samples, seconds, wav }) => {
+  const handleTake = useCallback(async ({ samples, seconds, wav, quality }) => {
     const taken = wordRef.current
     if (!taken) return
     if (seconds < MIN_TAKE_SECONDS) {
@@ -162,8 +163,14 @@ function PracticePage() {
         predicted_phonemes: heard.phonemes,
         accents: heard.accents,
         seconds,
+        quality,
       }
       await saveAttempt(attempt).catch(() => {})
+      // With "Help it learn" on, a clear take leaves a 256-number summary on this device. Never audio.
+      attempt.kept = await considerTake({
+        profile, targetAccent: accent, word: taken.word, score: scored.score, heard, quality,
+        soundsAttempted: scored.metrics.completeness, featureCount: heard.featureCount,
+      })
       refreshHistory()
 
       // Ignore the answer if the learner already moved on to another word.
@@ -179,7 +186,7 @@ function PracticePage() {
     } finally {
       setAnalysing(false)
     }
-  }, [accent, ensureModel, refreshHistory])
+  }, [accent, ensureModel, refreshHistory, profile])
 
   const handleRecorderError = useCallback((message) => {
     armedRef.current = false
@@ -215,7 +222,8 @@ function PracticePage() {
     setNotice(null)
     if (repeatAfterMe) await sayWord(wordRef.current)
     // Space may have been released while the word was playing.
-    if (armedRef.current) start()
+    // After the app has spoken, drop the pre-roll so its voice is not part of the take.
+    if (armedRef.current) start({ preRoll: !repeatAfterMe })
   }, [analysing, modelReady, repeatAfterMe, sayWord, start])
 
   const endTake = useCallback(() => {
@@ -266,7 +274,7 @@ function PracticePage() {
   // Hold space to record, release to stop.
   useEffect(() => {
     const onKeyDown = (event) => {
-      if (event.code !== 'Space' || isTypingTarget(event.target)) return
+      if (event.code !== 'Space' || isTypingTarget(event.target) || document.querySelector('dialog[open]')) return
       event.preventDefault()
       if (event.repeat || spaceHeldRef.current) return
       spaceHeldRef.current = true
@@ -506,6 +514,12 @@ function PracticePage() {
                 <button type="button" className="text-button" onClick={() => playTake()}>
                   Play my take
                 </button>
+              )}
+              {profile.contribute && result.kept && (
+                <p className="result__kept label">
+                  {result.kept.stored ? 'Summary kept on this device' : `Not kept: ${result.kept.reason}`}
+                  {' · '}<Link to="/data">Your data</Link>
+                </p>
               )}
 
               {result.predicted_phonemes.length > 0 && (

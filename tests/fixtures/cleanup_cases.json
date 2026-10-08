@@ -1,0 +1,551 @@
+[
+ {
+  "name": "word_with_silence_around",
+  "sections": [
+   [
+    "noise",
+    0.6,
+    0.002,
+    0
+   ],
+   [
+    "tone",
+    0.5,
+    0.3,
+    220
+   ],
+   [
+    "noise",
+    0.7,
+    0.002,
+    0
+   ]
+  ],
+  "expected": {
+   "found_speech": true,
+   "start": 1440,
+   "end": 25920,
+   "speech_seconds": 0.53,
+   "snr_db": 44.8,
+   "clipped": 0.0,
+   "kept_samples": 24480,
+   "cleaned_rms": 0.12117
+  }
+ },
+ {
+  "name": "word_at_the_very_start",
+  "sections": [
+   [
+    "tone",
+    0.4,
+    0.25,
+    180
+   ],
+   [
+    "noise",
+    0.8,
+    0.003,
+    0
+   ]
+  ],
+  "expected": {
+   "found_speech": true,
+   "start": 0,
+   "end": 14720,
+   "speech_seconds": 0.42,
+   "snr_db": 39.4,
+   "clipped": 0.0,
+   "kept_samples": 14720,
+   "cleaned_rms": 0.11638
+  }
+ },
+ {
+  "name": "word_at_the_very_end",
+  "sections": [
+   [
+    "noise",
+    0.9,
+    0.003,
+    0
+   ],
+   [
+    "tone",
+    0.35,
+    0.25,
+    300
+   ]
+  ],
+  "expected": {
+   "found_speech": true,
+   "start": 6240,
+   "end": 20000,
+   "speech_seconds": 0.36,
+   "snr_db": 39.9,
+   "clipped": 0.0,
+   "kept_samples": 13760,
+   "cleaned_rms": 0.11261
+  }
+ },
+ {
+  "name": "phrase_with_a_pause",
+  "sections": [
+   [
+    "noise",
+    0.4,
+    0.002,
+    0
+   ],
+   [
+    "tone",
+    0.4,
+    0.3,
+    200
+   ],
+   [
+    "noise",
+    0.25,
+    0.002,
+    0
+   ],
+   [
+    "tone",
+    0.5,
+    0.2,
+    260
+   ],
+   [
+    "noise",
+    0.5,
+    0.002,
+    0
+   ]
+  ],
+  "expected": {
+   "found_speech": true,
+   "start": 0,
+   "end": 32800,
+   "speech_seconds": 1.18,
+   "snr_db": 42.2,
+   "clipped": 0.0,
+   "kept_samples": 32800,
+   "cleaned_rms": 0.11676
+  }
+ },
+ {
+  "name": "phrase_with_a_long_pause",
+  "sections": [
+   [
+    "noise",
+    0.3,
+    0.002,
+    0
+   ],
+   [
+    "tone",
+    0.4,
+    0.3,
+    200
+   ],
+   [
+    "noise",
+    0.6,
+    0.002,
+    0
+   ],
+   [
+    "tone",
+    0.5,
+    0.25,
+    260
+   ],
+   [
+    "noise",
+    0.3,
+    0.002,
+    0
+   ]
+  ],
+  "expected": {
+   "found_speech": true,
+   "start": 0,
+   "end": 33600,
+   "speech_seconds": 1.53,
+   "snr_db": 41.8,
+   "clipped": 0.0,
+   "kept_samples": 33600,
+   "cleaned_rms": 0.12644
+  }
+ },
+ {
+  "name": "key_click_before_word",
+  "sections": [
+   [
+    "noise",
+    0.2,
+    0.002,
+    0
+   ],
+   [
+    "tone",
+    0.03,
+    0.5,
+    2000
+   ],
+   [
+    "noise",
+    0.7,
+    0.002,
+    0
+   ],
+   [
+    "tone",
+    0.5,
+    0.3,
+    220
+   ],
+   [
+    "noise",
+    0.4,
+    0.002,
+    0
+   ]
+  ],
+  "expected": {
+   "found_speech": true,
+   "start": 6720,
+   "end": 29280,
+   "speech_seconds": 0.53,
+   "snr_db": 44.8,
+   "clipped": 0.0,
+   "kept_samples": 22560,
+   "cleaned_rms": 0.12611
+  }
+ },
+ {
+  "name": "cough_after_word",
+  "sections": [
+   [
+    "noise",
+    0.3,
+    0.002,
+    0
+   ],
+   [
+    "tone",
+    0.6,
+    0.3,
+    240
+   ],
+   [
+    "noise",
+    0.6,
+    0.002,
+    0
+   ],
+   [
+    "tone",
+    0.08,
+    0.2,
+    700
+   ],
+   [
+    "noise",
+    0.3,
+    0.002,
+    0
+   ]
+  ],
+  "expected": {
+   "found_speech": true,
+   "start": 0,
+   "end": 22720,
+   "speech_seconds": 0.63,
+   "snr_db": 44.8,
+   "clipped": 0.0,
+   "kept_samples": 22720,
+   "cleaned_rms": 0.13762
+  }
+ },
+ {
+  "name": "noisy_room",
+  "sections": [
+   [
+    "noise",
+    0.5,
+    0.03,
+    0
+   ],
+   [
+    "tone+noise",
+    0.6,
+    0.3,
+    210
+   ],
+   [
+    "noise",
+    0.5,
+    0.03,
+    0
+   ]
+  ],
+  "expected": {
+   "found_speech": true,
+   "start": 0,
+   "end": 25600,
+   "speech_seconds": 0.62,
+   "snr_db": 21.4,
+   "clipped": 0.0,
+   "kept_samples": 25600,
+   "cleaned_rms": 0.12842
+  }
+ },
+ {
+  "name": "very_noisy_room",
+  "sections": [
+   [
+    "noise",
+    0.5,
+    0.1,
+    0
+   ],
+   [
+    "tone+noise",
+    0.6,
+    0.25,
+    210
+   ],
+   [
+    "noise",
+    0.5,
+    0.1,
+    0
+   ]
+  ],
+  "expected": {
+   "found_speech": true,
+   "start": 0,
+   "end": 25600,
+   "speech_seconds": 0.62,
+   "snr_db": 9.3,
+   "clipped": 0.0,
+   "kept_samples": 25600,
+   "cleaned_rms": 0.10355
+  }
+ },
+ {
+  "name": "quiet_speaker",
+  "sections": [
+   [
+    "noise",
+    0.5,
+    0.001,
+    0
+   ],
+   [
+    "tone",
+    0.5,
+    0.02,
+    190
+   ],
+   [
+    "noise",
+    0.5,
+    0.001,
+    0
+   ]
+  ],
+  "expected": {
+   "found_speech": true,
+   "start": 0,
+   "end": 24000,
+   "speech_seconds": 0.53,
+   "snr_db": 27.2,
+   "clipped": 0.0,
+   "kept_samples": 24000,
+   "cleaned_rms": 0.00812
+  }
+ },
+ {
+  "name": "only_noise",
+  "sections": [
+   [
+    "noise",
+    1.2,
+    0.02,
+    0
+   ]
+  ],
+  "expected": {
+   "found_speech": false,
+   "start": 0,
+   "end": 19200,
+   "speech_seconds": 0.0,
+   "snr_db": 0.0,
+   "clipped": 0.0,
+   "kept_samples": 19200,
+   "cleaned_rms": 0.01154
+  }
+ },
+ {
+  "name": "only_silence",
+  "sections": [
+   [
+    "silence",
+    1.0,
+    0,
+    0
+   ]
+  ],
+  "expected": {
+   "found_speech": false,
+   "start": 0,
+   "end": 16000,
+   "speech_seconds": 0.0,
+   "snr_db": 0.0,
+   "clipped": 0.0,
+   "kept_samples": 16000,
+   "cleaned_rms": 0.0
+  }
+ },
+ {
+  "name": "too_short_to_be_speech",
+  "sections": [
+   [
+    "noise",
+    0.5,
+    0.002,
+    0
+   ],
+   [
+    "tone",
+    0.02,
+    0.4,
+    500
+   ],
+   [
+    "noise",
+    0.5,
+    0.002,
+    0
+   ]
+  ],
+  "expected": {
+   "found_speech": false,
+   "start": 0,
+   "end": 16320,
+   "speech_seconds": 0.0,
+   "snr_db": 0.0,
+   "clipped": 0.0,
+   "kept_samples": 16320,
+   "cleaned_rms": 0.03962
+  }
+ },
+ {
+  "name": "clipped_loud_word",
+  "sections": [
+   [
+    "noise",
+    0.3,
+    0.002,
+    0
+   ],
+   [
+    "tone",
+    0.5,
+    1.4,
+    200
+   ],
+   [
+    "noise",
+    0.3,
+    0.002,
+    0
+   ]
+  ],
+  "expected": {
+   "found_speech": true,
+   "start": 0,
+   "end": 17600,
+   "speech_seconds": 0.53,
+   "snr_db": 56.4,
+   "clipped": 0.238636,
+   "kept_samples": 17600,
+   "cleaned_rms": 0.5551
+  }
+ },
+ {
+  "name": "dc_offset_and_rumble",
+  "sections": [
+   [
+    "rumble",
+    0.5,
+    0.2,
+    30
+   ],
+   [
+    "tone+rumble",
+    0.5,
+    0.3,
+    230
+   ],
+   [
+    "rumble",
+    0.5,
+    0.2,
+    30
+   ]
+  ],
+  "expected": {
+   "found_speech": true,
+   "start": 0,
+   "end": 24000,
+   "speech_seconds": 0.52,
+   "snr_db": 11.3,
+   "clipped": 0.0,
+   "kept_samples": 24000,
+   "cleaned_rms": 0.12439
+  }
+ },
+ {
+  "name": "speech_edge_to_edge",
+  "sections": [
+   [
+    "tone",
+    0.8,
+    0.3,
+    220
+   ]
+  ],
+  "expected": {
+   "found_speech": true,
+   "start": 0,
+   "end": 12800,
+   "speech_seconds": 0.8,
+   "snr_db": 0.1,
+   "clipped": 0.0,
+   "kept_samples": 12800,
+   "cleaned_rms": 0.21213
+  }
+ },
+ {
+  "name": "fraction_of_a_frame",
+  "sections": [
+   [
+    "tone",
+    0.01,
+    0.3,
+    220
+   ]
+  ],
+  "expected": {
+   "found_speech": false,
+   "start": 0,
+   "end": 160,
+   "speech_seconds": 0.0,
+   "snr_db": 0.0,
+   "clipped": 0.0,
+   "kept_samples": 160,
+   "cleaned_rms": 0.20926
+  }
+ }
+]

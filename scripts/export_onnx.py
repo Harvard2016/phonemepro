@@ -2,8 +2,8 @@
 
     python -m scripts.export_onnx
 
-Wraps the encoder with its three heads (phoneme CTC, learned score, accent),
-exports it to ONNX, quantizes the weights to 8 bits, checks that the quantized
+Wraps the encoder with its three heads (phoneme CTC, learned score, accent) and
+the fixed accent projection (results/accent_projection.npz), exports it to ONNX, quantizes the weights to 8 bits, checks that the quantized
 model still transcribes like the original, and writes everything the web app
 needs into web/public/model/:
 
@@ -11,7 +11,8 @@ needs into web/public/model/:
     model.json               vocabulary, accent labels, chunk list
     report.json              training log, evaluation results (the Model page)
 
-Needs results/multitask-phoneme-model and results/accent_head.pt.
+Needs results/multitask-phoneme-model, results/accent_head.pt and
+results/accent_projection.npz (python -m scripts.learn_regions fit-projection).
 """
 import hashlib
 import io
@@ -34,20 +35,26 @@ SOURCE_MODEL = ROOT_DIR / "results" / "multitask-phoneme-model"
 WORK_DIR = ROOT_DIR / "results" / "onnx"
 OUTPUT_DIR = ROOT_DIR / "web" / "public" / "model"
 EVAL_RESULTS = ROOT_DIR / "Docs" / "model" / "eval_results.json"
+PROJECTION_PATH = ROOT_DIR / "results" / "accent_projection.npz"
 CHUNK_BYTES = 40 * 1024 * 1024
 PARITY_UTTERANCES = 300
 
 
 class BrowserModel(nn.Module):
-    """input_values -> (logits, score, accent_logits)."""
+    """input_values -> (logits, score, accent_logits, accent_features)."""
 
-    def __init__(self, model, accent_head, accent_layer: int):
+    def __init__(self, model, accent_head, accent_layer: int, projection: dict):
         super().__init__()
         self.encoder = model.wav2vec2
         self.lm_head = model.lm_head
         self.score_head = model.score_head
         self.accent_head = accent_head
         self.accent_layer = accent_layer
+        # Fixed projection of the same layer statistics to the short summary that region
+        # learning uses (scripts/learn_regions.py): standardize, then project.
+        self.register_buffer("feature_mean", torch.tensor(projection["mean"], dtype=torch.float32))
+        self.register_buffer("feature_scale", torch.tensor(projection["scale"], dtype=torch.float32))
+        self.register_buffer("feature_directions", torch.tensor(projection["directions"], dtype=torch.float32))
 
     def forward(self, input_values):
         output = self.encoder(input_values, output_hidden_states=True)
@@ -55,7 +62,11 @@ class BrowserModel(nn.Module):
         # The accent head reads an earlier layer: its mean and spread over time.
         earlier = output.hidden_states[self.accent_layer][0]
         accent_stats = torch.cat([earlier.mean(dim=0), earlier.std(dim=0)]).unsqueeze(0)
-        return self.lm_head(hidden), self.score_head(hidden.mean(dim=1)).squeeze(-1), self.accent_head(accent_stats)
+        features = ((accent_stats - self.feature_mean) / self.feature_scale) @ self.feature_directions
+        return (
+            self.lm_head(hidden), self.score_head(hidden.mean(dim=1)).squeeze(-1),
+            self.accent_head(accent_stats), features,
+        )
 
 
 def collapse(frame_ids, blank_id: int, special_ids: set, vocab: list[str]) -> list[str]:
@@ -78,6 +89,7 @@ def parity(wrapper, quantized_path: Path, processor, vocab, blank_id, special_id
     phones = 0
     disagreements = 0
     score_gap = []
+    feature_gap = []
 
     for index, row in enumerate(iter_utterances(DEFAULT_PARQUET)):
         if index >= PARITY_UTTERANCES:
@@ -88,8 +100,8 @@ def parity(wrapper, quantized_path: Path, processor, vocab, blank_id, special_id
         inputs = processor(librosa.util.normalize(speech), sampling_rate=16000, return_tensors="pt").input_values
 
         with torch.no_grad():
-            logits, score, _ = wrapper(inputs)
-        q_logits, q_score, _ = session.run(None, {"input_values": inputs.numpy()})
+            logits, score, _, features = wrapper(inputs)
+        q_logits, q_score, _, q_features = session.run(None, {"input_values": inputs.numpy()})
 
         reference = [strip_stress(p) for word in row["words"] for p in word["phones"]]
         full = [strip_stress(p) for p in collapse(logits[0].argmax(-1).tolist(), blank_id, special_ids, vocab)]
@@ -99,6 +111,7 @@ def parity(wrapper, quantized_path: Path, processor, vocab, blank_id, special_id
         phones += len(reference)
         disagreements += int(full != quant)
         score_gap.append(abs(float(score[0]) - float(q_score[0])))
+        feature_gap.append(float(np.abs(features[0].numpy() - q_features[0]).mean()))
 
     return {
         "parity_utterances": PARITY_UTTERANCES,
@@ -106,6 +119,8 @@ def parity(wrapper, quantized_path: Path, processor, vocab, blank_id, special_id
         "per_quantized": round(errors["quantized"] / phones, 4),
         "transcripts_changed": disagreements,
         "mean_score_shift_points": round(float(np.mean(score_gap)) * 10, 3),
+        # Features are standardized (spread near 1), so this reads as a fraction of that spread.
+        "mean_feature_shift": round(float(np.mean(feature_gap)), 4),
     }
 
 
@@ -120,13 +135,17 @@ def main():
     saved = torch.load(HEAD_PATH)
     accent_head = AccentHead(2 * model.config.hidden_size, len(saved["classes"]))
     accent_head.load_state_dict(saved["state_dict"])
-    wrapper = BrowserModel(model, accent_head.eval(), saved["layer"]).eval()
+    projection = np.load(PROJECTION_PATH)
+    if int(projection["layer"]) != saved["layer"]:
+        raise SystemExit(f"{PROJECTION_PATH} was fitted on layer {int(projection['layer'])}, "
+                         f"but the accent head reads layer {saved['layer']}. Refit the projection.")
+    wrapper = BrowserModel(model, accent_head.eval(), saved["layer"], projection).eval()
 
     WORK_DIR.mkdir(parents=True, exist_ok=True)
     full_path, quantized_path = WORK_DIR / "phonemepro.fp32.onnx", WORK_DIR / "phonemepro.onnx"
     torch.onnx.export(
         wrapper, (torch.randn(1, 16000),), str(full_path),
-        input_names=["input_values"], output_names=["logits", "score", "accent_logits"],
+        input_names=["input_values"], output_names=["logits", "score", "accent_logits", "accent_features"],
         dynamic_axes={"input_values": {1: "samples"}, "logits": {1: "frames"}},
         opset_version=17, dynamo=False,
     )
@@ -166,6 +185,7 @@ def main():
         "blankId": blank_id,
         "specialIds": special_ids,
         "accents": [{"id": c, "name": saved["class_names"][c]} for c in saved["classes"]],
+        "features": int(projection["directions"].shape[1]),
     }
     (OUTPUT_DIR / "model.json").write_text(json.dumps(meta) + "\n")
 
