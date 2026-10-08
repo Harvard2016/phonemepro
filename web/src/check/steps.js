@@ -3,7 +3,7 @@
 // Each step sets up its own profile, tells the tester what to say, runs the take through
 // the same cleanup, model, scoring and keeping rules as the app, and compares what
 // happened with what should have happened. Everything expected is in STEPS below.
-import { exportContributions, EXPORT_VERSION, HOME_ACCENT, routeOf } from '../engine/contributions'
+import { exportContributions, EXPORT_VERSION, EXTRA_SOUNDS, HOME_ACCENT, routeOf } from '../engine/contributions'
 import { SENTENCES } from '../engine/naturalVoice'
 import { isCountryCode } from '../lib/countries'
 import { isRegion, regionName } from '../lib/regions'
@@ -53,7 +53,9 @@ export const STEPS = [
     id: 5, kind: 'take', title: 'Silence',
     profile: { country: 'GB', region: null, contribute: true }, accent: 'ga', word: 'water',
     say: 'Stay silent', how: 'Hold space for two seconds and say nothing.',
-    expect: { kept: false, reason: 'no speech', retake_notice: true },
+    // A real room is never silent. Either the take is heard as nothing, or the room itself is
+    // transcribed as a run of sounds; both must end the same way, unkept with a retake notice.
+    expect: { kept: false, reason_one_of: ['no speech', EXTRA_SOUNDS], retake_notice: true },
   },
   {
     id: 6, kind: 'take', title: 'The wrong word',
@@ -101,6 +103,7 @@ export const LABELS = {
   region: 'region',
   target_accent: 'target_accent',
   reason: 'reason not kept',
+  reason_one_of: 'reason not kept',
   retake_notice: 'retake notice shown',
   failed_includes: 'failed check includes',
   first_sound: 'first sound heard',
@@ -139,6 +142,9 @@ export function evaluateStep(step, outcome) {
     }
   }
   const rows = Object.entries(step.expect).map(([key, expected]) => {
+    if (key === 'reason_one_of') {
+      return { label: LABELS[key], expected: expected.join(' or '), actual: show(outcome.reason), pass: expected.includes(outcome.reason) }
+    }
     if (key === 'failed_includes') {
       const failed = outcome.failed_checks ?? []
       return { label: LABELS[key], expected, actual: show(failed), pass: failed.includes(expected) }

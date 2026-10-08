@@ -371,7 +371,7 @@ With the dev server running, http://localhost:5173/check walks through eleven st
 | 2 | Profile GB, target British: "water" | Kept, attempt, joins `GB>rp` |
 | 3 | Profile US, South, target American: "better" | Kept, attempt, joins `US>ga`, not `US` or `US-S` |
 | 4 | Profile GB, Scotland: a sentence in a normal voice | Kept, native, joins `GB` and `GB-SCT` |
-| 5 | Nothing | Not scored, not kept, no speech, retake notice |
+| 5 | Nothing | Not kept, with a retake notice, as no speech or as extra sounds from the room |
 | 6 | "banana" when the target is "water" | Not kept: not recognisably the target word |
 | 7 | "water" in a deliberately strong accent | Kept, attempt, joins `GB>ga` |
 | 8 | "fish" | First sound heard is F, so the start was not clipped |

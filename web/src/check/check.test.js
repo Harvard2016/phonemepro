@@ -83,6 +83,26 @@ describe('steps 5 to 10', () => {
     expect(refused).toMatchObject({ kept: false, reason: 'no speech', retake_notice: true, scored: false })
     expect(evaluateStep(step(5), refused).status).toBe('pass')
     expect(evaluateStep(step(5), retakeOutcome({ reason: 'noisy', quality })).status).toBe('fail')
+  })
+
+  it('step 5 also passes when the room is transcribed as a run of sounds and refused as noise', async () => {
+    // From a real microphone: 13 sounds heard in 3.45 s of "silence", at 17.9 dB.
+    const room = { foundSpeech: true, speechSeconds: 3.45, snrDb: 17.9, clipped: 0 }
+    const sounds = ['F', 'T', 'AH0', 'S', 'IH0', 'K', 'T', 'AH0', 'N', 'S', 'F', 'T', 'AH0']
+    const store = createMemoryStore()
+    const outcome = await run(5, { ...saying('water'), phonemes: sounds, confidence: 0.6 }, store, { quality: room })
+    expect(outcome).toMatchObject({ kept: false, reason: 'extra sounds, likely background noise', retake_notice: true })
+    expect(store.all()).toEqual([])
+    const evaluation = evaluateStep(step(5), outcome)
+    expect(evaluation.status).toBe('pass')
+    expect(evaluation.rows[1]).toEqual({
+      label: 'reason not kept', expected: 'no speech or extra sounds, likely background noise',
+      actual: 'extra sounds, likely background noise', pass: true,
+    })
+    // Kept, or refused for some other reason, or with no notice: still a failure.
+    expect(evaluateStep(step(5), { ...outcome, reason: 'too few sounds heard' }).status).toBe('fail')
+    expect(evaluateStep(step(5), { ...outcome, retake_notice: false }).status).toBe('fail')
+    expect(evaluateStep(step(5), { ...outcome, kept: true }).status).toBe('fail')
     expect(evaluateStep(step(5), await run(5, spoken(5))).status).toBe('fail')
   })
 
