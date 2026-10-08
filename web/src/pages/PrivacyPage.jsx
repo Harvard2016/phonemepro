@@ -1,12 +1,15 @@
 import { Link } from 'react-router-dom'
 import { MAX_STORED } from '../engine/contributions'
+import { countryName } from '../lib/countries'
+import { REGIONS } from '../lib/regions'
 
 // INTERIM. Written by the developer, not reviewed by a lawyer. Before sharing is
 // switched on, a lawyer should check at least:
 //   - whether the 256-number summary is biometric or otherwise special-category data
 //     (GDPR Art. 9, Illinois BIPA, Texas CUBI, Washington MHMDA) and what consent that needs;
 //   - the legal basis and the wording, timing and record of consent for "Help it learn";
-//   - country plus free-text region or city, which can single out a person in a small place;
+//   - country plus a broad region from a fixed list (lib/regions.js). Nothing can be typed, but
+//     whether a region plus a voice summary could still single someone out;
 //   - children: no age check exists (COPPA, GDPR Art. 8);
 //   - who the controller is, the contact address, and how access and erasure requests are met
 //     once summaries have been folded into totals and cannot be picked back out;
@@ -50,7 +53,7 @@ function PrivacyPage() {
         <p className="prose">It is off unless you turn it on. When it is on, this browser keeps, for each clear take:</p>
         <ul className="prose">
           <li>a summary of the take as 256 numbers, worked out by the model;</li>
-          <li>the labels you gave: your country and, if you typed one, your region or city;</li>
+          <li>the labels you gave: your country and, if you chose one, a broad region from a fixed list;</li>
           <li>which accent you were practising, or that you were speaking in your normal voice;</li>
           <li>the word, the score, how clean the take was, and which version of the model made the summary;</li>
           <li>a random id for the take and a random id for this browser. Neither is your name or an account.</li>
@@ -60,6 +63,18 @@ function PrivacyPage() {
           in the way a description of a face is not a photograph but is still about one person. Treat it as
           personal information. At most {MAX_STORED} takes are kept per browser.
         </p>
+
+        <h2 className="section-title">Regions</h2>
+        <p className="prose">
+          There is nowhere to type a town, a city or anything else about where you live. Some countries offer
+          a short list of broad regions, and you can always answer “Rather not say”. Other countries offer no
+          region at all. The whole list:
+        </p>
+        <ul className="prose">
+          {Object.entries(REGIONS).map(([country, regions]) => (
+            <li key={country}>{countryName(country)}: {Object.values(regions).join('; ')}.</li>
+          ))}
+        </ul>
 
         <h2 className="section-title">Where it is</h2>
         <p className="prose">

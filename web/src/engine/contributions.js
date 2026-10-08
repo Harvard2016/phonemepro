@@ -5,6 +5,7 @@
 // accent they were attempting, and whether that was their own. Contributions stay
 // in this browser (IndexedDB); nothing uploads them. The "Your data" page lists,
 // exports and deletes them, and scripts/learn_regions.py reads the export.
+import { regionName } from '../lib/regions'
 import { run as runIn } from './db'
 
 export const EXPORT_VERSION = 2
@@ -71,7 +72,7 @@ export function buildContribution({
     created: new Date().toISOString(),
     contributor: profile.contributor,
     country: profile.country,
-    region: profile.region || null,
+    region: profile.region ?? null,
     target_accent: naturalVoice ? null : targetAccent,
     natural_voice: Boolean(naturalVoice),
     matches_home_accent: !naturalVoice && HOME_ACCENT[profile.country] === targetAccent,
@@ -90,10 +91,14 @@ export function buildContribution({
 }
 
 // What a contribution will be used for once sharing exists. Mirrors `route` in scripts/learn_regions.py.
+// A native take with a region also joins that region's totals; attempts are kept per country.
 export function routeOf(contribution) {
-  return contribution.natural_voice || contribution.matches_home_accent
-    ? { kind: 'native', label: `how ${contribution.country} sounds` }
-    : { kind: 'attempt', label: `${contribution.country} attempting ${contribution.target_accent}` }
+  const { country, region } = contribution
+  if (contribution.natural_voice || contribution.matches_home_accent) {
+    const place = regionName(country, region)
+    return { kind: 'native', keys: region ? [country, `${country}-${region}`] : [country], label: `how ${country}${place ? ` and ${place}` : ''} sounds` }
+  }
+  return { kind: 'attempt', keys: [`${country}>${contribution.target_accent}`], label: `${country} attempting ${contribution.target_accent}` }
 }
 
 // Newest first.

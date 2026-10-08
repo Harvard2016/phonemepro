@@ -1,3 +1,5 @@
+import { isRegion } from '../lib/regions'
+
 // One IndexedDB database for everything kept in this browser. Nothing here is
 // uploaded: there is no server to upload to.
 //
@@ -5,7 +7,7 @@
 //   contributions   accent summaries kept when "Help it learn" is on (engine/contributions.js)
 
 const DB_NAME = 'phonemepro'
-const DB_VERSION = 2
+const DB_VERSION = 3
 
 let opening = null
 
@@ -20,6 +22,17 @@ function open() {
         }
         if (!db.objectStoreNames.contains('contributions')) {
           db.createObjectStore('contributions', { keyPath: 'id' })
+        }
+        // Version 3: region became a fixed code. Takes stored before that may hold typed
+        // text; the text is dropped and the take is kept.
+        const cursor = request.transaction.objectStore('contributions').openCursor()
+        cursor.onsuccess = () => {
+          const row = cursor.result
+          if (!row) return
+          if (row.value.region !== null && !isRegion(row.value.country, row.value.region)) {
+            row.update({ ...row.value, region: null })
+          }
+          row.continue()
         }
       }
       request.onsuccess = () => resolve(request.result)

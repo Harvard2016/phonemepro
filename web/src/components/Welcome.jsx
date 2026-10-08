@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom'
 import { clearContributions, clearDecisions, considerTake, countContributions } from '../engine/contributions'
 import { textEntry } from '../engine/lexicon'
 import { recognize } from '../engine/model'
-import { cleanRegion, MAX_REGION_CHARS } from '../engine/profile'
 import { scoreAttempt } from '../engine/scoring'
 import { useRecorder } from '../hooks/useRecorder'
 import { countries } from '../lib/countries'
+import { isRegion, regionsOf } from '../lib/regions'
 import { useApp } from '../state'
 
 // Short, ordinary sentences. They are read in the speaker's own accent, not scored.
@@ -25,7 +25,7 @@ function WelcomeSheet() {
   const { lexicon, model, ensureModel, profile, saveProfile, closeWelcome } = useApp()
   const dialogRef = useRef(null)
   const [country, setCountry] = useState(profile.country ?? '')
-  const [region, setRegion] = useState(profile.region)
+  const [region, setRegion] = useState(profile.region ?? '')
   const [contribute, setContribute] = useState(profile.contribute)
   // Natural-voice takes wait here until the screen is saved; they are stored only if the switch is on.
   const [voiceTakes, setVoiceTakes] = useState({})
@@ -35,6 +35,7 @@ function WelcomeSheet() {
   const [storedCount, setStoredCount] = useState(0)
   const activeRef = useRef(null)
   const countryList = useMemo(countries, [])
+  const regionList = regionsOf(country)
   const returning = profile.seen
 
   useEffect(() => {
@@ -99,7 +100,7 @@ function WelcomeSheet() {
 
   const save = (event) => {
     event.preventDefault()
-    finish({ country: country || null, region: cleanRegion(region), contribute, keepVoice: true })
+    finish({ country: country || null, region: isRegion(country, region) ? region : null, contribute, keepVoice: true })
   }
 
   // Closing without saving keeps whatever was saved before.
@@ -131,23 +132,30 @@ function WelcomeSheet() {
           <div className="welcome__fields">
             <label className="select welcome__field">
               <span className="label">Country</span>
-              <select value={country} onChange={(event) => setCountry(event.target.value)}>
+              <select
+                value={country}
+                onChange={(event) => {
+                  setCountry(event.target.value)
+                  setRegion('')
+                }}
+              >
                 <option value="">Prefer not to say</option>
                 {countryList.map(({ code, name }) => <option key={code} value={code}>{name}</option>)}
               </select>
             </label>
-            <label className="own-text__field welcome__field">
-              <span className="label">Region or city</span>
-              <input
-                type="text"
-                value={region}
-                onChange={(event) => setRegion(event.target.value)}
-                maxLength={MAX_REGION_CHARS}
-                placeholder="If you like"
-                autoComplete="off"
-              />
-            </label>
+            {regionList.length > 0 && (
+              <label className="select welcome__field">
+                <span className="label">Region</span>
+                <select value={region} onChange={(event) => setRegion(event.target.value)}>
+                  <option value="">Rather not say</option>
+                  {regionList.map(([code, name]) => <option key={code} value={code}>{name}</option>)}
+                </select>
+              </label>
+            )}
           </div>
+          {regionList.length > 0 && (
+            <p className="welcome__text">Regions are broad on purpose. There is nowhere to type a town or city.</p>
+          )}
         </section>
 
         <section className="welcome__part" aria-labelledby="welcome-voice">

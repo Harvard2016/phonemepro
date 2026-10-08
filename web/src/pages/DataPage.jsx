@@ -5,6 +5,7 @@ import {
   clearContributions, clearDecisions, exportContributions, getContributions, MAX_STORED, recentDecisions, routeOf,
 } from '../engine/contributions'
 import { countryName } from '../lib/countries'
+import { regionName } from '../lib/regions'
 import { useApp } from '../state'
 
 const formatTime = (iso) =>
@@ -83,7 +84,7 @@ function DataPage() {
         <dl className="spec">
           <div><dt>Help it learn</dt><dd>{profile.contribute ? 'On' : 'Off: nothing new is being kept'}</dd></div>
           <div><dt>Country</dt><dd>{profile.country ? `${countryName(profile.country)} (${profile.country})` : 'Not given'}</dd></div>
-          <div><dt>Region or city</dt><dd>{profile.region || 'Not given'}</dd></div>
+          <div><dt>Region</dt><dd>{profile.region ? `${regionName(profile.country, profile.region)} (${profile.region})` : 'Not given'}</dd></div>
           <div><dt>Random id for this browser</dt><dd className="mono">{profile.contributor ?? 'None yet'}</dd></div>
         </dl>
         <button type="button" className="button button--ghost" onClick={openWelcome}>Change or withdraw</button>
@@ -144,7 +145,7 @@ function DataPage() {
                   </div>
                   <dl className="dataset__labels">
                     <div><dt>country</dt><dd>{take.country}</dd></div>
-                    <div><dt>region</dt><dd>{take.region ?? 'none'}</dd></div>
+                    <div><dt>region</dt><dd>{take.region ?? 'none'} <small>{regionName(take.country, take.region)}</small></dd></div>
                     <div><dt>target_accent</dt><dd>{take.target_accent ?? 'none'} <small>{take.target_accent ? accentName(take.target_accent) : 'normal voice'}</small></dd></div>
                     <div><dt>natural_voice</dt><dd>{yesNo(take.natural_voice)}</dd></div>
                     <div><dt>matches_home_accent</dt><dd>{yesNo(take.matches_home_accent)}</dd></div>
@@ -155,6 +156,7 @@ function DataPage() {
                     <div><dt>confidence</dt><dd>{take.quality.confidence}</dd></div>
                     <div><dt>sounds attempted</dt><dd>{take.quality.sounds_attempted}%</dd></div>
                     <div><dt>model_version</dt><dd>{take.model_version}</dd></div>
+                    <div className="dataset__wide"><dt>joins totals</dt><dd>{use.keys.join(', ')}</dd></div>
                     <div className="dataset__wide"><dt>id</dt><dd>{take.id}</dd></div>
                     <div className="dataset__wide"><dt>contributor</dt><dd>{take.contributor}</dd></div>
                   </dl>

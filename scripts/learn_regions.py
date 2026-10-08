@@ -3,6 +3,7 @@
     python -m scripts.learn_regions fit-projection        # once: the 256-number summary the browser computes
     python -m scripts.learn_regions simulate              # check the idea on VCTK
     python -m scripts.learn_regions ingest <file|folder>  # fold exported takes into the running totals
+    python -m scripts.learn_regions ingest <file|folder> --dry-run   # check and summarise, write nothing
 
 When someone opts in, the web app reduces each clear take to 256 numbers: the
 mean and spread of an encoder layer over the take, standardized and projected
@@ -13,7 +14,7 @@ speaker, so it is still treated as personal data until it is folded in.
 `ingest` reads files exported from the app's "Your data" page, checks every take,
 and adds each vector to running totals (pronunciation/region_totals.py). A take
 in the speaker's normal voice, or in the accent native to their country, joins
-that country's totals. A take imitating another accent is not a sample of the
+that country's totals, and its region's when one was given. A take imitating another accent is not a sample of the
 speaker's home accent, so it joins separate "country attempting accent" totals.
 Only the totals and a list of take ids already counted are kept. `simulate` runs
 the same path on VCTK speakers to show that a classifier built from totals alone works.
@@ -41,7 +42,20 @@ UUID = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12
 COUNTRY = re.compile(r"^[A-Za-z]{2}$")
 EXPORT_VERSION = 2
 ACCENTS = ("ga", "rp", "au")
-MAX_REGION_CHARS = 60
+# Broad regions a contributor may pick, only for countries where accent varies a lot
+# by region. A take carries one of these codes or nothing; typed text is never accepted.
+# The web app holds the same table (web/src/lib/regions.js).
+REGIONS = {
+    "US": {"NE": "Northeast", "S": "South", "MW": "Midwest", "W": "West"},
+    "GB": {
+        "ENG_S": "England (South)", "ENG_N": "England (North)", "SCT": "Scotland",
+        "WLS": "Wales", "NIR": "Northern Ireland",
+    },
+    "AU": {"E": "Eastern states and Tasmania", "SA": "South Australia", "W": "Western Australia and the Northern Territory"},
+    "CA": {"ATL": "Atlantic provinces", "QC": "Quebec", "ON": "Ontario", "W": "Prairies, British Columbia and the North"},
+    "IE": {"E": "East (Leinster)", "S": "South (Munster)", "W": "West and north (Connacht, Ulster)"},
+    "IN": {"N": "North", "S": "South", "E": "East and Northeast", "W": "West and Central"},
+}
 # The practice accent native to a country. The web app holds the same table
 # (web/src/engine/contributions.js); both are pinned to tests/fixtures/contribution_export.json.
 HOME_ACCENT = {"US": "ga", "GB": "rp", "AU": "au"}
@@ -140,7 +154,7 @@ def check_take(take, feature_set: str) -> tuple[dict | None, str | None]:
         return None, "bad country"
     country = country.upper()
     region = take.get("region")
-    if region is not None and (not isinstance(region, str) or len(region) > MAX_REGION_CHARS):
+    if region is not None and (not isinstance(region, str) or region not in REGIONS.get(country, {})):
         return None, "bad region"
 
     natural, matches, accent = take.get("natural_voice"), take.get("matches_home_accent"), take.get("target_accent")
@@ -163,22 +177,28 @@ def check_take(take, feature_set: str) -> tuple[dict | None, str | None]:
         return None, "feature out of range"
 
     return {
-        "id": take_id.lower(), "contributor": contributor.lower(), "country": country,
+        "id": take_id.lower(), "contributor": contributor.lower(), "country": country, "region": region,
         "target_accent": accent, "natural_voice": natural, "matches_home_accent": matches, "features": features,
     }, None
 
 
-def route(take: dict) -> tuple[str, str]:
-    """Which totals a take joins: ("native", country) or ("attempt", "country>accent").
+def route(take: dict) -> tuple[str, list[str]]:
+    """Which totals a take joins: ("native", [country, "country-region"]) or ("attempt", ["country>accent"]).
 
     Someone imitating an accent is not a sample of their home accent. Only a take in
     the speaker's normal voice, or one where the accent practised is the one native
     to their country, says how that country sounds. Everything else is evidence of
     how people from that country attempt the target accent.
+
+    A native take with a region joins the region's totals as well as the country's,
+    so a region can be learned once enough people from it contribute.
     """
     if take["natural_voice"] or take["matches_home_accent"]:
-        return "native", take["country"]
-    return "attempt", f"{take['country']}>{take['target_accent']}"
+        keys = [take["country"]]
+        if take["region"]:
+            keys.append(f"{take['country']}-{take['region']}")
+        return "native", keys
+    return "attempt", [f"{take['country']}>{take['target_accent']}"]
 
 
 def read_export(path: Path) -> tuple[list, str | None]:
@@ -197,8 +217,11 @@ def read_export(path: Path) -> tuple[list, str | None]:
 
 
 def ingest(source: Path, native_path: Path, attempts_path: Path, seen_path: Path, feature_set: str,
-           min_contributors: int = MIN_CONTRIBUTORS, min_takes: int = MIN_TAKES) -> dict:
-    """Fold every new, valid take in `source` (an export file or a folder of them) into the totals."""
+           min_contributors: int = MIN_CONTRIBUTORS, min_takes: int = MIN_TAKES, dry_run: bool = False) -> dict:
+    """Fold every new, valid take in `source` (an export file or a folder of them) into the totals.
+
+    With `dry_run` everything is checked and summarised as it would be, and nothing is written.
+    """
     stores = {}
     for kind, path in (("native", native_path), ("attempt", attempts_path)):
         totals, stored_set = load_totals(path) if path.exists() else ({}, feature_set)
@@ -213,7 +236,7 @@ def ingest(source: Path, native_path: Path, attempts_path: Path, seen_path: Path
     added: dict[tuple[str, str], int] = {}
     contributors: dict[str, set] = {}
     per_contributor: dict[str, int] = {}
-    duplicates = over_cap = 0
+    duplicates = over_cap = takes_added = 0
 
     for path in [source] if source.is_file() else sorted(source.rglob("*.json")):
         raw_takes, reason = read_export(path)
@@ -234,22 +257,27 @@ def ingest(source: Path, native_path: Path, attempts_path: Path, seen_path: Path
                 continue
             seen.add(digest)
             per_contributor[take["contributor"]] = per_contributor.get(take["contributor"], 0) + 1
-            kind, key = route(take)
-            stores[kind].setdefault(key, Totals.empty()).add(take["features"])
-            added[kind, key] = added.get((kind, key), 0) + 1
+            takes_added += 1
+            kind, keys = route(take)
+            for key in keys:
+                stores[kind].setdefault(key, Totals.empty()).add(take["features"])
+                added[kind, key] = added.get((kind, key), 0) + 1
             contributors.setdefault(take["country"], set()).add(take["contributor"])
 
-    for kind, path in (("native", native_path), ("attempt", attempts_path)):
-        path.parent.mkdir(parents=True, exist_ok=True)
-        save_totals(path, stores[kind], feature_set)
-    seen_path.write_text("\n".join(sorted(seen)) + ("\n" if seen else ""))
+    if not dry_run:
+        for kind, path in (("native", native_path), ("attempt", attempts_path)):
+            path.parent.mkdir(parents=True, exist_ok=True)
+            save_totals(path, stores[kind], feature_set)
+        seen_path.write_text("\n".join(sorted(seen)) + ("\n" if seen else ""))
 
     native, attempts = stores["native"], stores["attempt"]
-    countries = sorted(set(native) | {key.split(">")[0] for key in attempts})
+    # Native totals are keyed by country ("GB") and by region within it ("GB-SCT").
+    countries = sorted({key.split("-")[0] for key in native} | {key.split(">")[0] for key in attempts})
     return {
         "feature_set": feature_set,
-        "added": sum(added.values()),
-        "added_native": sum(count for (kind, _), count in added.items() if kind == "native"),
+        "dry_run": dry_run,
+        "added": takes_added,
+        "added_native": sum(count for (kind, key), count in added.items() if kind == "native" and "-" not in key),
         "added_attempts": sum(count for (kind, _), count in added.items() if kind == "attempt"),
         "duplicates": duplicates,
         "refused": refused,
@@ -260,6 +288,10 @@ def ingest(source: Path, native_path: Path, attempts_path: Path, seen_path: Path
             country: {
                 "native_total": native[country].count if country in native else 0,
                 "native_added": added.get(("native", country), 0),
+                "regions": {
+                    key.split("-")[1]: {"total": totals.count, "added": added.get(("native", key), 0)}
+                    for key, totals in sorted(native.items()) if key.startswith(f"{country}-")
+                },
                 "attempts": {
                     key.split(">")[1]: {"total": totals.count, "added": added.get(("attempt", key), 0)}
                     for key, totals in sorted(attempts.items()) if key.split(">")[0] == country
@@ -277,6 +309,8 @@ def ingest(source: Path, native_path: Path, attempts_path: Path, seen_path: Path
 
 
 def print_summary(summary: dict) -> None:
+    if summary["dry_run"]:
+        print("Dry run: nothing was written. This is what an ingest would do.")
     print(f"Model {summary['feature_set']}: added {summary['added']} takes "
           f"({summary['added_native']} native accent, {summary['added_attempts']} attempts), "
           f"{summary['duplicates']} already counted, {summary['over_contributor_cap']} over the per-contributor cap.")
@@ -288,6 +322,8 @@ def print_summary(summary: dict) -> None:
         attempts = ", ".join(f"{accent} {a['total']} ({a['added']})" for accent, a in entry["attempts"].items()) or "none"
         print(f"{country:8} {entry['native_total']:7} {entry['native_added']:6}  {entry['contributors_this_run']:12}  "
               f"{'yes' if entry['ready'] else 'no':5}  {attempts}")
+        for region, r in entry["regions"].items():
+            print(f"  {region:6} {r['total']:7} {r['added']:6}  {REGIONS[country][region]}")
     thresholds = summary["thresholds"]
     print(f"\nA country is ready at {thresholds['min_takes']} native takes from "
           f"{thresholds['min_contributors']} contributors in one run.")
@@ -301,6 +337,7 @@ def main():
     ingest_parser = commands.add_parser("ingest")
     ingest_parser.add_argument("source", type=Path, help="an export file, or a folder of them")
     ingest_parser.add_argument("--json", action="store_true", help="print the summary as JSON")
+    ingest_parser.add_argument("--dry-run", action="store_true", help="check and summarise, write nothing")
     ingest_parser.add_argument("--min-contributors", type=int, default=MIN_CONTRIBUTORS)
     ingest_parser.add_argument("--min-takes", type=int, default=MIN_TAKES)
     args = parser.parse_args()
@@ -314,7 +351,7 @@ def main():
             raise SystemExit(f"{args.source} does not exist.")
         feature_set = json.loads(MODEL_META_PATH.read_text())["version"]
         summary = ingest(args.source, TOTALS_PATH, ATTEMPTS_PATH, SEEN_PATH, feature_set,
-                         args.min_contributors, args.min_takes)
+                         args.min_contributors, args.min_takes, args.dry_run)
         if args.json:
             print(json.dumps(summary, indent=2))
         else:
