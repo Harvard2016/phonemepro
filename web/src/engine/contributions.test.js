@@ -1,11 +1,13 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import {
-  buildContribution, checkEligibility, checkViability, exportContributions, HOME_ACCENT, MAX_STORED, routeOf, VIABILITY,
+  allowedSounds, buildContribution, checkEligibility, checkViability, considerTake, createMemoryStore, exportContributions,
+  EXTRA_SOUNDS, HOME_ACCENT, MAX_STORED, routeOf, TOO_FEW_SOUNDS, VIABILITY,
 } from './contributions'
 import { textEntry } from './lexicon'
 import { SENTENCES, targetSounds } from './naturalVoice'
 import { normalizeProfile } from './profile'
+import { heardNoSpeech, MIN_SOUNDS, MIN_SOUNDS_PER_SECOND } from './takeChecks'
 import { countries, isCountryCode } from '../lib/countries'
 import { isRegion, regionName, REGIONS, regionsOf } from '../lib/regions'
 
@@ -17,7 +19,7 @@ const fixture = JSON.parse(
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
 const features = Array.from({ length: 256 }, (_, i) => Math.sin(i) * 1.23456789)
 const cleanQuality = { foundSpeech: true, speechSeconds: 0.62, snrDb: 31.4, clipped: 0 }
-const good = { quality: cleanQuality, confidence: 0.9, soundsMatched: 100, features, featureCount: 256 }
+const good = { quality: cleanQuality, confidence: 0.9, soundsMatched: 100, soundsHeard: 4, targetSounds: [4, 4], features, featureCount: 256 }
 const goodVoice = { quality: cleanQuality, confidence: 0.9, naturalVoice: true, soundsHeard: 20, targetSounds: [19, 20], features, featureCount: 256 }
 const profile = { seen: true, country: 'GB', region: 'ENG_N', contribute: true, contributor: '3f2b8c1e-5a47-4d09-9b61-7e0c2a4d8f13' }
 
@@ -27,7 +29,7 @@ describe('checkViability', () => {
   it('passes a clean, confident, complete take and explains every check', () => {
     const { viable, checks } = checkViability(good)
     expect(viable).toBe(true)
-    expect(checks.map((c) => c.id)).toEqual(['speech', 'snr', 'clipping', 'confidence', 'matched', 'features'])
+    expect(checks.map((c) => c.id)).toEqual(['speech', 'snr', 'clipping', 'confidence', 'length', 'matched', 'features'])
     expect(checks.every((c) => c.label && c.detail)).toBe(true)
   })
 
@@ -63,6 +65,62 @@ describe('checkViability for a strong accent', () => {
     expect(VIABILITY.minSoundsMatched).toBe(30)
     expect(checkViability({ ...good, soundsMatched: 50 }).viable).toBe(true)
     expect(checkViability({ ...good, soundsMatched: 33 }).viable).toBe(true)
+  })
+})
+
+describe('the length of a practice take', () => {
+  const lengthOf = (soundsHeard, target = 4) =>
+    checkViability({ ...good, soundsHeard, targetSounds: [target, target] }).checks.find((c) => c.id === 'length')
+
+  it('allows between half and one and a half times the target', () => {
+    expect(allowedSounds([4, 4])).toEqual([2, 6])
+    expect(allowedSounds([3, 3])).toEqual([2, 4])
+    expect(allowedSounds([5, 5])).toEqual([3, 7])
+    expect(allowedSounds([20, 20], true)).toEqual([10, 40])
+    for (const heard of [2, 4, 6]) expect(lengthOf(heard).passed).toBe(true)
+  })
+
+  it('names extra sounds as likely background noise, and too few as too few', () => {
+    expect(lengthOf(7)).toMatchObject({ passed: false, reason: EXTRA_SOUNDS, detail: '7 sounds heard (needs 2 to 6)' })
+    expect(lengthOf(1)).toMatchObject({ passed: false, reason: TOO_FEW_SOUNDS })
+    expect(lengthOf(4).reason).toBeUndefined()
+  })
+
+  it('refuses a take with extra sounds, says why, and asks for a retake even when nothing is being kept', async () => {
+    const heard = { phonemes: ['S', 'IY0', 'K', 'W', 'AO1', 'T', 'ER0'], confidence: 0.9, features, featureCount: 256, modelVersion: 'm' }
+    const take = { targetAccent: 'ga', word: 'water', score: 5, heard, quality: cleanQuality, soundsMatched: 100, soundsSameClass: 100, targetSounds: [4, 4], featureCount: 256 }
+    const store = createMemoryStore()
+    const noisy = await considerTake({ ...take, profile, store })
+    expect(noisy).toMatchObject({ stored: false, reason: EXTRA_SOUNDS, retake: true })
+    expect(store.all()).toEqual([])
+    const off = await considerTake({ ...take, profile: { ...profile, contribute: false }, store })
+    expect(off).toMatchObject({ stored: false, reason: '"Help it learn" is off', retake: true })
+    // The same word without the extra sounds is kept, with no retake.
+    const clean = await considerTake({ ...take, heard: { ...heard, phonemes: heard.phonemes.slice(3) }, profile, store })
+    expect(clean).toMatchObject({ stored: true, reason: null, retake: false })
+    // Too few sounds is refused without blaming the room.
+    const partial = await considerTake({ ...take, heard: { ...heard, phonemes: ['W'] }, profile, store })
+    expect(partial).toMatchObject({ stored: false, reason: TOO_FEW_SOUNDS, retake: false })
+  })
+})
+
+describe('heardNoSpeech', () => {
+  it('treats fewer than two sounds as silence', () => {
+    expect(MIN_SOUNDS).toBe(2)
+    expect(heardNoSpeech([], 0.5)).toBe(true)
+    expect(heardNoSpeech(['F'], 0.3)).toBe(true)
+    expect(heardNoSpeech(['F', 'T'], 0.5)).toBe(false)
+  })
+
+  it('treats under one sound per second of "speech" as silence', () => {
+    expect(MIN_SOUNDS_PER_SECOND).toBe(1)
+    // A quiet room that cleanup took for four seconds of speech, as measured on a real microphone.
+    expect(heardNoSpeech(['F', 'T'], 4.07)).toBe(true)
+    expect(heardNoSpeech(['F', 'T', 'AH0'], 4.07)).toBe(true)
+    // The slowest real take from the same session: "fish", three sounds in 1.26 s.
+    expect(heardNoSpeech(['F', 'EH0', 'SH'], 1.26)).toBe(false)
+    expect(heardNoSpeech(['W', 'T', 'AH0'], 0.51)).toBe(false)
+    expect(heardNoSpeech(['F', 'T'], 2)).toBe(false)
   })
 })
 

@@ -1,0 +1,88 @@
+One run of the label check (http://localhost:5173/check) on a laptop microphone,
+one speaker, quiet room. Copied from the page's "Copy results" button. This run
+predates the model-based silence check, the practice length check and the lower
+confidence cutoff, which is why step 5 fails here.
+
+PhonemePro label check · 2026-10-08T06:09:12.624Z · model 37ddb5375c27
+
+ 1. PASS    From Britain, practising American
+      ✓ kept: expected yes, got yes
+      ✓ counts as: expected attempt, got attempt
+      ✓ joins totals: expected GB>ga, got GB>ga
+      ✓ natural_voice: expected no, got no
+      ✓ matches_home_accent: expected no, got no
+      ✓ country: expected GB, got GB
+      ✓ region: expected none, got none
+      ✓ target_accent: expected ga, got ga
+        heard W T AH0 · score 7.3 · speech 0.51 s · snr 52.2 dB · clipped 0.03% · confidence 0.93 · heard as written 50% · same class 75%
+ 2. PASS    From Britain, practising British
+      ✓ kept: expected yes, got yes
+      ✓ counts as: expected attempt, got attempt
+      ✓ joins totals: expected GB>rp, got GB>rp
+      ✓ natural_voice: expected no, got no
+      ✓ matches_home_accent: expected yes, got yes
+      ✓ country: expected GB, got GB
+      ✓ region: expected none, got none
+      ✓ target_accent: expected rp, got rp
+        heard W AH0 D AH0 · score 7.1 · speech 0.49 s · snr 51.6 dB · clipped 0.02% · confidence 0.82 · heard as written 50% · same class 100%
+ 3. PASS    From the US South, practising American
+      ✓ kept: expected yes, got yes
+      ✓ counts as: expected attempt, got attempt
+      ✓ joins totals: expected US>ga, got US>ga
+      ✓ natural_voice: expected no, got no
+      ✓ matches_home_accent: expected yes, got yes
+      ✓ country: expected US, got US
+      ✓ region: expected S, got S
+      ✓ target_accent: expected ga, got ga
+        heard B EH1 T T AH0 · score 6.9 · speech 0.57 s · snr 54.4 dB · clipped 0.00% · confidence 0.85 · heard as written 75% · same class 100%
+ 4. PASS    From Scotland, in a normal voice
+      ✓ kept: expected yes, got yes
+      ✓ counts as: expected native, got native
+      ✓ joins totals: expected GB, GB-SCT, got GB, GB-SCT
+      ✓ natural_voice: expected yes, got yes
+      ✓ matches_home_accent: expected no, got no
+      ✓ country: expected GB, got GB
+      ✓ region: expected SCT, got SCT
+      ✓ target_accent: expected none, got none
+        heard DH AH0 V EH1 T AH0 IH0 Z V EH1 R IY0 K AO0 L D T UW0 D EY0 · speech 1.75 s · snr 55.1 dB · clipped 0.00% · confidence 0.77 · 20 sounds for a sentence of 20 to 20
+ 5. FAIL    Silence
+      ✓ kept: expected no, got no
+      ✕ reason not kept: expected no speech, got did not pass: recognisably the target word
+      ✕ retake notice shown: expected yes, got no
+        heard F T · score 4.1 · speech 4.07 s · snr 31.3 dB · clipped 0.00% · confidence 0.67 · heard as written 25% · same class 25%
+ 6. PASS    The wrong word
+      ✓ kept: expected no, got no
+      ✓ failed check includes: expected matched, got matched
+        heard B AH0 N N OW0 · score 3.8 · speech 0.74 s · snr 49.5 dB · clipped 0.00% · confidence 0.86 · heard as written 0% · same class 25%
+ 7. PASS    A strong accent
+      ✓ kept: expected yes, got yes
+      ✓ counts as: expected attempt, got attempt
+      ✓ joins totals: expected GB>ga, got GB>ga
+        heard W AO0 T AH0 · score 7 · speech 0.73 s · snr 50.4 dB · clipped 0.01% · confidence 0.61 · heard as written 75% · same class 100%
+ 8. PASS    A soft first sound
+      ✓ first sound heard: expected F, got F
+        heard F EH0 SH · score 7.3 · speech 1.26 s · snr 48 dB · clipped 0.03% · confidence 0.79 · heard as written 67% · same class 100%
+ 9. INFO    A noisy room
+        signal-to-noise (dB): expected not judged, got 33.6
+        kept: expected not judged, got yes
+        reason not kept: expected not judged, got none
+        retake notice shown: expected not judged, got no
+        heard S IY0 W AH0 T AH0 · score 3.5 · speech 1.79 s · snr 33.6 dB · clipped 0.03% · confidence 0.77 · heard as written 50% · same class 100%
+10. PASS    Sharing switched off
+      ✓ scored: expected yes, got yes
+      ✓ kept: expected no, got no
+      ✓ reason not kept: expected "Help it learn" is off, got "Help it learn" is off
+      ✓ takes added to the store: expected 0, got 0
+        heard W AH0 T D AH0 · score 5.7 · speech 0.51 s · snr 46.3 dB · clipped 0.03% · confidence 0.77 · heard as written 50% · same class 100%
+11. PASS    What an export would contain
+      ✓ export format: expected phonemepro contributions v2, got phonemepro contributions v2
+      ✓ takes exported: expected 7, got 7
+      ✓ takes ingest would refuse: expected none, got none
+      ✓ audio in the export: expected none, got none
+      ✓ step 1 joins: expected GB>ga, got GB>ga
+      ✓ step 2 joins: expected GB>rp, got GB>rp
+      ✓ step 3 joins: expected US>ga, got US>ga
+      ✓ step 4 joins: expected GB, GB-SCT, got GB, GB-SCT
+        7 takes in the session store
+
+Passed 9, failed 1, informational 1, skipped 0.

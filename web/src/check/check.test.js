@@ -86,6 +86,17 @@ describe('steps 5 to 10', () => {
     expect(evaluateStep(step(5), await run(5, spoken(5))).status).toBe('fail')
   })
 
+  it('step 5 passes when a quiet room is taken for speech but the model hears next to nothing', async () => {
+    // From a real microphone: cleanup found 4.07 s of "speech" at 31 dB and the model heard F T.
+    const room = { foundSpeech: true, speechSeconds: 4.07, snrDb: 31.3, clipped: 0 }
+    const store = createMemoryStore()
+    const outcome = await run(5, { ...saying('water'), phonemes: ['F', 'T'], confidence: 0.67 }, store, { quality: room })
+    expect(outcome).toMatchObject({ scored: false, score: null, kept: false, reason: 'no speech', retake_notice: true })
+    expect(outcome.detail).toMatch(/model heard F T in 4.07 s/)
+    expect(store.all()).toEqual([])
+    expect(evaluateStep(step(5), outcome).status).toBe('pass')
+  })
+
   it('step 6 passes when the wrong word is not kept, and fails when it is', async () => {
     const wrong = await run(6, saying('banana'))
     expect(wrong).toMatchObject({ kept: false, scored: true })
@@ -115,8 +126,9 @@ describe('steps 5 to 10', () => {
     const unlike = { ...saying(step(4).word, 'rp'), phonemes: Array.from({ length: 18 }, (_, i) => (i % 2 ? 'AH0' : 'K')) }
     const outcome = await run(4, unlike)
     expect(outcome).toMatchObject({ kept: true, natural_voice: true, joins: ['GB', 'GB-SCT'] })
-    const tooShort = await run(4, { ...unlike, phonemes: ['DH', 'AH0', 'W'] })
-    expect(tooShort).toMatchObject({ kept: false, failed_checks: ['length'] })
+    const tooShort = await run(4, { ...unlike, phonemes: ['DH', 'AH0', 'W', 'EH1', 'DH', 'ER0'] })
+    expect(tooShort).toMatchObject({ kept: false, failed_checks: ['length'], reason: 'too few sounds heard' })
+    expect(outcome.detail).toMatch(/18 sounds heard, 10 to 40 allowed for a target of 20/)
   })
 
   it('step 8 passes only when the first sound heard is F', async () => {
@@ -133,6 +145,11 @@ describe('steps 5 to 10', () => {
     expect(kept.rows.map((row) => [row.label, row.actual])).toEqual([
       ['signal-to-noise (dB)', '38.2'], ['kept', 'yes'], ['reason not kept', 'none'], ['retake notice shown', 'no'],
     ])
+    // Noise the browser hid from the SNR check, transcribed as extra sounds in front of the word.
+    const extra = await run(9, { ...saying('water'), phonemes: ['S', 'IY0', 'K', 'W', 'AH0', 'T', 'AH0'] })
+    expect(extra).toMatchObject({ scored: true, kept: false, reason: 'extra sounds, likely background noise', retake_notice: true })
+    expect(evaluateStep(step(9), extra).rows.map((row) => row.actual))
+      .toEqual(['38.2', 'no', 'extra sounds, likely background noise', 'yes'])
     const refused = evaluateStep(step(9), retakeOutcome({ reason: 'noisy', quality: { ...quality, snrDb: 6.5 } }))
     expect(refused.status).toBe('info')
     expect(refused.rows.map((row) => row.actual)).toEqual(['6.5', 'no', 'too noisy to score', 'yes'])

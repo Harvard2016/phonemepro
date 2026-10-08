@@ -1,0 +1,290 @@
+{
+  "rules": {
+    "silence": "fewer than 2 sounds, or fewer than 1 sound per second of speech",
+    "length": "sounds heard between 0.5 and 1.5 times the target's"
+  },
+  "sounds_per_second": {
+    "speechocean_all": {
+      "takes": 2500,
+      "lowest": 0.0,
+      "percentile_1": 2.303,
+      "percentile_5": 3.347,
+      "median": 6.814,
+      "share_below_1.0": 0.0012,
+      "share_below_2.0": 0.0036,
+      "share_below_3.0": 0.0348,
+      "no_speech_found": 0,
+      "called_silence_by_the_app": 0.0012
+    },
+    "speechocean_low_score": {
+      "takes": 257,
+      "lowest": 0.0,
+      "percentile_1": 1.073,
+      "percentile_5": 2.164,
+      "median": 4.098,
+      "share_below_1.0": 0.0117,
+      "share_below_2.0": 0.0233,
+      "share_below_3.0": 0.1712,
+      "no_speech_found": 0,
+      "called_silence_by_the_app": 0.0117
+    },
+    "vctk_english_southern": {
+      "takes": 960,
+      "lowest": 1.13,
+      "percentile_1": 6.399,
+      "percentile_5": 8.034,
+      "median": 11.397,
+      "share_below_1.0": 0.0,
+      "share_below_2.0": 0.001,
+      "share_below_3.0": 0.001,
+      "no_speech_found": 0,
+      "called_silence_by_the_app": 0.0
+    },
+    "vctk_american": {
+      "takes": 1080,
+      "lowest": 2.989,
+      "percentile_1": 5.598,
+      "percentile_5": 7.253,
+      "median": 11.136,
+      "share_below_1.0": 0.0,
+      "share_below_2.0": 0.0,
+      "share_below_3.0": 0.0009,
+      "no_speech_found": 0,
+      "called_silence_by_the_app": 0.0
+    },
+    "vctk_scottish": {
+      "takes": 840,
+      "lowest": 3.015,
+      "percentile_1": 5.682,
+      "percentile_5": 7.501,
+      "median": 11.046,
+      "share_below_1.0": 0.0,
+      "share_below_2.0": 0.0,
+      "share_below_3.0": 0.0,
+      "no_speech_found": 0,
+      "called_silence_by_the_app": 0.0
+    },
+    "vctk_irish": {
+      "takes": 540,
+      "lowest": 4.416,
+      "percentile_1": 5.358,
+      "percentile_5": 7.14,
+      "median": 11.111,
+      "share_below_1.0": 0.0,
+      "share_below_2.0": 0.0,
+      "share_below_3.0": 0.0,
+      "no_speech_found": 0,
+      "called_silence_by_the_app": 0.0
+    },
+    "single_words_quiet_room": {
+      "takes": 181,
+      "lowest": 2.062,
+      "percentile_1": 2.279,
+      "percentile_5": 3.738,
+      "median": 7.692,
+      "share_below_1.0": 0.0,
+      "share_below_2.0": 0.0,
+      "share_below_3.0": 0.0331
+    }
+  },
+  "length_check_drops": {
+    "words_3_to_5_sounds": {
+      "speechocean_all": {
+        "takes": 8422,
+        "dropped_too_few_sounds": 0.01,
+        "dropped_extra_sounds": 0.0056,
+        "dropped": 0.0156
+      },
+      "speechocean_low_score": {
+        "takes": 852,
+        "dropped_too_few_sounds": 0.0516,
+        "dropped_extra_sounds": 0.0117,
+        "dropped": 0.0634
+      },
+      "vctk_scottish": {
+        "takes": 2879,
+        "dropped_too_few_sounds": 0.032,
+        "dropped_extra_sounds": 0.0,
+        "dropped": 0.032
+      },
+      "vctk_irish": {
+        "takes": 1848,
+        "dropped_too_few_sounds": 0.0433,
+        "dropped_extra_sounds": 0.0,
+        "dropped": 0.0433
+      }
+    },
+    "note": "words are cut from sentences by alignment, which cannot give a word more sounds than the transcription holds near it; the single-word recordings below are a fairer test"
+  },
+  "confidence": {
+    "sentences": {
+      "speechocean_all": {
+        "takes": 2500,
+        "lowest": 0.0,
+        "percentile_1": 0.677,
+        "percentile_5": 0.735,
+        "median": 0.834,
+        "share_below_0.4": 0.0008,
+        "share_below_0.45": 0.0008,
+        "share_below_0.5": 0.0016,
+        "share_below_0.55": 0.0016,
+        "share_below_0.6": 0.002,
+        "share_below_0.65": 0.0044,
+        "share_below_0.7": 0.0188
+      },
+      "speechocean_low_score": {
+        "takes": 257,
+        "lowest": 0.0,
+        "percentile_1": 0.475,
+        "percentile_5": 0.687,
+        "median": 0.809,
+        "share_below_0.4": 0.0078,
+        "share_below_0.45": 0.0078,
+        "share_below_0.5": 0.0156,
+        "share_below_0.55": 0.0156,
+        "share_below_0.6": 0.0156,
+        "share_below_0.65": 0.0272,
+        "share_below_0.7": 0.0623
+      },
+      "vctk_scottish": {
+        "takes": 840,
+        "lowest": 0.629,
+        "percentile_1": 0.679,
+        "percentile_5": 0.728,
+        "median": 0.799,
+        "share_below_0.4": 0.0,
+        "share_below_0.45": 0.0,
+        "share_below_0.5": 0.0,
+        "share_below_0.55": 0.0,
+        "share_below_0.6": 0.0,
+        "share_below_0.65": 0.0036,
+        "share_below_0.7": 0.019
+      },
+      "vctk_irish": {
+        "takes": 540,
+        "lowest": 0.629,
+        "percentile_1": 0.686,
+        "percentile_5": 0.734,
+        "median": 0.8,
+        "share_below_0.4": 0.0,
+        "share_below_0.45": 0.0,
+        "share_below_0.5": 0.0,
+        "share_below_0.55": 0.0,
+        "share_below_0.6": 0.0,
+        "share_below_0.65": 0.0056,
+        "share_below_0.7": 0.0148
+      }
+    },
+    "note": "confidence is how sure the model is of the sounds it heard; it does not depend on the target, so it cannot tell a wrong word from the right one"
+  },
+  "single_words": {
+    "quiet_room": {
+      "takes": 181,
+      "sounds_per_second": {
+        "takes": 181,
+        "lowest": 2.062,
+        "percentile_1": 2.279,
+        "percentile_5": 3.738,
+        "median": 7.692,
+        "share_below_1.0": 0.0,
+        "share_below_2.0": 0.0,
+        "share_below_3.0": 0.0331
+      },
+      "called_silence_by_the_app": 0.0055,
+      "length": {
+        "takes": 181,
+        "dropped_too_few_sounds": 0.0055,
+        "dropped_extra_sounds": 0.0055,
+        "dropped": 0.011
+      },
+      "confidence": {
+        "takes": 181,
+        "lowest": 0.314,
+        "percentile_1": 0.494,
+        "percentile_5": 0.567,
+        "median": 0.751,
+        "share_below_0.4": 0.0055,
+        "share_below_0.45": 0.011,
+        "share_below_0.5": 0.011,
+        "share_below_0.55": 0.0276,
+        "share_below_0.6": 0.116,
+        "share_below_0.65": 0.221,
+        "share_below_0.7": 0.326
+      },
+      "measured_snr_below_20_db": 0.0,
+      "under_30_percent_heard_as_written": 0.0608
+    },
+    "noise_10db_below": {
+      "takes": 181,
+      "sounds_per_second": {
+        "takes": 181,
+        "lowest": 0.0,
+        "percentile_1": 0.725,
+        "percentile_5": 5.405,
+        "median": 11.594,
+        "share_below_1.0": 0.0221,
+        "share_below_2.0": 0.0221,
+        "share_below_3.0": 0.0221
+      },
+      "called_silence_by_the_app": 0.0331,
+      "length": {
+        "takes": 181,
+        "dropped_too_few_sounds": 0.0331,
+        "dropped_extra_sounds": 0.0055,
+        "dropped": 0.0387
+      },
+      "confidence": {
+        "takes": 181,
+        "lowest": 0.0,
+        "percentile_1": 0.268,
+        "percentile_5": 0.462,
+        "median": 0.673,
+        "share_below_0.4": 0.0221,
+        "share_below_0.45": 0.0442,
+        "share_below_0.5": 0.0773,
+        "share_below_0.55": 0.1547,
+        "share_below_0.6": 0.3039,
+        "share_below_0.65": 0.4199,
+        "share_below_0.7": 0.5801
+      },
+      "measured_snr_below_20_db": 1.0,
+      "under_30_percent_heard_as_written": 0.232
+    },
+    "noise_5db_below": {
+      "takes": 181,
+      "sounds_per_second": {
+        "takes": 181,
+        "lowest": 0.0,
+        "percentile_1": 0.0,
+        "percentile_5": 3.514,
+        "median": 13.636,
+        "share_below_1.0": 0.0387,
+        "share_below_2.0": 0.0442,
+        "share_below_3.0": 0.0497
+      },
+      "called_silence_by_the_app": 0.0829,
+      "length": {
+        "takes": 181,
+        "dropped_too_few_sounds": 0.1436,
+        "dropped_extra_sounds": 0.0055,
+        "dropped": 0.1492
+      },
+      "confidence": {
+        "takes": 181,
+        "lowest": 0.0,
+        "percentile_1": 0.0,
+        "percentile_5": 0.255,
+        "median": 0.646,
+        "share_below_0.4": 0.0939,
+        "share_below_0.45": 0.105,
+        "share_below_0.5": 0.1602,
+        "share_below_0.55": 0.2486,
+        "share_below_0.6": 0.3646,
+        "share_below_0.65": 0.5138,
+        "share_below_0.7": 0.6243
+      },
+      "measured_snr_below_20_db": 1.0,
+      "under_30_percent_heard_as_written": 0.4033
+    }
+  }
+}

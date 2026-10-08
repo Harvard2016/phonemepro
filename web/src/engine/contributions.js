@@ -20,17 +20,26 @@ export const VIABILITY = {
   minSpeechSeconds: 0.25,
   minSnrDb: 20,
   maxClipped: 0.005, // loud but unclipped speech brushes full scale now and then; real clipping sits there
-  minConfidence: 0.6,
+  // Lowered from 0.6, which dropped 12% of clean single words from native speakers. At 0.5 it
+  // drops 1%, and 8% of words in noise 10 dB below the speech (Docs/model/take_checks.json).
+  minConfidence: 0.5,
   // Practice takes: at least this share of the target sounds heard exactly as written. Measured
   // by scripts/evaluate_match.py (Docs/model/match_threshold.json) on single words: it keeps 76%
   // of words from learners rated 5/10 or lower and 98% from Scottish and Irish speakers, and lets
   // through 15% of wrong words. A looser, class-based match was tried and separated them worse.
   minSoundsMatched: 30,
-  // Normal-voice takes are not compared with any dictionary: there is no right way to sound.
-  // They only have to be about as long as the sentence that was shown.
+  // Sounds heard, as a multiple of the target's. More than this on a practice take usually
+  // means the model transcribed background noise around the word.
   minLengthRatio: 0.5,
-  maxLengthRatio: 2,
+  maxPracticeLengthRatio: 1.5,
+  // Normal-voice takes are not compared with any dictionary: there is no right way to sound.
+  // They only have to be about as long as the sentence that was shown, with more room.
+  maxVoiceLengthRatio: 2,
 }
+
+export const EXTRA_SOUNDS = 'extra sounds, likely background noise'
+export const TOO_FEW_SOUNDS = 'too few sounds heard'
+export const RETAKE_FOR_EXTRA_SOUNDS = 'I heard extra sounds around that, probably background noise. Try again somewhere quieter.'
 
 // The practice accent that is the standard of a country. It only sets the stored label
 // `matches_home_accent`; it plays no part in what a take is used for (see routeOf).
@@ -40,10 +49,10 @@ export const HOME_ACCENT = { US: 'ga', GB: 'rp', AU: 'au' }
 const run = (mode, work) => runIn('contributions', mode, work)
 
 // Every check with its outcome, so the "Your data" page can show why a take was or was not kept.
-// `quality` comes from engine/cleanup.js. A practice take passes `soundsMatched`, the share of
-// target sounds heard as written (0..100). A normal-voice take passes `soundsHeard`, how many
-// sounds the model heard, and `targetSounds`, the [fewest, most] sounds its sentence has across
-// the accent dictionaries.
+// `quality` comes from engine/cleanup.js. `soundsHeard` is how many sounds the model heard and
+// `targetSounds` the [fewest, most] the target has (one number twice for a practice word, the
+// range across the accent dictionaries for a normal-voice sentence). A practice take also
+// passes `soundsMatched`, the share of target sounds heard as written (0..100).
 export function checkViability({
   quality, confidence, naturalVoice = false, soundsMatched, soundsHeard, targetSounds, features, featureCount,
 }) {
@@ -59,20 +68,30 @@ export function checkViability({
     ['confidence', 'Model was confident', confidence >= limits.minConfidence,
       `confidence ${confidence.toFixed(2)} (needs ${limits.minConfidence})`],
   ]
-  if (naturalVoice) {
-    const fewest = Math.ceil(limits.minLengthRatio * targetSounds[0])
-    const most = Math.floor(limits.maxLengthRatio * targetSounds[1])
-    checks.push(['length', 'About as long as the sentence', soundsHeard >= fewest && soundsHeard <= most,
-      `${soundsHeard} sounds heard (needs ${fewest} to ${most})`])
-  } else {
+  const [fewest, most] = allowedSounds(targetSounds, naturalVoice)
+  const lengthReason = soundsHeard > most ? EXTRA_SOUNDS : TOO_FEW_SOUNDS
+  checks.push(['length', naturalVoice ? 'About as long as the sentence' : 'About as long as the word',
+    soundsHeard >= fewest && soundsHeard <= most, `${soundsHeard} sounds heard (needs ${fewest} to ${most})`, lengthReason])
+  if (!naturalVoice) {
     checks.push(['matched', 'Recognisably the target word', soundsMatched >= limits.minSoundsMatched,
       `${Math.round(soundsMatched)}% of target sounds heard as written (needs ${limits.minSoundsMatched}%)`])
   }
   checks.push(['features', 'Summary is well formed', featuresOk,
     featuresOk ? `${featureCount} finite numbers` : 'the model did not return a usable summary'])
 
-  const labelled = checks.map(([id, label, passed, detail]) => ({ id, label, passed: Boolean(passed), detail }))
+  const labelled = checks.map(([id, label, passed, detail, reason]) => ({
+    id, label, passed: Boolean(passed), detail, ...(reason && !passed ? { reason } : {}),
+  }))
   return { viable: labelled.every((check) => check.passed), checks: labelled }
+}
+
+// The fewest and most sounds a take may have for its target.
+export function allowedSounds(targetSounds, naturalVoice = false) {
+  const limits = VIABILITY
+  return [
+    Math.ceil(limits.minLengthRatio * targetSounds[0]),
+    Math.floor((naturalVoice ? limits.maxVoiceLengthRatio : limits.maxPracticeLengthRatio) * targetSounds[1]),
+  ]
 }
 
 // Whether this browser is set up to keep takes at all, apart from how good a take is.
@@ -213,7 +232,8 @@ export function createMemoryStore() {
 }
 
 // Decide what to do with one analysed take, store it if it qualifies, and log the outcome.
-// Returns { stored, reason, checks, contribution }.
+// Returns { stored, reason, checks, contribution, retake }. `retake` is set when the take had
+// extra sounds, whether or not anything is being kept: the learner should be told either way.
 export async function considerTake({
   profile, targetAccent, naturalVoice = false, word, score, heard, quality, soundsMatched, soundsSameClass, targetSounds,
   featureCount, store = deviceStore,
@@ -225,8 +245,11 @@ export async function considerTake({
   let contribution = null
   let stored = false
   let reason = checkEligibility(profile, 0)
+  const failing = checks.filter((check) => !check.passed)
+  const retake = failing.some((check) => check.reason === EXTRA_SOUNDS)
   if (!reason && !viable) {
-    reason = `did not pass: ${checks.filter((check) => !check.passed).map((check) => check.label.toLowerCase()).join(', ')}`
+    reason = failing.find((check) => check.reason)?.reason
+      ?? `did not pass: ${failing.map((check) => check.label.toLowerCase()).join(', ')}`
   }
   if (!reason) {
     contribution = buildContribution({
@@ -246,5 +269,5 @@ export async function considerTake({
     at: new Date().toISOString(), word, target_accent: naturalVoice ? null : targetAccent, natural_voice: naturalVoice,
     stored, reason: failedOn, id: stored ? contribution.id : null, checks,
   })
-  return { stored, reason: failedOn, checks, contribution: stored ? contribution : null }
+  return { stored, reason: failedOn, checks, contribution: stored ? contribution : null, retake }
 }

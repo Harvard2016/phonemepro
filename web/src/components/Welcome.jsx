@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import { clearContributions, clearDecisions, considerTake, countContributions } from '../engine/contributions'
 import { recognize } from '../engine/model'
 import { SENTENCES, targetSounds } from '../engine/naturalVoice'
-import { useRecorder } from '../hooks/useRecorder'
+import { heardNoSpeech } from '../engine/takeChecks'
+import { RECORDER_ERRORS, useRecorder } from '../hooks/useRecorder'
 import { countries } from '../lib/countries'
 import { isRegion, regionsOf } from '../lib/regions'
 import { useApp } from '../state'
@@ -42,6 +43,10 @@ function WelcomeSheet() {
       await ensureModel()
       await new Promise((resolve) => { setTimeout(resolve, 40) })
       const heard = await recognize(samples)
+      if (heardNoSpeech(heard.phonemes, quality.speechSeconds)) {
+        setVoiceNote(RECORDER_ERRORS.silent)
+        return
+      }
       setVoiceTakes((takes) => ({
         ...takes,
         [sentence]: { heard, quality },

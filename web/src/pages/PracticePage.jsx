@@ -9,13 +9,14 @@ import TakeTimeline from '../components/TakeTimeline'
 import Waveform from '../components/Waveform'
 import { countToday, getHistory, saveAttempt } from '../engine/history'
 import { withAccentCoaching } from '../engine/coaching'
-import { considerTake } from '../engine/contributions'
+import { considerTake, RETAKE_FOR_EXTRA_SOUNDS } from '../engine/contributions'
 import { buildInsights } from '../engine/insights'
 import { recordingUrl, textEntry } from '../engine/lexicon'
 import { recognize } from '../engine/model'
 import { scoreAttempt } from '../engine/scoring'
 import { soundsSameClass } from '../engine/soundMatch'
-import { useRecorder } from '../hooks/useRecorder'
+import { heardNoSpeech } from '../engine/takeChecks'
+import { RECORDER_ERRORS, useRecorder } from '../hooks/useRecorder'
 import { playClip, speak } from '../lib/audio'
 import { basePhoneme, toIpa } from '../lib/phonemes'
 import { useApp } from '../state'
@@ -148,6 +149,12 @@ function PracticePage() {
       // Let the "listening back" state paint before the model occupies the thread.
       await new Promise((resolve) => { setTimeout(resolve, 40) })
       const heard = await recognize(samples)
+      // Room noise can pass for speech by loudness alone. If the model heard next to nothing,
+      // this was silence: no score, nothing saved, ask again.
+      if (heardNoSpeech(heard.phonemes, quality.speechSeconds)) {
+        setNotice(RECORDER_ERRORS.silent)
+        return
+      }
       const scored = withAccentCoaching(
         scoreAttempt(taken.phonemes, heard.phonemes, heard.confidence, heard.margin, {
           nativeScore: heard.nativeScore,
@@ -171,13 +178,14 @@ function PracticePage() {
       attempt.kept = await considerTake({
         profile, targetAccent: accent, word: taken.word, score: scored.score, heard, quality,
         soundsMatched: scored.metrics.accuracy, soundsSameClass: soundsSameClass(taken.phonemes, heard.phonemes),
-        featureCount: heard.featureCount,
+        targetSounds: [taken.phonemes.length, taken.phonemes.length], featureCount: heard.featureCount,
       })
       refreshHistory()
 
       // Ignore the answer if the learner already moved on to another word.
       if (wordRef.current?.word !== taken.word) return
       setResult(attempt)
+      if (attempt.kept.retake) setNotice(RETAKE_FOR_EXTRA_SOUNDS)
       setTake((previous) => {
         if (previous) URL.revokeObjectURL(previous.url)
         return { blob: wav, url: URL.createObjectURL(wav) }

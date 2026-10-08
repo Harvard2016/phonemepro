@@ -112,6 +112,16 @@ Limits of this measurement:
 - The cleanup steps were chosen on the same 120 utterances they are reported on.
 - An earlier run on 200 utterances with a different set of variants is kept in `Docs/model/capture_results_first_run.json`. Its clean error rate (22.9%) is not comparable with the 19.6% here because the utterance sets differ. It is the only run that tested a second person talking in the background, 12 dB quieter: 84.9% phoneme error raw, 77.5% after tight trimming. Nothing tried removes a second voice. The app does not yet detect one, so such a take is scored and scored badly.
 
+### On a real microphone
+
+One run of the label check (below, [Checking labels by voice](#checking-labels-by-voice)) on a laptop microphone in a quiet room is saved in `Docs/model/check_run_2026-10-08.txt`. It is one speaker and one room, so it shows what can happen, not how often:
+
+- The model dropped the first vowel of "water" (heard `W T AH0`) and doubled the T in "better" (heard `B EH1 T T AH0`).
+- Clear speech scored about 7 out of 10 (6.9 to 7.3 on the four clean practice takes).
+- A silent take was taken for 4.07 s of speech and scored 4.1. The silence check above was added because of it.
+- With music or a fan on, the measured signal-to-noise ratio was still 33.6 dB, because the browser suppresses noise before the app sees the audio. The app's noise check will rarely catch a noisy room.
+- The first sound of "fish" was heard, so the start of a take is not being clipped.
+
 ### Is a take the target word?
 
 A practice take is kept for learning only if it is recognisably the target word. The rule has to let a strong accent through and keep a different word out, and practice words are short, so there is little to go on. Three rules were measured on model transcriptions already on disk (`scripts/evaluate_match.py`, `Docs/model/match_threshold.json`): SpeechOcean762 words that annotators scored 5 out of 10 or lower, VCTK Scottish and Irish speakers against the American dictionary, and the same transcriptions scored against a different word of the same length. Share of takes kept, by the share of target sounds required.
@@ -148,6 +158,46 @@ Limits of this measurement:
 - A low human score does not always mean a strong accent; some of those words were simply misread.
 - Wrong words that share sounds with the target ("butter" for "water") pass. With 3-sound targets 21% of wrong words pass, against 4% for 4-sound and 8% for 5-sound targets.
 - On whole utterances the rules are much easier to tell apart: at 30% as written, 95% of low-rated utterances are kept and 4% of wrong ones.
+
+### Silence, length and confidence
+
+Three more checks, measured on speech already on disk (`scripts/evaluate_take_checks.py`, `Docs/model/take_checks.json`). "Single words" are the 181 human reference recordings run through the model as the app would capture them; they are the closest thing on disk to a practice take, and all are native speakers.
+
+**Silence.** The speech finder works on loudness, and on a real microphone a quiet room was taken for four seconds of speech. So the model has the last word: fewer than 2 sounds, or fewer than 1 sound per second of "speech", is treated as silence, with no score, a retake notice and nothing stored. Sounds per second on real speech:
+
+| | Takes | Slowest 1% | Median | Called silence |
+|---|---|---|---|---|
+| SpeechOcean762, all | 2,500 | 2.3 | 6.8 | 0.1% |
+| SpeechOcean762, rated 5/10 or lower | 257 | 1.1 | 4.1 | 1.2% |
+| VCTK Scottish | 840 | 5.7 | 11.0 | 0.0% |
+| VCTK Irish | 540 | 5.4 | 11.1 | 0.0% |
+| Single words | 181 | 2.3 | 7.7 | 0.5% |
+
+Most real speech is well clear of 1 sound per second. The slowest low-rated learners are not: their slowest 1% sits at 1.1, and 1.2% of their utterances would be called silence.
+
+**Length.** A practice take is kept only if the sounds heard number between 0.5 and 1.5 times the target's; more than that usually means background noise was transcribed around the word, and the learner is asked to try again. Share of genuine takes this drops:
+
+| | Takes | Too few sounds | Extra sounds |
+|---|---|---|---|
+| Single words | 181 | 0.5% | 0.5% |
+| SpeechOcean762 words, rated 5/10 or lower | 852 | 5.2% | 1.2% |
+| VCTK Scottish words | 2,879 | 3.2% | 0.0% |
+| VCTK Irish words | 1,848 | 4.3% | 0.0% |
+
+The words cut from sentences overstate "too few", because sounds near a word boundary can be assigned to its neighbour. This check is cheap for genuine takes but is not a strong noise filter: with synthetic noise 10 dB below the speech it caught extra sounds in only 0.5% of single words, because noise mostly makes the model drop sounds rather than add them. The real take that prompted it (six sounds heard for the four of "water") sits exactly on the limit and would still be kept.
+
+**Confidence.** The cutoff was 0.6. Share of takes below each cutoff:
+
+| | Takes | < 0.5 | < 0.55 | < 0.6 |
+|---|---|---|---|---|
+| SpeechOcean762 utterances, rated 5/10 or lower | 257 | 1.6% | 1.6% | 1.6% |
+| VCTK Scottish utterances | 840 | 0.0% | 0.0% | 0.0% |
+| VCTK Irish utterances | 540 | 0.0% | 0.0% | 0.0% |
+| Single words, quiet room | 181 | 1.1% | 2.8% | 11.6% |
+| Single words, noise 10 dB below | 181 | 7.7% | 15.5% | 30.4% |
+| Single words, noise 5 dB below | 181 | 16.0% | 24.9% | 36.5% |
+
+Sentences are far more confident than single words, and it is single words the app records. At 0.6 the check dropped 11.6% of clean single words from native speakers, so the cutoff is now 0.5. Confidence is a weak filter either way: it does not depend on the target, so it cannot tell a wrong word from the right one, and most noisy takes clear it. There are no accented single-word recordings on disk, so the effect on accented single words is not measured.
 
 ### Learning regions from totals
 
@@ -201,7 +251,7 @@ Nothing a visitor records leaves their device. There is no upload endpoint.
 - **Recordings** are held in memory for playback and dropped when the visitor moves on.
 - **Practice history** (words, scores, sounds heard) is in IndexedDB.
 - **A profile**, if the visitor fills it in on the first-visit screen: country, a broad region for the few countries that offer one, and the "Help it learn" switch, which is off unless they turn it on. It is in `localStorage` and can be reopened from "Your profile" in the footer to change or withdraw.
-- **Contributions**, only while the switch is on and a country is given, and only for takes that pass every check: speech found, signal-to-noise ratio of at least 20 dB, under 0.5% of samples at full scale, model confidence of at least 0.6, and recognisably the target: for a practice take at least 30% of the target sounds heard as written, for a normal-voice take about the length of the sentence shown (see [Is a take the target word?](#is-a-take-the-target-word)). At most 60 are kept per browser. Each is:
+- **Contributions**, only while the switch is on and a country is given, and only for takes that pass every check: speech found, signal-to-noise ratio of at least 20 dB, under 0.5% of samples at full scale, model confidence of at least 0.5, about the right number of sounds (0.5 to 1.5 times the target's for a practice take, 0.5 to 2 times for a normal-voice sentence), and, for a practice take, at least 30% of the target sounds heard as written (see [Is a take the target word?](#is-a-take-the-target-word) and [Silence, length and confidence](#silence-length-and-confidence)). At most 60 are kept per browser. Each is:
 
 | Field | Meaning |
 |---|---|
@@ -274,6 +324,7 @@ python -m scripts.learn_regions simulate        # region learning from totals, o
 python -m scripts.evaluate_capture              # recording cleanup table
 python -m scripts.make_cleanup_fixtures         # after changing pronunciation/audio_cleanup.py
 python -m scripts.evaluate_match                # rule for "is this take the target word"
+python -m scripts.evaluate_take_checks          # silence, length and confidence checks
 python -m scripts.make_sound_match_fixtures     # after changing web/src/engine/sound_groups.json
 python -m scripts.export_onnx                   # browser model into web/public/model/
 ```
@@ -320,11 +371,11 @@ With the dev server running, http://localhost:5173/check walks through eleven st
 | 2 | Profile GB, target British: "water" | Kept, attempt, joins `GB>rp` |
 | 3 | Profile US, South, target American: "better" | Kept, attempt, joins `US>ga`, not `US` or `US-S` |
 | 4 | Profile GB, Scotland: a sentence in a normal voice | Kept, native, joins `GB` and `GB-SCT` |
-| 5 | Nothing | Not kept, no speech, retake notice |
+| 5 | Nothing | Not scored, not kept, no speech, retake notice |
 | 6 | "banana" when the target is "water" | Not kept: not recognisably the target word |
 | 7 | "water" in a deliberately strong accent | Kept, attempt, joins `GB>ga` |
 | 8 | "fish" | First sound heard is F, so the start was not clipped |
-| 9 | "water" over music or a fan | Reported only: measured signal-to-noise ratio and whether it was kept |
+| 9 | "water" over music or a fan | Reported only: measured signal-to-noise ratio, whether it was kept, and whether a retake was asked |
 | 10 | Sharing off: "water" | Scored, nothing stored |
 | 11 | Nothing | Everything kept this session is valid for ingest and routed as steps 1 to 4 predicted |
 
