@@ -7,7 +7,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from pronunciation.region_totals import FEATURES, load_totals
+from pronunciation.region_totals import FEATURES, Totals, load_totals, mean_squared_distance
 from scripts.learn_regions import (
     HOME_ACCENT,
     MAX_ABS_FEATURE,
@@ -15,7 +15,9 @@ from scripts.learn_regions import (
     REGIONS,
     check_take,
     ingest,
+    print_report,
     print_summary,
+    report,
     route,
 )
 
@@ -320,3 +322,115 @@ def test_a_dry_run_reports_everything_and_writes_nothing(run, capsys):
     assert (again["added"], again["duplicates"]) == (1, 8)
     assert again["countries"]["IN"]["attempts"]["ga"] == {"total": 3, "added": 1}
     assert [path.read_bytes() for path in outputs] == before
+
+
+def test_a_rebuild_reflects_exactly_the_files_present(run):
+    ann, ben = str(uuid.uuid4()), str(uuid.uuid4())
+    voice = {"country": "GB", "region": "SCT", **VOICE}
+    ann_file = write_export(run.inbox, [make_take(contributor=ann, **voice), make_take(contributor=ann)], "ann.json")
+    write_export(run.inbox, [make_take(contributor=ben, **voice)], "ben.json")
+
+    first = run(rebuild=True)
+    assert first["rebuilt"] is True
+    assert (first["added"], first["duplicates"]) == (3, 0)
+    assert first["countries"]["GB"] == {
+        "native_total": 2, "native_added": 2, "regions": {"SCT": {"total": 2, "added": 2}},
+        "attempts": {}, "contributors_this_run": 2, "ready": False,
+    }
+
+    # Run again over the same folder: nothing doubles, and everyone is still counted.
+    again = run(rebuild=True)
+    assert (again["added"], again["duplicates"]) == (3, 0)
+    assert again["countries"]["GB"]["contributors_this_run"] == 2
+
+    # Someone withdraws: their file is deleted, and a rebuild takes them out of every total.
+    ann_file.unlink()
+    after = run(rebuild=True)
+    assert after["added"] == 1
+    assert after["countries"]["GB"]["native_total"] == 1
+    assert "IN" not in after["countries"]
+    native, _ = load_totals(run.root / "native.npz")
+    attempts, _ = load_totals(run.root / "attempts.npz")
+    assert {key: totals.count for key, totals in native.items()} == {"GB": 1, "GB-SCT": 1}
+    assert attempts == {}
+    assert len((run.root / "seen.txt").read_text().split()) == 1
+
+    # Without rebuild the same files are recognised as already counted.
+    assert run()["added"] == 0
+
+
+def test_average_distance_from_totals_matches_the_vectors_themselves():
+    rng = np.random.default_rng(3)
+    vectors = rng.standard_normal((50, FEATURES)) + 0.5
+    centre = rng.standard_normal(FEATURES)
+    root = rng.standard_normal((FEATURES, FEATURES)) * 0.1
+    precision = root @ root.T + np.eye(FEATURES)
+    totals = Totals.empty()
+    totals.add(vectors)
+    direct = np.mean([(v - centre) @ precision @ (v - centre) for v in vectors])
+    assert np.isclose(mean_squared_distance(totals, centre, precision), direct)
+    assert np.isnan(mean_squared_distance(Totals.empty(), centre, precision))
+
+
+def cloud_totals(rng, centre, count):
+    totals = Totals.empty()
+    totals.add(rng.standard_normal((count, FEATURES)) + centre)
+    return totals
+
+
+def test_report_says_who_is_ready_and_where_attempts_land(capsys):
+    rng = np.random.default_rng(8)
+    american, british = np.zeros(FEATURES), np.r_[np.full(8, 3.0), np.zeros(FEATURES - 8)]
+    reference = {"ga": cloud_totals(rng, american, 600), "rp": cloud_totals(rng, british, 600)}
+    native = {
+        "IN": cloud_totals(rng, british * 0.5 + 1.0, 240), "IN-S": cloud_totals(rng, british * 0.5 + 1.0, 30),
+        "GB": cloud_totals(rng, british, 260), "NG": cloud_totals(rng, american - 2.0, 40),
+    }
+    attempts = {
+        "IN>ga": cloud_totals(rng, american * 0.8 + british * 0.2, 90),  # landing on American
+        "IN>rp": cloud_totals(rng, american * 0.7 + british * 0.3, 60),  # aiming at British, still nearer American
+        "IN>au": cloud_totals(rng, british, 12),  # no Australian reference to compare with
+    }
+    result = report(native, attempts, reference, {"IN": 9, "GB": 8, "NG": 12}, min_contributors=8, min_takes=200)
+
+    assert {key: place["ready"] for key, place in result["places"].items()} == {
+        "GB": True, "IN": True, "IN-S": False, "NG": False,
+    }
+    assert result["places"]["NG"] == {
+        "takes": 40, "contributors": 12, "enough_takes": False, "enough_contributors": True, "ready": False,
+    }
+    assert result["can_tell_apart"] == ["GB", "IN"]
+
+    distances = result["distances"]
+    assert distances["IN>ga"]["closest"] == "ga" and distances["IN>ga"]["lands_on_target"] is True
+    assert distances["IN>rp"]["closest"] == "ga" and distances["IN>rp"]["lands_on_target"] is False
+    assert distances["IN>au"]["lands_on_target"] is None
+    assert distances["GB"]["kind"] == "native" and distances["GB"]["closest"] == "rp"
+    assert distances["IN>ga"]["distance_to"]["ga"] < distances["IN>ga"]["distance_to"]["rp"]
+    # About one per feature for a group sitting on the centre it is measured from.
+    assert 0.8 * FEATURES < distances["GB"]["distance_to"]["rp"] < 1.3 * FEATURES
+
+    print_report(result)
+    printed = capsys.readouterr().out
+    assert "Places that can be told apart now: GB, IN" in printed
+    assert any(line.split()[:2] == ["IN>rp", "60"] and "closer to another accent" in line for line in printed.splitlines())
+    assert any(line.split()[:2] == ["IN>ga", "90"] and "on target" in line for line in printed.splitlines())
+
+
+def test_report_with_too_few_people_or_nothing_at_all(capsys):
+    rng = np.random.default_rng(9)
+    native = {"IN": cloud_totals(rng, np.zeros(FEATURES), 300), "GB": cloud_totals(rng, np.ones(FEATURES), 300)}
+    # Enough takes from too few people is not ready: one voice is not a country.
+    result = report(native, {}, {}, {"IN": 2, "GB": 8}, min_contributors=8, min_takes=200)
+    assert result["places"]["IN"]["ready"] is False and result["places"]["GB"]["ready"] is True
+    assert result["can_tell_apart"] == []
+    assert result["distances"] == {}
+    # People unknown (no ingest summary): judged on takes, and shown as unknown.
+    unknown = report(native, {}, {})
+    assert unknown["places"]["IN"] == {
+        "takes": 300, "contributors": None, "enough_takes": True, "enough_contributors": None, "ready": True,
+    }
+
+    print_report(report({}, {}, {}))
+    printed = capsys.readouterr().out
+    assert "none yet" in printed and "No native reference accents" in printed

@@ -15,7 +15,10 @@ import { REGIONS } from '../lib/regions'
 //     once summaries have been folded into totals and cannot be picked back out;
 //   - transfers between countries, retention periods, and whether an impact assessment is needed;
 //   - the claims "not audio" and "cannot be played back": true of the format, but the
-//     summary may still be characteristic of a voice.
+//     summary may still be characteristic of a voice;
+//   - the pilot (pages/PilotPage.jsx): people send export files by hand to whoever invited them.
+//     That is collection of personal data by that person, with consent given by the act of sending;
+//     whether that consent is informed enough, who the recipient is in law, and how long files are kept.
 const CONTACT = 'CONTACT ADDRESS TO BE ADDED'
 
 function PrivacyPage() {
@@ -87,9 +90,19 @@ function PrivacyPage() {
 
         <h2 className="section-title">Where it is</h2>
         <p className="prose">
-          On this device, in this browser, and nowhere else for now. Nothing is sent to PhonemePro or to
-          anyone else. There is no upload. If sharing is ever added it will be a separate choice, asked
-          again, with a new notice.
+          On this device, in this browser, and nowhere else unless you send it yourself. The app sends
+          nothing to PhonemePro or to anyone else. There is no upload. If automatic sharing is ever added
+          it will be a separate choice, asked again, with a new notice.
+        </p>
+
+        <h2 className="section-title">If you send an export file yourself</h2>
+        <p className="prose">
+          This is the only way anything reaches anyone. If you were invited to the pilot and choose to save a
+          file from Your data and send it, the person running the pilot receives what that file holds: the
+          summaries and labels listed above, with no audio, name or email. They keep the file privately, do
+          not publish it or pass it on, and add its takes to running totals per country and region. During the
+          pilot those totals are rebuilt from the files held, so if you ask for your file to be deleted, your
+          takes are removed from the totals as well. <Link to="/pilot">How the pilot works</Link>.
         </p>
 
         <h2 className="section-title">Seeing and deleting it</h2>

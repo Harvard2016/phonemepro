@@ -83,6 +83,19 @@ def build_classifier(totals: dict[str, Totals], min_count: int = 1) -> RegionCla
     return RegionClassifier(regions, means, np.linalg.inv(covariance))
 
 
+def mean_squared_distance(totals: Totals, centre: np.ndarray, precision: np.ndarray) -> float:
+    """Average squared distance of the vectors in `totals` from `centre`, without the vectors themselves.
+
+    E[(x - m)' P (x - m)] expands to terms in the count, the sum and the sum of outer products,
+    which is all that is kept. Lower means the group sits closer to `centre`.
+    """
+    if totals.count == 0:
+        return float("nan")
+    spread = np.sum(precision * totals.outer)  # trace(P @ outer), P symmetric
+    cross = centre @ precision @ totals.total
+    return float((spread - 2 * cross) / totals.count + centre @ precision @ centre)
+
+
 def save_totals(path, totals: dict[str, Totals], feature_set: str) -> None:
     regions = sorted(totals)
     np.savez_compressed(

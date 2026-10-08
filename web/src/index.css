@@ -733,6 +733,20 @@ ul.prose {
   list-style: disc;
 }
 
+.pilot__steps {
+  padding-left: 1.4rem;
+  list-style: decimal;
+}
+
+.pilot__steps li {
+  margin-bottom: 0.6rem;
+}
+
+.pilot__steps .text-button {
+  padding: 0;
+  font-size: inherit;
+}
+
 .prose + .section-title {
   margin-top: 2.5rem;
 }

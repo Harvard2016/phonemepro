@@ -4,6 +4,9 @@
     python -m scripts.learn_regions simulate              # check the idea on VCTK
     python -m scripts.learn_regions ingest <file|folder>  # fold exported takes into the running totals
     python -m scripts.learn_regions ingest <file|folder> --dry-run   # check and summarise, write nothing
+    python -m scripts.learn_regions ingest <folder> --rebuild        # pilot: totals from exactly these files
+    python -m scripts.learn_regions reference             # native reference accents from VCTK
+    python -m scripts.learn_regions report                # what the totals can tell so far
 
 When someone opts in, the web app reduces each clear take to 256 numbers: the
 mean and spread of an encoder layer over the take, standardized and projected
@@ -18,6 +21,14 @@ their region when one was given. Every practice take is an imitation of its
 target accent, so it joins separate "country attempting accent" totals.
 Only the totals and a list of take ids already counted are kept. `simulate` runs
 the same path on VCTK speakers to show that a classifier built from totals alone works.
+
+During a pilot, where people send their export files by hand, keep the files in a
+private folder and run `ingest <folder> --rebuild` each time. The totals are then
+built from exactly the files present, so removing someone's file and rebuilding
+removes them from the totals, and contributors are counted correctly. `report`
+then shows which regions have enough normal-voice takes to be told apart, and
+how close each country's attempts at an accent land to native speakers of it
+(`reference` builds those native reference accents from VCTK).
 """
 import argparse
 import hashlib
@@ -28,12 +39,24 @@ from pathlib import Path
 
 import numpy as np
 
-from pronunciation.region_totals import FEATURES, Totals, build_classifier, load_totals, save_totals
+from pronunciation.region_totals import (
+    FEATURES,
+    Totals,
+    build_classifier,
+    load_totals,
+    mean_squared_distance,
+    save_totals,
+)
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 PROJECTION_PATH = ROOT_DIR / "results" / "accent_projection.npz"
 TOTALS_PATH = ROOT_DIR / "results" / "region_totals.npz"
 ATTEMPTS_PATH = ROOT_DIR / "results" / "attempt_totals.npz"
+REFERENCE_PATH = ROOT_DIR / "results" / "reference_totals.npz"
+SUMMARY_PATH = ROOT_DIR / "results" / "region_summary.json"
+# VCTK accent groups that stand in for native speakers of a practice accent until real
+# normal-voice contributions exist. VCTK has two Australian speakers, too few to use.
+REFERENCE_ACCENTS = {"ga": "american", "rp": "english_southern"}
 SEEN_PATH = ROOT_DIR / "results" / "region_totals_seen.txt"
 REPORT_PATH = ROOT_DIR / "Docs" / "model" / "eval_results.json"
 MODEL_META_PATH = ROOT_DIR / "web" / "public" / "model" / "model.json"
@@ -220,19 +243,22 @@ def read_export(path: Path) -> tuple[list, str | None]:
 
 
 def ingest(source: Path, native_path: Path, attempts_path: Path, seen_path: Path, feature_set: str,
-           min_contributors: int = MIN_CONTRIBUTORS, min_takes: int = MIN_TAKES, dry_run: bool = False) -> dict:
+           min_contributors: int = MIN_CONTRIBUTORS, min_takes: int = MIN_TAKES, dry_run: bool = False,
+           rebuild: bool = False) -> dict:
     """Fold every new, valid take in `source` (an export file or a folder of them) into the totals.
 
     With `dry_run` everything is checked and summarised as it would be, and nothing is written.
+    With `rebuild` the existing totals and the list of counted takes are ignored and replaced, so
+    the result reflects exactly the files in `source`: removing a file removes its takes.
     """
     stores = {}
     for kind, path in (("native", native_path), ("attempt", attempts_path)):
-        totals, stored_set = load_totals(path) if path.exists() else ({}, feature_set)
+        totals, stored_set = load_totals(path) if path.exists() and not rebuild else ({}, feature_set)
         if stored_set != feature_set:
             raise SystemExit(f"{path} was built with model {stored_set}; start a new totals file for {feature_set}.")
         stores[kind] = totals
     # Take ids already counted, hashed. They are random and say nothing about the person.
-    seen = set(seen_path.read_text().split()) if seen_path.exists() else set()
+    seen = set(seen_path.read_text().split()) if seen_path.exists() and not rebuild else set()
 
     skipped: dict[str, int] = {}
     refused: dict[str, int] = {}
@@ -279,6 +305,7 @@ def ingest(source: Path, native_path: Path, attempts_path: Path, seen_path: Path
     return {
         "feature_set": feature_set,
         "dry_run": dry_run,
+        "rebuilt": rebuild,
         "added": takes_added,
         "added_native": sum(count for (kind, key), count in added.items() if kind == "native" and "-" not in key),
         "added_attempts": sum(count for (kind, _), count in added.items() if kind == "attempt"),
@@ -311,6 +338,105 @@ def ingest(source: Path, native_path: Path, attempts_path: Path, seen_path: Path
     }
 
 
+def build_reference(path: Path = REFERENCE_PATH) -> dict:
+    """Totals for native speakers of each practice accent, from VCTK one-second windows."""
+    from scripts.accent_data import ACCENT_SPEAKERS, PROBE_LAYERS
+    from scripts.train_accent_head import load_stats
+
+    layer_index = PROBE_LAYERS.index(int(np.load(PROJECTION_PATH)["layer"]))
+    totals = {}
+    for accent, group in REFERENCE_ACCENTS.items():
+        totals[accent] = Totals.empty()
+        for speaker in ACCENT_SPEAKERS[group]:
+            stats = load_stats(speaker, layer_index)
+            totals[accent].add(project(stats[:, 1:].reshape(-1, stats.shape[-1])))
+    feature_set = json.loads(MODEL_META_PATH.read_text())["version"]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    save_totals(path, totals, feature_set)
+    return {accent: t.count for accent, t in totals.items()}
+
+
+def report(native: dict, attempts: dict, reference: dict, contributors: dict | None = None,
+           min_contributors: int = MIN_CONTRIBUTORS, min_takes: int = MIN_TAKES) -> dict:
+    """What the totals can tell so far.
+
+    native       which places have enough normal-voice takes, and whether those that do can be
+                 told apart (a classifier needs at least two)
+    attempts     for each "country attempting accent" group, its average squared distance to
+                 the native reference accents: lower is closer. `closest` is the reference it
+                 sits nearest on average, which should be the target if attempts are landing.
+
+    `contributors` maps a country to how many people contributed in the last ingest; without it
+    readiness is judged on takes alone and marked as unknown.
+    """
+    contributors = contributors or {}
+    places = {}
+    for key, totals in sorted(native.items()):
+        country = key.split("-")[0]
+        people = contributors.get(country)
+        enough_people = None if people is None or "-" in key else people >= min_contributors
+        places[key] = {
+            "takes": totals.count,
+            "contributors": people if "-" not in key else None,
+            "enough_takes": totals.count >= min_takes,
+            "enough_contributors": enough_people,
+            "ready": totals.count >= min_takes and enough_people is not False,
+        }
+    ready = {key: native[key] for key, place in places.items() if place["ready"]}
+    classifier = build_classifier(ready)
+
+    distances = {}
+    centres = build_classifier(reference) if len(reference) >= 2 else None
+    if centres is not None:
+        for key, totals in sorted({**attempts, **native}.items()):
+            target = key.split(">")[1] if ">" in key else None
+            by_accent = {
+                accent: round(mean_squared_distance(totals, mean, centres.precision), 2)
+                for accent, mean in zip(centres.regions, centres.means)
+            }
+            distances[key] = {
+                "takes": totals.count,
+                "kind": "attempt" if target else "native",
+                "target": target,
+                "distance_to": by_accent,
+                "closest": min(by_accent, key=by_accent.get),
+                "lands_on_target": None if target not in by_accent else min(by_accent, key=by_accent.get) == target,
+            }
+    return {
+        "thresholds": {"min_contributors": min_contributors, "min_takes": min_takes},
+        "places": places,
+        "can_tell_apart": classifier.regions if classifier else [],
+        "reference_accents": sorted(reference),
+        "distances": distances,
+    }
+
+
+def print_report(result: dict) -> None:
+    thresholds = result["thresholds"]
+    print(f"Normal-voice takes by place (ready at {thresholds['min_takes']} takes from "
+          f"{thresholds['min_contributors']} people):")
+    for key, place in result["places"].items():
+        people = "?" if place["contributors"] is None else place["contributors"]
+        print(f"  {key:10} {place['takes']:5} takes  {people:>3} people  {'ready' if place['ready'] else 'not yet'}")
+    if not result["places"]:
+        print("  none yet")
+    apart = result["can_tell_apart"]
+    print(f"Places that can be told apart now: {', '.join(apart) if apart else 'none (needs two that are ready)'}")
+
+    if not result["reference_accents"]:
+        print("\nNo native reference accents. Run: python -m scripts.learn_regions reference")
+        return
+    names = result["reference_accents"]
+    print(f"\nAverage squared distance to native reference accents ({', '.join(names)}); lower is closer:")
+    for key, entry in result["distances"].items():
+        cells = "  ".join(f"{name} {entry['distance_to'][name]:8.2f}" for name in names)
+        verdict = "" if entry["lands_on_target"] is None else ("  on target" if entry["lands_on_target"] else "  closer to another accent")
+        print(f"  {key:10} {entry['takes']:5} takes  {cells}  closest {entry['closest']}{verdict}")
+    if not result["distances"]:
+        print("  no takes yet")
+    print("With few takes these averages mostly reflect which words were said and who said them.")
+
+
 def print_summary(summary: dict) -> None:
     if summary["dry_run"]:
         print("Dry run: nothing was written. This is what an ingest would do.")
@@ -341,6 +467,11 @@ def main():
     ingest_parser.add_argument("source", type=Path, help="an export file, or a folder of them")
     ingest_parser.add_argument("--json", action="store_true", help="print the summary as JSON")
     ingest_parser.add_argument("--dry-run", action="store_true", help="check and summarise, write nothing")
+    ingest_parser.add_argument("--rebuild", action="store_true",
+                               help="replace the totals with exactly what these files hold (pilot)")
+    commands.add_parser("reference")
+    report_parser = commands.add_parser("report")
+    report_parser.add_argument("--json", action="store_true", help="print the report as JSON")
     ingest_parser.add_argument("--min-contributors", type=int, default=MIN_CONTRIBUTORS)
     ingest_parser.add_argument("--min-takes", type=int, default=MIN_TAKES)
     args = parser.parse_args()
@@ -349,12 +480,29 @@ def main():
         fit_projection()
     elif args.command == "simulate":
         simulate()
+    elif args.command == "reference":
+        counts = build_reference()
+        print(f"Wrote {REFERENCE_PATH}: " + ", ".join(f"{accent} {count} windows" for accent, count in counts.items()))
+    elif args.command == "report":
+        def load(path):
+            return load_totals(path)[0] if path.exists() else {}
+        summary = json.loads(SUMMARY_PATH.read_text()) if SUMMARY_PATH.exists() else {"countries": {}}
+        contributors = {country: entry["contributors_this_run"] for country, entry in summary["countries"].items()}
+        result = report(load(TOTALS_PATH), load(ATTEMPTS_PATH), load(REFERENCE_PATH), contributors)
+        if args.json:
+            print(json.dumps(result, indent=2))
+        else:
+            if summary.get("rebuilt") is False:
+                print("Note: people are counted from the last ingest only. Use ingest --rebuild during a pilot.\n")
+            print_report(result)
     else:
         if not args.source.exists():
             raise SystemExit(f"{args.source} does not exist.")
         feature_set = json.loads(MODEL_META_PATH.read_text())["version"]
         summary = ingest(args.source, TOTALS_PATH, ATTEMPTS_PATH, SEEN_PATH, feature_set,
-                         args.min_contributors, args.min_takes, args.dry_run)
+                         args.min_contributors, args.min_takes, args.dry_run, args.rebuild)
+        if not args.dry_run:
+            SUMMARY_PATH.write_text(json.dumps(summary, indent=2) + "\n")
         if args.json:
             print(json.dumps(summary, indent=2))
         else:

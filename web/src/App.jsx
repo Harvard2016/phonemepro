@@ -8,6 +8,7 @@ import CreditsPage from './pages/CreditsPage'
 import DataPage from './pages/DataPage'
 import HistoryPage from './pages/HistoryPage'
 import ModelInfoPage from './pages/ModelInfoPage'
+import PilotPage from './pages/PilotPage'
 import PracticePage from './pages/PracticePage'
 import PrivacyPage from './pages/PrivacyPage'
 import { AppProvider, useApp } from './state'
@@ -84,6 +85,7 @@ function Shell() {
                 <Route path="/credits" element={<CreditsPage />} />
                 <Route path="/data" element={<DataPage />} />
                 <Route path="/privacy" element={<PrivacyPage />} />
+                <Route path="/pilot" element={<PilotPage />} />
                 {CheckPage && (
                   <Route
                     path="/check"

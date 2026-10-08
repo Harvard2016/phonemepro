@@ -22,7 +22,8 @@ export function AppProvider({ children }) {
   const [model, setModel] = useState({ status: 'idle', progress: 0, error: null })
   const [profile, setProfile] = useState(loadProfile)
   // The welcome screen opens by itself once, on the first visit.
-  const [welcomeOpen, setWelcomeOpen] = useState(() => !loadProfile().seen)
+  // Not over the pilot instructions, which open it themselves at the right step.
+  const [welcomeOpen, setWelcomeOpen] = useState(() => !loadProfile().seen && globalThis.location?.pathname !== '/pilot')
 
   const requestLexicon = useCallback(() => {
     loadLexicon().then(setLexicon).catch(() => setLexiconError('The dictionary did not load. Check your connection.'))

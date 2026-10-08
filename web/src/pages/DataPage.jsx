@@ -74,8 +74,8 @@ function DataPage() {
         <h1 className="page__title">What this browser keeps</h1>
         <p className="page__lede">
           Everything “Help it learn” has stored, with every label, exactly as it would be exported.
-          It all lives in this browser. Nothing has been sent anywhere, because sharing is not switched on.{' '}
-          <Link to="/privacy">Privacy notice</Link>.
+          It all lives in this browser. The app sends nothing anywhere; a file leaves only if you export it
+          and send it yourself. <Link to="/privacy">Privacy notice</Link>.
         </p>
       </header>
 

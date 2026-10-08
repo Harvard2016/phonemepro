@@ -298,6 +298,29 @@ python -m scripts.learn_regions ingest phonemepro-contributions-2026-10-08.json 
 
 This checks every take and prints a per-country summary of what would be added and what would be refused. Without `--dry-run` the valid takes are folded into `results/region_totals.npz` and `results/attempt_totals.npz`, so leave the flag on for test exports. The 256 numbers cannot be played back but may still be characteristic of a voice, so they are treated as personal data. The notice at `/privacy` is interim and has not had legal review.
 
+### Running a pilot
+
+The app has no upload, so the first real contributions come by hand. Send people https://phonemepro.vercel.app/pilot (it is not linked from the site). It walks them through setting a profile, reading the five normal-voice sentences, practising a few words, exporting from Your data, and sending the file back to you.
+
+Keep the files you receive in a private folder outside git, such as `data/contributions/`, and after each new file:
+
+```bash
+python -m scripts.learn_regions ingest data/contributions --rebuild   # totals from exactly these files
+python -m scripts.learn_regions reference                             # once: native reference accents from VCTK
+python -m scripts.learn_regions report
+```
+
+- `--rebuild` replaces the totals with what the files in the folder hold. People are then counted correctly across files, and if someone asks to withdraw, deleting their file and rebuilding removes them completely. Without it, totals only ever grow and a take cannot be taken back out.
+- `report` lists normal-voice takes by country and region, says which places are ready (200 takes from 8 people, defaults that have not been tuned) and which of those can be told apart. For each "country attempting accent" group it gives the average distance to native speakers of American and British, taken from VCTK, and whether the group sits closest to its target.
+
+What this can and cannot show yet:
+
+- The distance is computed from the totals alone, so it describes a group, not a take. Nothing is shown to learners in the app yet.
+- With a handful of takes the averages mostly reflect which words were said and who said them.
+- The reference accents come from VCTK sentences run through the full-precision model, while contributions are single words and sentences run through the quantized browser model. That mismatch has not been measured.
+- There is no Australian reference: VCTK has two Australian speakers.
+- Sending a file is the consent. The privacy notice describes the pilot but has had no legal review.
+
 ### History without a server
 
 History lives in the visitor's browser. It survives refreshes, closed tabs and restarts. It does not follow them to another device or survive clearing site data, so the History page has "Save a backup" and "Import a backup". Syncing across devices would need accounts and a database, which this project deliberately avoids.
