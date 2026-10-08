@@ -17,6 +17,8 @@ export const RECORDER_ERRORS = {
 
 // Records from the shared microphone session, cleans the take, and hands back
 // 16 kHz samples, a WAV blob of the same samples for playback, and how clean the take was.
+// `onError(message, { reason, quality })` names why a take was refused: 'permission', 'failed',
+// 'short', 'silent' or 'noisy', with the measured quality for the last two.
 // `analyserRef` exposes a live AnalyserNode while recording, for the waveform.
 export function useRecorder({ onComplete, onError }) {
   const [isStarting, setIsStarting] = useState(false)
@@ -38,20 +40,20 @@ export function useRecorder({ onComplete, onError }) {
     try {
       captured = await finishTake()
     } catch {
-      callbacksRef.current.onError(RECORDER_ERRORS.failed)
+      callbacksRef.current.onError(RECORDER_ERRORS.failed, { reason: 'failed' })
       return
     }
     if (!captured) return
     if (captured.length === 0) {
-      callbacksRef.current.onError(RECORDER_ERRORS.short)
+      callbacksRef.current.onError(RECORDER_ERRORS.short, { reason: 'short' })
       return
     }
 
     const { samples, ...quality } = cleanTake(captured)
     if (!quality.foundSpeech) {
-      callbacksRef.current.onError(RECORDER_ERRORS.silent)
+      callbacksRef.current.onError(RECORDER_ERRORS.silent, { reason: 'silent', quality })
     } else if (quality.snrDb < MIN_PRACTICE_SNR_DB) {
-      callbacksRef.current.onError(RECORDER_ERRORS.noisy)
+      callbacksRef.current.onError(RECORDER_ERRORS.noisy, { reason: 'noisy', quality })
     } else {
       callbacksRef.current.onComplete({
         samples, seconds: samples.length / SAMPLE_RATE, wav: encodeWav(samples, SAMPLE_RATE), quality,
@@ -71,7 +73,7 @@ export function useRecorder({ onComplete, onError }) {
     } catch {
       wantedRef.current = false
       setIsStarting(false)
-      callbacksRef.current.onError(RECORDER_ERRORS.permission)
+      callbacksRef.current.onError(RECORDER_ERRORS.permission, { reason: 'permission' })
       return
     }
 

@@ -171,10 +171,33 @@ export function clearDecisions() {
   }
 }
 
+// Where kept takes go. The app uses this browser's IndexedDB and the per-tab log.
+const deviceStore = { save: saveContribution, log: logDecision }
+
+// A store that lives only in memory, for the label check page (pages/CheckPage.jsx): it
+// applies the same cap, touches nothing real, and is gone when the page is left.
+export function createMemoryStore() {
+  const takes = []
+  return {
+    save: async (contribution) => {
+      if (takes.length >= MAX_STORED) return false
+      takes.push(contribution)
+      return true
+    },
+    log: () => {},
+    all: () => [...takes],
+    remove: (id) => {
+      const at = takes.findIndex((take) => take.id === id)
+      if (at !== -1) takes.splice(at, 1)
+    },
+  }
+}
+
 // Decide what to do with one analysed take, store it if it qualifies, and log the outcome.
 // Returns { stored, reason, checks, contribution }.
 export async function considerTake({
   profile, targetAccent, naturalVoice = false, word, score, heard, quality, soundsAttempted, soundsMatched, featureCount,
+  store = deviceStore,
 }) {
   const { viable, checks } = checkViability({
     quality, confidence: heard.confidence, soundsAttempted, soundsMatched, features: heard.features, featureCount,
@@ -191,14 +214,14 @@ export async function considerTake({
       confidence: heard.confidence, soundsAttempted, soundsMatched, modelVersion: heard.modelVersion,
     })
     try {
-      stored = await saveContribution(contribution)
+      stored = await store.save(contribution)
       if (!stored) reason = checkEligibility(profile, MAX_STORED)
     } catch {
       reason = 'this browser could not open its local storage'
     }
   }
   const failedOn = stored ? null : reason
-  logDecision({
+  store.log({
     at: new Date().toISOString(), word, target_accent: naturalVoice ? null : targetAccent, natural_voice: naturalVoice,
     stored, reason: failedOn, id: stored ? contribution.id : null, checks,
   })

@@ -248,6 +248,7 @@ web/                    the app (React + Vite)
   src/engine/           in-browser model, CTC decoding, scoring, recording cleanup, dictionaries,
                         history, profile and contributions
   src/audio/            microphone session and capture worklet
+  src/check/            the development-only label check: step table and pass/fail logic
   public/model/         exported model, vocabulary, evaluation report
   public/lexicon/       accent dictionaries and the practice word bank
   public/audio/         human reference recordings and their credits
@@ -269,6 +270,25 @@ cd web && npm test && npm run lint   # JavaScript
 ```
 
 CI runs both, builds the site and the Docker images, and boots the optional API container.
+
+### Checking labels by voice
+
+With the dev server running, http://localhost:5173/check walks through ten steps. Each sets up its own made-up profile, says what to say, runs the take through the same cleanup, model, scoring and keeping rules as the app, and shows pass or fail with expected against actual for every label. It ends with a summary that can be copied as plain text.
+
+| Step | Say | Expected |
+|---|---|---|
+| 1 | Profile GB, target American: "water" | Kept, attempt, joins `GB>ga` |
+| 2 | Profile GB, target British: "water" | Kept, attempt, joins `GB>rp` |
+| 3 | Profile US, South, target American: "better" | Kept, attempt, joins `US>ga`, not `US` or `US-S` |
+| 4 | Profile GB, Scotland: a sentence in a normal voice | Kept, native, joins `GB` and `GB-SCT` |
+| 5 | Nothing | Not kept, no speech, retake notice |
+| 6 | "banana" when the target is "water" | Not kept, target sounds not matched |
+| 7 | "fish" | First sound heard is F, so the start was not clipped |
+| 8 | "water" over music or a fan | Reported only: measured signal-to-noise ratio and whether it was kept |
+| 9 | Sharing off: "water" | Scored, nothing stored |
+| 10 | Nothing | Everything kept this session is valid for ingest and routed as steps 1 to 4 predicted |
+
+The page is a sandbox. Takes go to a store in memory, so the real profile, contributions and practice history are never read or written, and everything is gone on leaving the page. It exists only in development: the route and its code are left out of `npm run build`. The expected values are one table in `web/src/check/steps.js`, and the pass or fail logic is unit-tested without a microphone in `web/src/check/check.test.js`.
 
 ### Optional API server
 

@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { BrowserRouter, NavLink, Route, Routes, useLocation } from 'react-router-dom'
 import { AnimatePresence, MotionConfig, motion } from 'motion/react'
 import ErrorBoundary from './ErrorBoundary'
+import { LoadingState } from './components/States'
 import Welcome from './components/Welcome'
 import CreditsPage from './pages/CreditsPage'
 import DataPage from './pages/DataPage'
@@ -10,6 +11,10 @@ import ModelInfoPage from './pages/ModelInfoPage'
 import PracticePage from './pages/PracticePage'
 import PrivacyPage from './pages/PrivacyPage'
 import { AppProvider, useApp } from './state'
+
+// The guided label check exists only in development: in a production build this is null
+// and its code is left out of the bundle.
+const CheckPage = import.meta.env.DEV ? lazy(() => import('./pages/CheckPage')) : null
 
 const NAV = [
   ['/', 'Practice'],
@@ -79,6 +84,12 @@ function Shell() {
                 <Route path="/credits" element={<CreditsPage />} />
                 <Route path="/data" element={<DataPage />} />
                 <Route path="/privacy" element={<PrivacyPage />} />
+                {CheckPage && (
+                  <Route
+                    path="/check"
+                    element={<Suspense fallback={<LoadingState label="Opening the check" />}><CheckPage /></Suspense>}
+                  />
+                )}
                 <Route path="*" element={<PracticePage />} />
               </Routes>
             </motion.div>
@@ -96,7 +107,8 @@ function Shell() {
         </span>
       </footer>
 
-      <Welcome />
+      {/* The check page is a sandbox and must not prompt for, or change, the real profile. */}
+      {location.pathname !== '/check' && <Welcome />}
 
       <svg className="grain" aria-hidden="true">
         <filter id="grain-filter">
