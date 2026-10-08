@@ -52,3 +52,4 @@ web/.vite/
 
 # Personal history exports
 practice-history*.json
+.vercel

@@ -2,6 +2,8 @@
 
 Pronunciation practice that teaches accents, not just words. Pick American, British or Australian English, hear a real person say the word, say it yourself, and see which sounds matched that accent's pronunciation.
 
+**Try it: https://phonemepro.vercel.app**
+
 Everything runs in your browser. A fine-tuned wav2vec 2.0 model transcribes your recording into phonemes on your own device, so there is no server, no account, and your voice is never uploaded.
 
 - **Three accent targets.** "water" is `W AO T ER` in American and `W AO T AH` in British; "dance" has the short *a* in American and Australian and the long one in British. 6,326 of the 14,541 dictionary words differ between American and British.
@@ -242,7 +244,7 @@ The model, dictionaries and reference recordings are in `web/public/`, so there 
 
 ### Deploy
 
-The app is a static site. On Vercel, import the repository, set the root directory to `web`, and deploy; `web/vercel.json` adds the single-page routing and the headers that let the model use several threads. Any static host works.
+The live site is https://phonemepro.vercel.app, deployed from `main` by Vercel with the root directory set to `web`. The app is a static site. On Vercel, import the repository, set the root directory to `web`, and deploy; `web/vercel.json` adds the single-page routing and the headers that let the model use several threads. Any static host works.
 
 ### What the app keeps
 
