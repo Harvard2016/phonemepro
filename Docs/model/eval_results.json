@@ -304,5 +304,140 @@
     "blend_weight": 0.6,
     "test_correlation_app_score": 0.685,
     "test_mae_points_app_score": 0.82
+  },
+  "accents": {
+    "dataset": "VCTK 0.92 subset (CC BY 4.0), 60 utterances per speaker",
+    "unseen_accent_speakers": {
+      "irish": 9,
+      "australian": 2
+    },
+    "classes": [
+      "Southern English",
+      "American",
+      "Scottish"
+    ],
+    "speakers": {
+      "Southern English": {
+        "train": 10,
+        "dev": 2,
+        "test": 4
+      },
+      "American": {
+        "train": 12,
+        "dev": 2,
+        "test": 4
+      },
+      "Scottish": {
+        "train": 9,
+        "dev": 2,
+        "test": 3
+      }
+    },
+    "chance": 0.333,
+    "encoder_layer": 6,
+    "dev_accuracy_by_layer": {
+      "3": 0.531,
+      "6": 0.622,
+      "9": 0.61,
+      "12": 0.587
+    },
+    "test_accuracy_one_second": 0.703,
+    "test_accuracy_full_utterance": 0.786,
+    "test_speakers_identified": "10 of 11",
+    "confusion_full_utterance": [
+      [
+        172,
+        4,
+        64
+      ],
+      [
+        11,
+        206,
+        23
+      ],
+      [
+        35,
+        4,
+        141
+      ]
+    ],
+    "unseen_accent_guesses": {
+      "irish": {
+        "American": 0.376,
+        "Scottish": 0.313,
+        "Southern English": 0.311
+      },
+      "australian": {
+        "American": 0.417,
+        "Southern English": 0.333,
+        "Scottish": 0.25
+      }
+    },
+    "phoneme_error_rate_by_dictionary": {
+      "english_southern": {
+        "utterances": 169,
+        "per_vs_ga": 0.2358,
+        "per_vs_rp": 0.2255
+      },
+      "american": {
+        "utterances": 164,
+        "per_vs_ga": 0.2088,
+        "per_vs_rp": 0.2265
+      },
+      "scottish": {
+        "utterances": 132,
+        "per_vs_ga": 0.2326,
+        "per_vs_rp": 0.2447
+      },
+      "irish": {
+        "utterances": 86,
+        "per_vs_ga": 0.2398,
+        "per_vs_rp": 0.2456
+      },
+      "australian": {
+        "utterances": 89,
+        "per_vs_ga": 0.2492,
+        "per_vs_rp": 0.2522
+      }
+    }
+  },
+  "accent_finetune": {
+    "method": "CTC fine-tuning of the output layer only, on frozen encoder features",
+    "labels": "southern English speech with the British dictionary, American speech with the American dictionary",
+    "train_utterances": 973,
+    "test_utterances": 287,
+    "learner_test_utterances": 600,
+    "before": {
+      "accents": {
+        "english_southern": 0.2352,
+        "american": 0.208
+      },
+      "learners": 0.2101
+    },
+    "candidates": {
+      "1.0": {
+        "accents": {
+          "english_southern": 0.2273,
+          "american": 0.2056
+        },
+        "learners": 0.2096
+      },
+      "0.1": {
+        "accents": {
+          "english_southern": 0.2178,
+          "american": 0.2016
+        },
+        "learners": 0.2223
+      },
+      "0.01": {
+        "accents": {
+          "english_southern": 0.2014,
+          "american": 0.1864
+        },
+        "learners": 0.2259
+      }
+    },
+    "applied": false,
+    "chosen_anchor": 1.0
   }
 }

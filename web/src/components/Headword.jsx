@@ -4,7 +4,7 @@ import { wordToIpa } from '../lib/phonemes'
 const EASE = [0.2, 0.8, 0.2, 1]
 
 // The dictionary entry: an oversized headword that rises letter by letter, with its IPA beneath.
-function Headword({ word }) {
+function Headword({ word, accent = 'ga' }) {
   const parts = word.word.split(' ')
   const isPhrase = parts.length > 1
   const letters = [...word.word]
@@ -36,13 +36,13 @@ function Headword({ word }) {
         ))}
       </h1>
       <motion.p
-        key={word.word}
+        key={`${word.word}-${accent}`}
         className="headword__ipa"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.25 + Math.min(letters.length, 14) * 0.035 }}
       >
-        <span className="ipa">/{wordToIpa(word.phonemes)}/</span>
+        <span className="ipa">/{wordToIpa(word.phonemes, accent)}/</span>
         <span className="headword__arpabet">{word.phonemes.join(' ')}</span>
       </motion.p>
     </div>

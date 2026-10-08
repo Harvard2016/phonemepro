@@ -4,7 +4,10 @@ __pycache__
 *.pyc
 data
 results
-web
+web/*
+!web/public
+web/public/*
+!web/public/lexicon
 tests
 *.db
 .DS_Store

@@ -6,3 +6,7 @@ pyarrow==25.0.1
 jiwer==4.0.0
 scikit-learn==1.9.1
 tqdm==4.70.1
+# Browser export
+onnx==1.23.2
+onnxruntime==1.30.0
+onnxscript==0.7.2

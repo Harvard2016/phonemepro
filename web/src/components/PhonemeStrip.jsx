@@ -6,7 +6,7 @@ const STATUS_LABEL = { correct: 'correct', error: 'substituted', missed: 'missed
 // Target phonemes set like a line of type, marked up the way a proofreader would:
 // substitutions struck through in red with what was heard written below, omissions left hollow.
 // With `onPlay`, a sound that was heard becomes a button that plays its slice of the take.
-function PhonemeStrip({ results, animate = true, compact = false, onPlay }) {
+function PhonemeStrip({ results, animate = true, compact = false, accent = 'ga', onPlay }) {
   return (
     <ol className={`strip${compact ? ' strip--compact' : ''}`}>
       {results.map((result, index) => (
@@ -25,15 +25,15 @@ function PhonemeStrip({ results, animate = true, compact = false, onPlay }) {
               onClick={() => onPlay(result.start, result.end)}
               aria-label={`Play how you said ${result.phoneme}`}
             >
-              {toIpa(result.phoneme)}
+              {toIpa(result.phoneme, accent)}
             </button>
           ) : (
-            <span className="strip__ipa ipa">{toIpa(result.phoneme)}</span>
+            <span className="strip__ipa ipa">{toIpa(result.phoneme, accent)}</span>
           )}
           {!compact && (
             <span className="strip__note">
               {result.status === 'error' && result.heard && (
-                <>heard <span className="ipa">{toIpa(result.heard)}</span></>
+                <>heard <span className="ipa">{toIpa(result.heard, accent)}</span></>
               )}
               {result.status === 'missed' && 'missed'}
               {result.status === 'unscored' && 'not scored'}

@@ -1,15 +1,25 @@
 # PhonemePro
 
-Pronunciation practice with phoneme-level feedback. Say a word, and a fine-tuned wav2vec 2.0 model transcribes what you actually said into ARPABET phonemes, aligns it against the dictionary pronunciation, and marks each sound as correct, substituted, or missed.
+Pronunciation practice that teaches accents, not just words. Pick American, British or Australian English, hear a real person say the word, say it yourself, and see which sounds matched that accent's pronunciation.
 
-- **Model:** `facebook/wav2vec2-base` fine-tuned with a CTC head on [SpeechOcean762](https://www.openslr.org/101/) (2,500 training utterances from English learners), plus a small score head trained against human accuracy ratings.
-- **Backend:** FastAPI. Alignment, scoring, per-user weak-sound tracking, SQLite history.
-- **Frontend:** React + Vite. Live waveform while recording, IPA transcription, proofreader-style error marks, and a timeline of your take where each sound can be replayed on its own.
-- **Practice anything:** a built-in word list at three levels, or type your own word or short phrase.
+Everything runs in your browser. A fine-tuned wav2vec 2.0 model transcribes your recording into phonemes on your own device, so there is no server, no account, and your voice is never uploaded.
+
+- **Three accent targets.** "water" is `W AO T ER` in American and `W AO T AH` in British; "dance" has the short *a* in American and Australian and the long one in British. 6,326 of the 14,541 dictionary words differ between American and British.
+- **Human reference voices.** 181 recordings by volunteers on Wikimedia Commons cover the 80 practice words (American 80, British 57, Australian 44). Where there is no recording yet, the app says so and falls back to the browser's synthetic voice.
+- **Feedback per sound.** Substituted and missed sounds are marked, with the slice of your recording for each one playable on its own, and accent-specific coaching ("British English has no r here").
+- **A guess at your accent.** An accent head says whether a take sounds closest to Southern English, American or Scottish.
+- **Your own text.** Any word or phrase of up to eight words from the dictionary.
+- **History that stays with you.** Attempts are stored in the browser (IndexedDB), survive refreshes and closed tabs, and can be saved to a file and imported elsewhere.
+
+## Credits
+
+PhonemePro started as a team project by **Arshpreet Singh Sandhu, Prakhar Verma, Abhisar Anand and Harshit Sharma**: the original FastAPI backend, the wav2vec 2.0 fine-tuning on SpeechOcean762, and the first practice interface. Harshit continued it from there: the evaluation, the learned score head, the accent dictionaries and accent head, the in-browser model, and this interface.
 
 ## Results
 
-Measured on the SpeechOcean762 test split: 2,500 utterances, 125 speakers, 47,369 phones, 161 minutes of audio. Reproduce with `python -m scripts.evaluate infer && python -m scripts.evaluate report`.
+### Phoneme model
+
+Measured on the SpeechOcean762 test split: 2,500 utterances, 125 speakers, 47,369 phones, 161 minutes of audio.
 
 | Metric | Value |
 |---|---|
@@ -25,137 +35,161 @@ How to read these:
 - The reference is the dictionary pronunciation and the speakers are learners, so some of the error rate is real mispronunciation, not model error.
 - A phone counts as mispronounced when human annotators scored it below 1.5 on the dataset's 0 to 2 scale. The model flags many more phones than annotators do, so a flagged sound is a prompt to listen again rather than a verdict.
 - The test split was also used to log eval loss during training. No checkpoint selection or tuning was done against it, but it is not a fully untouched hold-out.
-- `ZH` and `OY` occur about 20 times each in the test set and the model never predicts either. Both are rare in the training data. The app marks those two sounds "not scored" instead of counting them as errors.
+- `ZH` and `OY` occur about 20 times each in the test set and the model never predicts either. The app marks those two sounds "not scored" instead of counting them as errors.
 
-Full results, including the per-phoneme breakdown and the most common confusions, are in [`Docs/model/eval_results.json`](Docs/model/eval_results.json) and on the app's Model page.
+### Accents
 
-### The learned score head
+Measured on native speakers from VCTK that no part of the model trained on.
 
-Alignment tells you which sounds were wrong, but it is a weak predictor of how a human would rate the whole utterance (r = 0.50). `scripts/train_score_head.py` keeps the fine-tuned encoder frozen, caches one mean-pooled embedding per utterance, and fits a two-layer regression head on the human accuracy ratings of the training split, with every fifth training speaker held out for early stopping. It trains in seconds on a laptop and reaches r = 0.65 on the test split on its own.
+**Does the phoneme model hear accent?** Its transcription of each group is compared with the American dictionary and the British one. A lower error rate against a group's own dictionary means the model hears the difference.
 
-The head only hears audio, not the target word, so a fluent rendition of the wrong word would rate highly. The app score is therefore a blend (60% learned, 40% alignment, weight chosen on the held-out training speakers) capped at three points above the alignment score. That blend reaches r = 0.69.
+| Speakers (held out) | vs. American dictionary | vs. British dictionary |
+|---|---|---|
+| Southern English (4) | 23.6% | **22.6%** |
+| American (4) | **20.9%** | 22.7% |
+| Scottish (3) | **23.3%** | 24.5% |
+| Irish (2) | **24.0%** | 24.6% |
+| Australian (2) | **24.9%** | 25.2% |
+
+The direction is right for the accents that have their own dictionary, and Scottish and Irish, which pronounce their r's, sit closer to American. The gaps are about one to two points, so this is a modest effect. The two Australian speakers do not match the British dictionary better, which means the rule-derived Australian targets below are not validated by this data.
+
+**Accent head.** A small classifier on an earlier encoder layer guesses which of three accents a recording is closest to. Chance is 33%.
+
+| | Accuracy on held-out speakers |
+|---|---|
+| One-second clips | **70%** |
+| Whole sentences | **79%** |
+| Speakers named correctly by majority vote | 10 of 11 |
+
+Limits worth knowing:
+
+- Eleven test speakers is a small sample, and VCTK is adults reading sentences in a studio. A learner saying one word into a laptop microphone is harder, so the app presents the guess as a hint.
+- The last encoder layer, tuned to phonemes, scored 38% on a four-way version of this task; layer 6 was chosen on separate development speakers.
+- Irish was tried as a fourth class and failed outright (3 of 120 held-out clips) with five training speakers. Australian has only two speakers in VCTK. Neither is guessed. The data has no Cockney or Southern American speakers in useful numbers.
+
+**Fine-tuning the phoneme output layer on accent data** (`scripts/finetune_accent_ctc.py`) was tested and not applied. Teaching it southern English speech with British labels trades against learner speech:
+
+| Setting | Southern English error | American error | Learner error (SpeechOcean762) |
+|---|---|---|---|
+| Before | 23.5% | 20.8% | 21.0% |
+| Gentle | 22.7% | 20.6% | 21.0% |
+| Medium | 21.8% | 20.2% | 22.2% |
+| Strong | 20.1% | 18.6% | 22.6% |
+
+The gentle setting is safe but barely moves anything; the others cost learners more than a point. Training on both kinds of speech together is the next thing to try.
+
+### Browser model
+
+The model is exported to ONNX with the transformer's weights quantized to 8 bits: 123 MB, downloaded once and cached. On 300 test utterances it scores 23.43% phoneme error against 23.37% at full precision. Quantizing the convolutional front end too would save 27 MB but raised the error rate to 31%. A take is analysed in about half a second on a laptop.
+
+## The accent dictionaries
+
+| Accent | Source |
+|---|---|
+| General American | CMUdict |
+| British (Received Pronunciation) | [Britfone](https://github.com/JoseLlarena/Britfone) 3.0.1, IPA mapped onto the model's symbols |
+| General Australian | Derived from the British entry by two rules |
+
+The model's symbols are American (ARPABET), which limits what can be taught:
+
+- It can mark differences in **which sounds a word has**: the dropped *r* (car, water), the long *a* of bath and dance, the *y* in new and tune, and word-level differences such as schedule, tomato, either and lieutenant.
+- It cannot mark differences in **how one sound is coloured**. British *hot* and *father* share a symbol, so the British short *o* is not taught.
+- The Australian entries follow the British ones except that the short *a* is kept before a nasal (dance, chance, plant, but not can't) and unstressed short *i* becomes schwa (rabbit, boxes). These rules come from published descriptions of Australian English, not from data, and the result above does not confirm them.
+
+Scoring compares phonemes with lexical stress stripped, because SpeechOcean762 and CMUdict label stress differently.
+
+## Run it
+
+Requires Node 20+.
 
 ```bash
-python -m scripts.train_score_head features   # about 10 minutes on CPU
-python -m scripts.train_score_head train      # writes results/multitask-phoneme-model
-```
-
-### Why scoring ignores lexical stress
-
-SpeechOcean762 labels stress differently from CMUdict (monosyllables are labelled `AA0` where CMUdict has `AA1`), and the practice words use CMUdict targets. Comparing stress digits therefore penalised learners for a labelling convention. Scoring now aligns stress-stripped phonemes and reports stress agreement separately.
-
-## Quick start
-
-Requires Python 3.12 and Node 20+.
-
-```bash
-# Backend
-python3.12 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-python download_nltk.py
-uvicorn api:app --reload          # http://localhost:8000
-
-# Frontend, in a second terminal
 cd web
 npm install
-npm run dev                       # http://localhost:5173
+npm run dev        # http://localhost:5173
 ```
 
-### Model weights
+The model, dictionaries and reference recordings are in `web/public/`, so there is nothing else to download.
 
-Weights are not stored in git. The backend picks the first source that exists:
+### Deploy
 
-1. `results/multitask-phoneme-model` (CTC plus the learned score head, built by `scripts/train_score_head.py`)
-2. `results/finetuned-phoneme-model` (the model evaluated above)
-3. The Hugging Face Hub repo named by the `PHONEME_MODEL_ID` environment variable
-4. `facebook/wav2vec2-base-960h`, a general speech recognizer. Scores in this mode are rough, and the app labels it "Fallback model".
+The app is a static site. On Vercel, import the repository, set the root directory to `web`, and deploy; `web/vercel.json` adds the single-page routing and the headers that let the model use several threads. Any static host works.
 
-Download the fine-tuned model from Google Drive: [Finetuned Phoneme Model.zip](https://drive.google.com/file/d/1utPIaTqvlH2NufQiIz2xrYJ_GknTjcJv/view?usp=sharing) (2.4 GB with training checkpoints). Unzip it at the repository root so that `results/finetuned-phoneme-model/model.safetensors` exists. Only the top-level files are needed for inference; copy `checkpoint-4710/trainer_state.json` next to them to get the training curve on the Model page.
+### History without a server
 
-### Docker
+History lives in the visitor's browser. It survives refreshes, closed tabs and restarts. It does not follow them to another device or survive clearing site data, so the History page has "Save a backup" and "Import a backup". Syncing across devices would need accounts and a database, which this project deliberately avoids.
+
+## Rebuild the model
+
+Requires Python 3.12 and ffmpeg. Data and weights are not in git except the exported browser model.
 
 ```bash
-docker compose up --build
+python3.12 -m venv .venv && source .venv/bin/activate
+pip install -r requirements-train.txt -r requirements-dev.txt
+
+python train_finetune.py                        # phoneme model (GPU recommended)
+python -m scripts.evaluate infer                # test-split evaluation
+python -m scripts.evaluate report
+python -m scripts.train_score_head features     # learned score head
+python -m scripts.train_score_head train
+python -m scripts.build_lexicon                 # accent dictionaries
+python -m scripts.fetch_reference_audio         # human recordings from Wikimedia Commons
+python -m scripts.accent_data index             # VCTK accent subset
+python -m scripts.accent_data features
+python -m scripts.accent_data layers
+python -m scripts.train_accent_head             # accent head and the accent tables above
+python -m scripts.export_onnx                   # browser model into web/public/model/
 ```
 
-The API is served on port 8000 and the web app on port 5173. `./results` is mounted read-only into the API container.
+The PyTorch weights for the phoneme model, score head and accent head are attached to the GitHub release. The score head and accent head keep the encoder frozen and train in seconds on a laptop from cached features.
 
-## API
-
-| Method | Path | Purpose |
-|---|---|---|
-| `POST` | `/api/analyze` | Score a recording. Form fields: `audio` (WAV or WebM), `word`, optional `phonemes` (JSON list, for words outside the built-in list). |
-| `GET` | `/api/words?level=easy` | Practice words with ARPABET targets. |
-| `GET` | `/api/phonemes?text=red lorry` | Dictionary phonemes for a typed word or phrase (up to 8 words). |
-| `GET` | `/api/insights` | Per-phoneme error rates from your attempts and words that train the weakest sounds. |
-| `GET` | `/api/history`, `/api/history/export` | Attempts as JSON or CSV. |
-| `DELETE` | `/api/history?source=real` | Clear attempts. |
-| `GET` | `/api/model-info` | Training log, run configuration, evaluation results. |
-| `GET` | `/api/health` | Liveness check. |
-
-```bash
-curl -X POST http://localhost:8000/api/analyze \
-  -F "audio=@recording.wav" -F "word=ship"
-```
-
-```json
-{
-  "word": "ship",
-  "target_phonemes": ["SH", "IH1", "P"],
-  "predicted_phonemes": ["S", "IH1", "P"],
-  "score": 6.8,
-  "wer": 0.33,
-  "metrics": {"accuracy": 67, "completeness": 100, "fluency": 91},
-  "phoneme_results": [
-    {"phoneme": "SH", "status": "error", "heard": "S", "tip": "Heard S instead.", "start": 0.1, "end": 0.24},
-    {"phoneme": "IH1", "status": "correct", "heard": "IH1", "tip": "", "stress_match": true, "start": 0.24, "end": 0.4},
-    {"phoneme": "P", "status": "correct", "heard": "P", "tip": "", "start": 0.4, "end": 0.52}
-  ],
-  "feedback": "Focus on the highlighted sounds."
-}
-```
-
-`start` and `end` are approximate seconds into the recording, taken from where the CTC head emitted each phoneme. The numbers above are illustrative.
-
-## Project layout
+## Layout
 
 ```
-api.py                  FastAPI routes
-pronunciation/
-  model.py              model selection, loading, CTC decoding
-  scoring.py            alignment, scoring, per-phoneme feedback (pure functions)
-  phonemes.py           ARPABET helpers and articulation tips
-  model_info.py         training and evaluation metadata read from artifacts
-db.py                   SQLite practice history
-word_list.py            practice words by difficulty
-scripts/evaluate.py     test-split evaluation
-scripts/train_score_head.py   score head on the frozen encoder
-src/, train_*.py        training code
-tests/                  pytest suite (no model weights needed)
-web/                    React frontend
-Docs/                   product requirements, architecture notes, evaluation results
+web/                    the app (React + Vite)
+  src/engine/           in-browser model, CTC decoding, scoring, dictionaries, history
+  public/model/         exported model, vocabulary, evaluation report
+  public/lexicon/       accent dictionaries and the practice word bank
+  public/audio/         human reference recordings and their credits
+pronunciation/          Python reference: scoring, dictionaries, model loading
+scripts/                evaluation, heads, dictionaries, reference audio, export
+tests/                  pytest suite and the fixtures shared with the JavaScript tests
+api.py, db.py           optional FastAPI server with the same scoring
+src/, train_*.py        original training code
+Docs/                   requirements, architecture notes, evaluation results
 ```
+
+Scoring exists twice, in Python (`pronunciation/scoring.py`) and JavaScript (`web/src/engine/scoring.js`). Both are tested against the same 72 cases in `tests/fixtures/scoring_cases.json`.
 
 ## Development
 
 ```bash
-pip install -r requirements-dev.txt
-pytest              # backend tests, run against a fake recognizer
-ruff check .
-
-cd web
-npm run lint
-npm run build
+pytest && ruff check .               # Python
+cd web && npm test && npm run lint   # JavaScript
 ```
 
-CI runs the same checks on every pull request, builds both Docker images, and boots the API container.
+CI runs both, builds the site and the Docker images, and boots the optional API container.
 
-## Training
+### Optional API server
 
-`train_finetune.py` expects SpeechOcean762 extracted at `data/speechocean762` and writes to `results/finetuned-phoneme-model`. Install `requirements-train.txt` first.
+`api.py` serves the same analysis over HTTP for anyone who would rather run the model server-side. The web app does not use it.
 
 ```bash
-python train_finetune.py
+pip install -r requirements.txt && python download_nltk.py
+uvicorn api:app
+curl -X POST http://localhost:8000/api/analyze -F "audio=@recording.wav" -F "word=water" -F "accent=rp"
 ```
 
-The published model ran for 30 epochs (4,710 steps) at batch size 8 with gradient accumulation 2 and a peak learning rate of 3e-5.
+## Data, voices and licences
+
+Code: MIT, see [LICENSE](LICENSE).
+
+| Source | Used for | Licence |
+|---|---|---|
+| [SpeechOcean762](https://www.openslr.org/101/) | Phoneme model and score head | CC BY 4.0 |
+| [VCTK 0.92](https://datashare.ed.ac.uk/handle/10283/3443) | Accent head and accent evaluation | CC BY 4.0 |
+| [wav2vec 2.0 base](https://huggingface.co/facebook/wav2vec2-base) | Pretrained encoder | Apache 2.0 |
+| CMUdict | American pronunciations | BSD-style |
+| [Britfone](https://github.com/JoseLlarena/Britfone) | British pronunciations | MIT |
+| Wikimedia Commons | Reference recordings | CC BY, CC BY-SA, CC0 or public domain, per file |
+
+Each recording's speaker, licence and source page is listed in `web/public/audio/credits.json` and on the app's Credits page. The recordings were converted to MP3, trimmed and loudness-normalized; those under a ShareAlike licence remain under it.

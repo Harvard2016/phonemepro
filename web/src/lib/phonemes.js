@@ -11,6 +11,14 @@ const IPA = {
 // Unstressed AH and ER reduce to schwa forms.
 const REDUCED = { AH: 'ə', ER: 'ɚ' }
 
+// British and Australian entries are shown in the usual British transcription.
+// The model's symbol set cannot separate LOT from PALM, so both appear as ɑː.
+const BRITISH = { AA: 'ɑː', AO: 'ɔː', ER: 'ɜː', OW: 'əʊ', UW: 'uː', EH: 'e', R: 'r' }
+// Unstressed ER never occurs in a British target (the dictionary has schwa), so when it
+// shows up it is something the learner said, and it keeps its r-colour: ɚ.
+const BRITISH_REDUCED = { AH: 'ə', ER: 'ɚ', IY: 'i' }
+const BRITISH_STYLE = new Set(['rp', 'au'])
+
 // Consonant clusters that can begin an English syllable, used to place stress marks.
 const ONSETS = new Set([
   'P L', 'P R', 'B L', 'B R', 'T R', 'D R', 'K L', 'K R', 'K W', 'G L', 'G R', 'F L', 'F R',
@@ -27,9 +35,15 @@ export const stressOf = (phoneme) => {
 
 export const isVowel = (phoneme) => stressOf(phoneme) !== null
 
-export function toIpa(phoneme) {
+export function toIpa(phoneme, accent = 'ga') {
   const base = basePhoneme(phoneme)
-  if (stressOf(phoneme) === '0' && REDUCED[base]) return REDUCED[base]
+  const unstressed = stressOf(phoneme) === '0'
+  if (BRITISH_STYLE.has(accent)) {
+    if (unstressed && BRITISH_REDUCED[base]) return BRITISH_REDUCED[base]
+    if (base === 'IY') return 'iː'
+    return BRITISH[base] ?? IPA[base] ?? base.toLowerCase()
+  }
+  if (unstressed && REDUCED[base]) return REDUCED[base]
   return IPA[base] ?? base.toLowerCase()
 }
 
@@ -48,7 +62,7 @@ function syllableStart(phonemes, vowelIndex) {
   return vowelIndex
 }
 
-export function wordToIpa(phonemes) {
+export function wordToIpa(phonemes, accent = 'ga') {
   const vowelCount = phonemes.filter(isVowel).length
   const marks = {}
   if (vowelCount > 1) {
@@ -58,5 +72,5 @@ export function wordToIpa(phonemes) {
       if (stress === '2') marks[syllableStart(phonemes, index)] = 'ˌ'
     })
   }
-  return phonemes.map((phoneme, index) => (marks[index] ?? '') + toIpa(phoneme)).join('')
+  return phonemes.map((phoneme, index) => (marks[index] ?? '') + toIpa(phoneme, accent)).join('')
 }

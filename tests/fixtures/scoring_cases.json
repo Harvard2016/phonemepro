@@ -1,0 +1,8264 @@
+[
+ {
+  "target": [
+   "K",
+   "AE1",
+   "T"
+  ],
+  "predicted": [
+   "K",
+   "AE1",
+   "T"
+  ],
+  "confidence": 0.97,
+  "margin": 0.95,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ]
+  ],
+  "expected": {
+   "score": 10.0,
+   "wer": 0.0,
+   "per_with_stress": 0.0,
+   "metrics": {
+    "accuracy": 100,
+    "completeness": 100,
+    "fluency": 100
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "K",
+     "status": "correct",
+     "heard": "K",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "AE1",
+     "status": "correct",
+     "heard": "AE1",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    },
+    {
+     "phoneme": "T",
+     "status": "correct",
+     "heard": "T",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    }
+   ],
+   "errors": [],
+   "feedback": "Great! The phoneme match is strong.",
+   "coaching_tips": []
+  }
+ },
+ {
+  "target": [
+   "F",
+   "UW1",
+   "L"
+  ],
+  "predicted": [
+   "F",
+   "UW0",
+   "L"
+  ],
+  "confidence": 0.97,
+  "margin": 0.95,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ]
+  ],
+  "expected": {
+   "score": 10.0,
+   "wer": 0.0,
+   "per_with_stress": 0.33,
+   "metrics": {
+    "accuracy": 100,
+    "completeness": 100,
+    "fluency": 100
+   },
+   "stress": {
+    "matched": 0,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "F",
+     "status": "correct",
+     "heard": "F",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "UW1",
+     "status": "correct",
+     "heard": "UW0",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": false
+    },
+    {
+     "phoneme": "L",
+     "status": "correct",
+     "heard": "L",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    }
+   ],
+   "errors": [],
+   "feedback": "Great! The phoneme match is strong.",
+   "coaching_tips": []
+  }
+ },
+ {
+  "target": [
+   "SH",
+   "IH1",
+   "P"
+  ],
+  "predicted": [
+   "S",
+   "IY1",
+   "P"
+  ],
+  "confidence": 0.85,
+  "margin": 0.8,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ]
+  ],
+  "expected": {
+   "score": 3.8,
+   "wer": 0.67,
+   "per_with_stress": 0.67,
+   "metrics": {
+    "accuracy": 33,
+    "completeness": 100,
+    "fluency": 91
+   },
+   "stress": {
+    "matched": 0,
+    "total": 0
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "SH",
+     "status": "error",
+     "heard": "S",
+     "tip": "Heard S instead.",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "IH1",
+     "status": "error",
+     "heard": "IY1",
+     "tip": "Heard IY instead.",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "P",
+     "status": "correct",
+     "heard": "P",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 0,
+     "expected": [
+      "SH"
+     ],
+     "heard": [
+      "S"
+     ],
+     "tip": "Round your lips slightly and push air through - 'sh' as in 'she'."
+    },
+    {
+     "type": "substitute",
+     "index": 1,
+     "expected": [
+      "IH1"
+     ],
+     "heard": [
+      "IY1"
+     ],
+     "tip": "Relax your tongue slightly - 'ih' as in 'sit'."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Round your lips slightly and push air through - 'sh' as in 'she'.",
+    "Relax your tongue slightly - 'ih' as in 'sit'."
+   ]
+  }
+ },
+ {
+  "target": [
+   "S",
+   "T",
+   "UW1",
+   "D"
+  ],
+  "predicted": [
+   "S",
+   "UW1",
+   "D"
+  ],
+  "confidence": 0.9,
+  "margin": 0.9,
+  "native_score": 0.7,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ]
+  ],
+  "expected": {
+   "score": 7.3,
+   "wer": 0.25,
+   "per_with_stress": 0.25,
+   "metrics": {
+    "accuracy": 75,
+    "completeness": 75,
+    "fluency": 100
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "S",
+     "status": "correct",
+     "heard": "S",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "T",
+     "status": "missed",
+     "heard": null,
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release sharply."
+    },
+    {
+     "phoneme": "UW1",
+     "status": "correct",
+     "heard": "UW1",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    },
+    {
+     "phoneme": "D",
+     "status": "correct",
+     "heard": "D",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    }
+   ],
+   "errors": [
+    {
+     "type": "delete",
+     "index": 1,
+     "expected": [
+      "T"
+     ],
+     "heard": [],
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release sharply."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch your tongue to the ridge behind your top teeth, then release sharply."
+   ]
+  }
+ },
+ {
+  "target": [
+   "V",
+   "IH1",
+   "ZH",
+   "AH0",
+   "N"
+  ],
+  "predicted": [
+   "V",
+   "IH1",
+   "JH",
+   "AH0",
+   "N"
+  ],
+  "confidence": 0.97,
+  "margin": 0.95,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ]
+  ],
+  "expected": {
+   "score": 10.0,
+   "wer": 0.0,
+   "per_with_stress": 0.2,
+   "metrics": {
+    "accuracy": 100,
+    "completeness": 100,
+    "fluency": 100
+   },
+   "stress": {
+    "matched": 2,
+    "total": 2
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "V",
+     "status": "correct",
+     "heard": "V",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "IH1",
+     "status": "correct",
+     "heard": "IH1",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    },
+    {
+     "phoneme": "ZH",
+     "status": "unscored",
+     "heard": "JH",
+     "tip": "The model cannot judge this sound yet, so it is not counted.",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "AH0",
+     "status": "correct",
+     "heard": "AH0",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16,
+     "stress_match": true
+    },
+    {
+     "phoneme": "N",
+     "status": "correct",
+     "heard": "N",
+     "tip": "",
+     "start": 0.16,
+     "end": 0.2
+    }
+   ],
+   "errors": [],
+   "feedback": "Great! The phoneme match is strong.",
+   "coaching_tips": []
+  }
+ },
+ {
+  "target": [
+   "V",
+   "IH1",
+   "ZH",
+   "AH0",
+   "N"
+  ],
+  "predicted": [
+   "B",
+   "IH1",
+   "AH0",
+   "N"
+  ],
+  "confidence": 0.7,
+  "margin": 0.6,
+  "native_score": 0.55,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ]
+  ],
+  "expected": {
+   "score": 6.3,
+   "wer": 0.2,
+   "per_with_stress": 0.4,
+   "metrics": {
+    "accuracy": 80,
+    "completeness": 100,
+    "fluency": 69
+   },
+   "stress": {
+    "matched": 2,
+    "total": 2
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "V",
+     "status": "error",
+     "heard": "B",
+     "tip": "Heard B instead.",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "IH1",
+     "status": "correct",
+     "heard": "IH1",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    },
+    {
+     "phoneme": "ZH",
+     "status": "unscored",
+     "heard": null,
+     "tip": "The model cannot judge this sound yet, so it is not counted."
+    },
+    {
+     "phoneme": "AH0",
+     "status": "correct",
+     "heard": "AH0",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12,
+     "stress_match": true
+    },
+    {
+     "phoneme": "N",
+     "status": "correct",
+     "heard": "N",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 0,
+     "expected": [
+      "V"
+     ],
+     "heard": [
+      "B"
+     ],
+     "tip": "Lightly bite your lower lip and vibrate."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Lightly bite your lower lip and vibrate."
+   ]
+  }
+ },
+ {
+  "target": [
+   "V",
+   "IH1",
+   "N"
+  ],
+  "predicted": [
+   "TH",
+   "AO1",
+   "T"
+  ],
+  "confidence": 0.6,
+  "margin": 0.5,
+  "native_score": 0.95,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ]
+  ],
+  "expected": {
+   "score": 3.0,
+   "wer": 1.0,
+   "per_with_stress": 1.0,
+   "metrics": {
+    "accuracy": 0,
+    "completeness": 100,
+    "fluency": 55
+   },
+   "stress": {
+    "matched": 0,
+    "total": 0
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "V",
+     "status": "error",
+     "heard": "TH",
+     "tip": "Heard TH instead.",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "IH1",
+     "status": "error",
+     "heard": "AO1",
+     "tip": "Heard AO instead.",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "N",
+     "status": "error",
+     "heard": "T",
+     "tip": "Heard T instead.",
+     "start": 0.08,
+     "end": 0.12
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 0,
+     "expected": [
+      "V"
+     ],
+     "heard": [
+      "TH"
+     ],
+     "tip": "Lightly bite your lower lip and vibrate."
+    },
+    {
+     "type": "substitute",
+     "index": 1,
+     "expected": [
+      "IH1"
+     ],
+     "heard": [
+      "AO1"
+     ],
+     "tip": "Relax your tongue slightly - 'ih' as in 'sit'."
+    },
+    {
+     "type": "substitute",
+     "index": 2,
+     "expected": [
+      "N"
+     ],
+     "heard": [
+      "T"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth and hum."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Lightly bite your lower lip and vibrate.",
+    "Relax your tongue slightly - 'ih' as in 'sit'.",
+    "Touch your tongue to the ridge behind your top teeth and hum."
+   ]
+  }
+ },
+ {
+  "target": [
+   "K"
+  ],
+  "predicted": [
+   "K",
+   "AE",
+   "T",
+   "S",
+   "IH",
+   "N"
+  ],
+  "confidence": 0.1,
+  "margin": 0.1,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ]
+  ],
+  "expected": {
+   "score": 0.0,
+   "wer": 5.0,
+   "per_with_stress": 5.0,
+   "metrics": {
+    "accuracy": 100,
+    "completeness": 100,
+    "fluency": 0
+   },
+   "stress": {
+    "matched": 0,
+    "total": 0
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "K",
+     "status": "correct",
+     "heard": "K",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    }
+   ],
+   "errors": [],
+   "feedback": "Every sound was there. Say it a little more clearly for a top score.",
+   "coaching_tips": [
+    "Slow the word down and keep each sound clean without adding extra vowel sounds."
+   ]
+  }
+ },
+ {
+  "target": [
+   "K",
+   "AE1",
+   "T"
+  ],
+  "predicted": [],
+  "confidence": 0.9,
+  "margin": 0.9,
+  "native_score": null,
+  "spans": [],
+  "expected": {
+   "score": 0,
+   "wer": 1.0,
+   "per_with_stress": 1.0,
+   "metrics": {
+    "accuracy": 0,
+    "completeness": 0,
+    "fluency": 0
+   },
+   "stress": {
+    "matched": 0,
+    "total": 0
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "K",
+     "status": "missed",
+     "heard": null,
+     "tip": "Touch the back of your tongue to the soft palate, then release with a puff."
+    },
+    {
+     "phoneme": "AE1",
+     "status": "missed",
+     "heard": null,
+     "tip": "Open your mouth and spread your lips slightly, like 'cat'."
+    },
+    {
+     "phoneme": "T",
+     "status": "missed",
+     "heard": null,
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release sharply."
+    }
+   ],
+   "errors": [],
+   "feedback": "I didn't hear anything clearly. Try again?",
+   "coaching_tips": []
+  }
+ },
+ {
+  "target": [
+   "T",
+   "T",
+   "T",
+   "T",
+   "K"
+  ],
+  "predicted": [
+   "D",
+   "D",
+   "D",
+   "D",
+   "K"
+  ],
+  "confidence": 0.97,
+  "margin": 0.95,
+  "native_score": 4.2,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ]
+  ],
+  "expected": {
+   "score": 5.8,
+   "wer": 0.8,
+   "per_with_stress": 0.8,
+   "metrics": {
+    "accuracy": 20,
+    "completeness": 100,
+    "fluency": 100
+   },
+   "stress": {
+    "matched": 0,
+    "total": 0
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "T",
+     "status": "error",
+     "heard": "D",
+     "tip": "Heard D instead.",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "T",
+     "status": "error",
+     "heard": "D",
+     "tip": "Heard D instead.",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "T",
+     "status": "error",
+     "heard": "D",
+     "tip": "Heard D instead.",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "T",
+     "status": "error",
+     "heard": "D",
+     "tip": "Heard D instead.",
+     "start": 0.12,
+     "end": 0.16
+    },
+    {
+     "phoneme": "K",
+     "status": "correct",
+     "heard": "K",
+     "tip": "",
+     "start": 0.16,
+     "end": 0.2
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 0,
+     "expected": [
+      "T"
+     ],
+     "heard": [
+      "D"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release sharply."
+    },
+    {
+     "type": "substitute",
+     "index": 1,
+     "expected": [
+      "T"
+     ],
+     "heard": [
+      "D"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release sharply."
+    },
+    {
+     "type": "substitute",
+     "index": 2,
+     "expected": [
+      "T"
+     ],
+     "heard": [
+      "D"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release sharply."
+    },
+    {
+     "type": "substitute",
+     "index": 3,
+     "expected": [
+      "T"
+     ],
+     "heard": [
+      "D"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release sharply."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch your tongue to the ridge behind your top teeth, then release sharply."
+   ]
+  }
+ },
+ {
+  "target": [
+   "W",
+   "AO1",
+   "T",
+   "AH0"
+  ],
+  "predicted": [
+   "W",
+   "AO1",
+   "T",
+   "ER0"
+  ],
+  "confidence": 0.88,
+  "margin": 0.82,
+  "native_score": 0.81,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ]
+  ],
+  "expected": {
+   "score": 7.9,
+   "wer": 0.25,
+   "per_with_stress": 0.25,
+   "metrics": {
+    "accuracy": 75,
+    "completeness": 100,
+    "fluency": 95
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "W",
+     "status": "correct",
+     "heard": "W",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "AO1",
+     "status": "correct",
+     "heard": "AO1",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    },
+    {
+     "phoneme": "T",
+     "status": "correct",
+     "heard": "T",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "AH0",
+     "status": "error",
+     "heard": "ER0",
+     "tip": "Heard ER instead.",
+     "start": 0.12,
+     "end": 0.16
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 3,
+     "expected": [
+      "AH0"
+     ],
+     "heard": [
+      "ER0"
+     ],
+     "tip": "Relax your mouth - a short, neutral 'uh' sound."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Relax your mouth - a short, neutral 'uh' sound."
+   ]
+  }
+ },
+ {
+  "target": [
+   "B",
+   "AA1",
+   "TH"
+  ],
+  "predicted": [
+   "B",
+   "AE1",
+   "TH"
+  ],
+  "confidence": 0.75,
+  "margin": 0.7,
+  "native_score": -1.0,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ]
+  ],
+  "expected": {
+   "score": 2.6,
+   "wer": 0.33,
+   "per_with_stress": 0.33,
+   "metrics": {
+    "accuracy": 67,
+    "completeness": 100,
+    "fluency": 78
+   },
+   "stress": {
+    "matched": 0,
+    "total": 0
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "B",
+     "status": "correct",
+     "heard": "B",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "AA1",
+     "status": "error",
+     "heard": "AE1",
+     "tip": "Heard AE instead.",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "TH",
+     "status": "correct",
+     "heard": "TH",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 1,
+     "expected": [
+      "AA1"
+     ],
+     "heard": [
+      "AE1"
+     ],
+     "tip": "Open your mouth wide, like saying 'ah' at the doctor."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Open your mouth wide, like saying 'ah' at the doctor."
+   ]
+  }
+ },
+ {
+  "target": [
+   "TH",
+   "T",
+   "UW1",
+   "S"
+  ],
+  "predicted": [
+   "TH",
+   "T",
+   "UW1",
+   "ZH"
+  ],
+  "confidence": 0.472,
+  "margin": 0.997,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ]
+  ],
+  "expected": {
+   "score": 7.1,
+   "wer": 0.25,
+   "per_with_stress": 0.25,
+   "metrics": {
+    "accuracy": 75,
+    "completeness": 100,
+    "fluency": 68
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "TH",
+     "status": "correct",
+     "heard": "TH",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "T",
+     "status": "correct",
+     "heard": "T",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "UW1",
+     "status": "correct",
+     "heard": "UW1",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12,
+     "stress_match": true
+    },
+    {
+     "phoneme": "S",
+     "status": "error",
+     "heard": "ZH",
+     "tip": "Heard ZH instead.",
+     "start": 0.12,
+     "end": 0.16
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 3,
+     "expected": [
+      "S"
+     ],
+     "heard": [
+      "ZH"
+     ],
+     "tip": "Place your tongue close to the ridge behind your top teeth and push air through."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Place your tongue close to the ridge behind your top teeth and push air through."
+   ]
+  }
+ },
+ {
+  "target": [
+   "N",
+   "S",
+   "R"
+  ],
+  "predicted": [
+   "TH",
+   "R",
+   "R"
+  ],
+  "confidence": 0.429,
+  "margin": 0.361,
+  "native_score": 0.637,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ]
+  ],
+  "expected": {
+   "score": 5.0,
+   "wer": 0.67,
+   "per_with_stress": 0.67,
+   "metrics": {
+    "accuracy": 33,
+    "completeness": 100,
+    "fluency": 55
+   },
+   "stress": {
+    "matched": 0,
+    "total": 0
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "N",
+     "status": "error",
+     "heard": "TH",
+     "tip": "Heard TH instead.",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "S",
+     "status": "error",
+     "heard": "R",
+     "tip": "Heard R instead.",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "R",
+     "status": "correct",
+     "heard": "R",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 0,
+     "expected": [
+      "N"
+     ],
+     "heard": [
+      "TH"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth and hum."
+    },
+    {
+     "type": "substitute",
+     "index": 1,
+     "expected": [
+      "S"
+     ],
+     "heard": [
+      "R"
+     ],
+     "tip": "Place your tongue close to the ridge behind your top teeth and push air through."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch your tongue to the ridge behind your top teeth and hum.",
+    "Place your tongue close to the ridge behind your top teeth and push air through."
+   ]
+  }
+ },
+ {
+  "target": [
+   "AE1"
+  ],
+  "predicted": [
+   "AE1"
+  ],
+  "confidence": 0.573,
+  "margin": 0.927,
+  "native_score": 0.711,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ]
+  ],
+  "expected": {
+   "score": 8.0,
+   "wer": 0.0,
+   "per_with_stress": 0.0,
+   "metrics": {
+    "accuracy": 100,
+    "completeness": 100,
+    "fluency": 68
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "AE1",
+     "status": "correct",
+     "heard": "AE1",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04,
+     "stress_match": true
+    }
+   ],
+   "errors": [],
+   "feedback": "Every sound was there. Say it a little more clearly for a top score.",
+   "coaching_tips": [
+    "Open the jaw more for /AE/ and keep it bright, not flat."
+   ]
+  }
+ },
+ {
+  "target": [
+   "AE1"
+  ],
+  "predicted": [
+   "ZH"
+  ],
+  "confidence": 0.637,
+  "margin": 0.456,
+  "native_score": 0.787,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ]
+  ],
+  "expected": {
+   "score": 3.1,
+   "wer": 1.0,
+   "per_with_stress": 1.0,
+   "metrics": {
+    "accuracy": 0,
+    "completeness": 100,
+    "fluency": 59
+   },
+   "stress": {
+    "matched": 0,
+    "total": 0
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "AE1",
+     "status": "error",
+     "heard": "ZH",
+     "tip": "Heard ZH instead.",
+     "start": 0.0,
+     "end": 0.04
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 0,
+     "expected": [
+      "AE1"
+     ],
+     "heard": [
+      "ZH"
+     ],
+     "tip": "Open your mouth and spread your lips slightly, like 'cat'."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Open your mouth and spread your lips slightly, like 'cat'."
+   ]
+  }
+ },
+ {
+  "target": [
+   "W",
+   "OY1",
+   "IH0",
+   "T",
+   "D",
+   "W",
+   "TH",
+   "AE1",
+   "L"
+  ],
+  "predicted": [
+   "W",
+   "IH0",
+   "D",
+   "W",
+   "K",
+   "AE1",
+   "AE1",
+   "L"
+  ],
+  "confidence": 0.403,
+  "margin": 0.969,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ],
+   [
+    0.24,
+    0.28
+   ],
+   [
+    0.28,
+    0.32
+   ]
+  ],
+  "expected": {
+   "score": 6.3,
+   "wer": 0.33,
+   "per_with_stress": 0.44,
+   "metrics": {
+    "accuracy": 78,
+    "completeness": 89,
+    "fluency": 55
+   },
+   "stress": {
+    "matched": 2,
+    "total": 2
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "W",
+     "status": "correct",
+     "heard": "W",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "OY1",
+     "status": "unscored",
+     "heard": null,
+     "tip": "The model cannot judge this sound yet, so it is not counted."
+    },
+    {
+     "phoneme": "IH0",
+     "status": "correct",
+     "heard": "IH0",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    },
+    {
+     "phoneme": "T",
+     "status": "missed",
+     "heard": null,
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release sharply."
+    },
+    {
+     "phoneme": "D",
+     "status": "correct",
+     "heard": "D",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "W",
+     "status": "correct",
+     "heard": "W",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16
+    },
+    {
+     "phoneme": "TH",
+     "status": "error",
+     "heard": "AE1",
+     "tip": "Heard AE instead.",
+     "start": 0.2,
+     "end": 0.24
+    },
+    {
+     "phoneme": "AE1",
+     "status": "correct",
+     "heard": "AE1",
+     "tip": "",
+     "start": 0.24,
+     "end": 0.28,
+     "stress_match": true
+    },
+    {
+     "phoneme": "L",
+     "status": "correct",
+     "heard": "L",
+     "tip": "",
+     "start": 0.28,
+     "end": 0.32
+    }
+   ],
+   "errors": [
+    {
+     "type": "delete",
+     "index": 3,
+     "expected": [
+      "T"
+     ],
+     "heard": [],
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release sharply."
+    },
+    {
+     "type": "substitute",
+     "index": 6,
+     "expected": [
+      "TH"
+     ],
+     "heard": [
+      "AE1"
+     ],
+     "tip": "Put your tongue between your teeth and push air - 'th' as in 'think'."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch your tongue to the ridge behind your top teeth, then release sharply.",
+    "Put your tongue between your teeth and push air - 'th' as in 'think'."
+   ]
+  }
+ },
+ {
+  "target": [
+   "AH0",
+   "UW1",
+   "AE1",
+   "IH0",
+   "S",
+   "AE1",
+   "IH0",
+   "N",
+   "D"
+  ],
+  "predicted": [
+   "AH0",
+   "AE1",
+   "IH0",
+   "N",
+   "AH0",
+   "IH0",
+   "N",
+   "D"
+  ],
+  "confidence": 0.975,
+  "margin": 0.343,
+  "native_score": 0.369,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ],
+   [
+    0.24,
+    0.28
+   ],
+   [
+    0.28,
+    0.32
+   ]
+  ],
+  "expected": {
+   "score": 4.9,
+   "wer": 0.33,
+   "per_with_stress": 0.33,
+   "metrics": {
+    "accuracy": 67,
+    "completeness": 89,
+    "fluency": 86
+   },
+   "stress": {
+    "matched": 4,
+    "total": 4
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "AH0",
+     "status": "correct",
+     "heard": "AH0",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04,
+     "stress_match": true
+    },
+    {
+     "phoneme": "UW1",
+     "status": "missed",
+     "heard": null,
+     "tip": "Round your lips tightly - 'oo' as in 'food'."
+    },
+    {
+     "phoneme": "AE1",
+     "status": "correct",
+     "heard": "AE1",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    },
+    {
+     "phoneme": "IH0",
+     "status": "correct",
+     "heard": "IH0",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12,
+     "stress_match": true
+    },
+    {
+     "phoneme": "S",
+     "status": "error",
+     "heard": "N",
+     "tip": "Heard N instead.",
+     "start": 0.12,
+     "end": 0.16
+    },
+    {
+     "phoneme": "AE1",
+     "status": "error",
+     "heard": "AH0",
+     "tip": "Heard AH instead.",
+     "start": 0.16,
+     "end": 0.2
+    },
+    {
+     "phoneme": "IH0",
+     "status": "correct",
+     "heard": "IH0",
+     "tip": "",
+     "start": 0.2,
+     "end": 0.24,
+     "stress_match": true
+    },
+    {
+     "phoneme": "N",
+     "status": "correct",
+     "heard": "N",
+     "tip": "",
+     "start": 0.24,
+     "end": 0.28
+    },
+    {
+     "phoneme": "D",
+     "status": "correct",
+     "heard": "D",
+     "tip": "",
+     "start": 0.28,
+     "end": 0.32
+    }
+   ],
+   "errors": [
+    {
+     "type": "delete",
+     "index": 1,
+     "expected": [
+      "UW1"
+     ],
+     "heard": [],
+     "tip": "Round your lips tightly - 'oo' as in 'food'."
+    },
+    {
+     "type": "substitute",
+     "index": 4,
+     "expected": [
+      "S"
+     ],
+     "heard": [
+      "N"
+     ],
+     "tip": "Place your tongue close to the ridge behind your top teeth and push air through."
+    },
+    {
+     "type": "substitute",
+     "index": 5,
+     "expected": [
+      "AE1"
+     ],
+     "heard": [
+      "AH0"
+     ],
+     "tip": "Open your mouth and spread your lips slightly, like 'cat'."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Round your lips tightly - 'oo' as in 'food'.",
+    "Place your tongue close to the ridge behind your top teeth and push air through.",
+    "Open your mouth and spread your lips slightly, like 'cat'."
+   ]
+  }
+ },
+ {
+  "target": [
+   "AH0",
+   "OY1"
+  ],
+  "predicted": [
+   "AH0",
+   "OY1"
+  ],
+  "confidence": 0.571,
+  "margin": 0.79,
+  "native_score": 0.757,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ]
+  ],
+  "expected": {
+   "score": 8.2,
+   "wer": 0.0,
+   "per_with_stress": 0.0,
+   "metrics": {
+    "accuracy": 100,
+    "completeness": 100,
+    "fluency": 65
+   },
+   "stress": {
+    "matched": 2,
+    "total": 2
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "AH0",
+     "status": "correct",
+     "heard": "AH0",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04,
+     "stress_match": true
+    },
+    {
+     "phoneme": "OY1",
+     "status": "correct",
+     "heard": "OY1",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    }
+   ],
+   "errors": [],
+   "feedback": "Every sound was there. Say it a little more clearly for a top score.",
+   "coaching_tips": [
+    "Use a short, central /AH/ instead of a broad open vowel."
+   ]
+  }
+ },
+ {
+  "target": [
+   "ER0",
+   "UW1",
+   "AE1",
+   "L",
+   "T",
+   "K",
+   "ZH"
+  ],
+  "predicted": [
+   "ER0",
+   "AE1",
+   "L",
+   "T",
+   "L",
+   "IH0",
+   "ZH"
+  ],
+  "confidence": 0.435,
+  "margin": 0.359,
+  "native_score": 0.871,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ],
+   [
+    0.24,
+    0.28
+   ]
+  ],
+  "expected": {
+   "score": 7.3,
+   "wer": 0.43,
+   "per_with_stress": 0.43,
+   "metrics": {
+    "accuracy": 71,
+    "completeness": 86,
+    "fluency": 37
+   },
+   "stress": {
+    "matched": 2,
+    "total": 2
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "ER0",
+     "status": "correct",
+     "heard": "ER0",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04,
+     "stress_match": true
+    },
+    {
+     "phoneme": "UW1",
+     "status": "missed",
+     "heard": null,
+     "tip": "Round your lips tightly - 'oo' as in 'food'."
+    },
+    {
+     "phoneme": "AE1",
+     "status": "correct",
+     "heard": "AE1",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    },
+    {
+     "phoneme": "L",
+     "status": "correct",
+     "heard": "L",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "T",
+     "status": "correct",
+     "heard": "T",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16
+    },
+    {
+     "phoneme": "K",
+     "status": "error",
+     "heard": "IH0",
+     "tip": "Heard IH instead.",
+     "start": 0.2,
+     "end": 0.24
+    },
+    {
+     "phoneme": "ZH",
+     "status": "correct",
+     "heard": "ZH",
+     "tip": "",
+     "start": 0.24,
+     "end": 0.28
+    }
+   ],
+   "errors": [
+    {
+     "type": "delete",
+     "index": 1,
+     "expected": [
+      "UW1"
+     ],
+     "heard": [],
+     "tip": "Round your lips tightly - 'oo' as in 'food'."
+    },
+    {
+     "type": "substitute",
+     "index": 5,
+     "expected": [
+      "K"
+     ],
+     "heard": [
+      "IH0"
+     ],
+     "tip": "Touch the back of your tongue to the soft palate, then release with a puff."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Round your lips tightly - 'oo' as in 'food'.",
+    "Touch the back of your tongue to the soft palate, then release with a puff."
+   ]
+  }
+ },
+ {
+  "target": [
+   "K",
+   "IY0",
+   "UW1"
+  ],
+  "predicted": [
+   "K",
+   "IY0",
+   "K",
+   "ZH",
+   "AH0"
+  ],
+  "confidence": 0.852,
+  "margin": 0.447,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ]
+  ],
+  "expected": {
+   "score": 0.6,
+   "wer": 1.0,
+   "per_with_stress": 1.0,
+   "metrics": {
+    "accuracy": 67,
+    "completeness": 100,
+    "fluency": 26
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "K",
+     "status": "correct",
+     "heard": "K",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "IY0",
+     "status": "correct",
+     "heard": "IY0",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    },
+    {
+     "phoneme": "UW1",
+     "status": "error",
+     "heard": "AH0",
+     "tip": "Heard AH instead.",
+     "start": 0.16,
+     "end": 0.2
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 2,
+     "expected": [
+      "UW1"
+     ],
+     "heard": [
+      "AH0"
+     ],
+     "tip": "Round your lips tightly - 'oo' as in 'food'."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Round your lips tightly - 'oo' as in 'food'."
+   ]
+  }
+ },
+ {
+  "target": [
+   "L",
+   "AA1",
+   "UW1"
+  ],
+  "predicted": [
+   "L",
+   "AA1",
+   "N"
+  ],
+  "confidence": 0.9,
+  "margin": 0.684,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ]
+  ],
+  "expected": {
+   "score": 6.8,
+   "wer": 0.33,
+   "per_with_stress": 0.33,
+   "metrics": {
+    "accuracy": 67,
+    "completeness": 100,
+    "fluency": 93
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "L",
+     "status": "correct",
+     "heard": "L",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "AA1",
+     "status": "correct",
+     "heard": "AA1",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    },
+    {
+     "phoneme": "UW1",
+     "status": "error",
+     "heard": "N",
+     "tip": "Heard N instead.",
+     "start": 0.08,
+     "end": 0.12
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 2,
+     "expected": [
+      "UW1"
+     ],
+     "heard": [
+      "N"
+     ],
+     "tip": "Round your lips tightly - 'oo' as in 'food'."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Round your lips tightly - 'oo' as in 'food'."
+   ]
+  }
+ },
+ {
+  "target": [
+   "W",
+   "S",
+   "S",
+   "ZH",
+   "UW1"
+  ],
+  "predicted": [
+   "AH0",
+   "S",
+   "S"
+  ],
+  "confidence": 0.466,
+  "margin": 0.34,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ]
+  ],
+  "expected": {
+   "score": 5.4,
+   "wer": 0.4,
+   "per_with_stress": 0.6,
+   "metrics": {
+    "accuracy": 60,
+    "completeness": 80,
+    "fluency": 55
+   },
+   "stress": {
+    "matched": 0,
+    "total": 0
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "W",
+     "status": "error",
+     "heard": "AH0",
+     "tip": "Heard AH instead.",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "S",
+     "status": "correct",
+     "heard": "S",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "S",
+     "status": "correct",
+     "heard": "S",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "ZH",
+     "status": "unscored",
+     "heard": null,
+     "tip": "The model cannot judge this sound yet, so it is not counted."
+    },
+    {
+     "phoneme": "UW1",
+     "status": "missed",
+     "heard": null,
+     "tip": "Round your lips tightly - 'oo' as in 'food'."
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 0,
+     "expected": [
+      "W"
+     ],
+     "heard": [
+      "AH0"
+     ],
+     "tip": "Round your lips tightly and then open - 'w' as in 'we'."
+    },
+    {
+     "type": "delete",
+     "index": 4,
+     "expected": [
+      "UW1"
+     ],
+     "heard": [],
+     "tip": "Round your lips tightly - 'oo' as in 'food'."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Round your lips tightly and then open - 'w' as in 'we'.",
+    "Round your lips tightly - 'oo' as in 'food'."
+   ]
+  }
+ },
+ {
+  "target": [
+   "AH0",
+   "AE1",
+   "AH0",
+   "W"
+  ],
+  "predicted": [
+   "AE1",
+   "AH0",
+   "W"
+  ],
+  "confidence": 0.987,
+  "margin": 0.779,
+  "native_score": 0.527,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ]
+  ],
+  "expected": {
+   "score": 6.2,
+   "wer": 0.25,
+   "per_with_stress": 0.25,
+   "metrics": {
+    "accuracy": 75,
+    "completeness": 75,
+    "fluency": 96
+   },
+   "stress": {
+    "matched": 2,
+    "total": 2
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "AH0",
+     "status": "missed",
+     "heard": null,
+     "tip": "Relax your mouth - a short, neutral 'uh' sound."
+    },
+    {
+     "phoneme": "AE1",
+     "status": "correct",
+     "heard": "AE1",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04,
+     "stress_match": true
+    },
+    {
+     "phoneme": "AH0",
+     "status": "correct",
+     "heard": "AH0",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    },
+    {
+     "phoneme": "W",
+     "status": "correct",
+     "heard": "W",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    }
+   ],
+   "errors": [
+    {
+     "type": "delete",
+     "index": 0,
+     "expected": [
+      "AH0"
+     ],
+     "heard": [],
+     "tip": "Relax your mouth - a short, neutral 'uh' sound."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Relax your mouth - a short, neutral 'uh' sound."
+   ]
+  }
+ },
+ {
+  "target": [
+   "ZH",
+   "AH0",
+   "IY0",
+   "D",
+   "L",
+   "D",
+   "N"
+  ],
+  "predicted": [
+   "ZH",
+   "AH0",
+   "IY0",
+   "D",
+   "AE1",
+   "OY1",
+   "N"
+  ],
+  "confidence": 0.484,
+  "margin": 0.634,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ],
+   [
+    0.24,
+    0.28
+   ]
+  ],
+  "expected": {
+   "score": 6.5,
+   "wer": 0.29,
+   "per_with_stress": 0.29,
+   "metrics": {
+    "accuracy": 71,
+    "completeness": 100,
+    "fluency": 60
+   },
+   "stress": {
+    "matched": 2,
+    "total": 2
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "ZH",
+     "status": "correct",
+     "heard": "ZH",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "AH0",
+     "status": "correct",
+     "heard": "AH0",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    },
+    {
+     "phoneme": "IY0",
+     "status": "correct",
+     "heard": "IY0",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12,
+     "stress_match": true
+    },
+    {
+     "phoneme": "D",
+     "status": "correct",
+     "heard": "D",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16
+    },
+    {
+     "phoneme": "L",
+     "status": "error",
+     "heard": "AE1",
+     "tip": "Heard AE instead.",
+     "start": 0.16,
+     "end": 0.2
+    },
+    {
+     "phoneme": "D",
+     "status": "error",
+     "heard": "OY1",
+     "tip": "Heard OY instead.",
+     "start": 0.2,
+     "end": 0.24
+    },
+    {
+     "phoneme": "N",
+     "status": "correct",
+     "heard": "N",
+     "tip": "",
+     "start": 0.24,
+     "end": 0.28
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 4,
+     "expected": [
+      "L"
+     ],
+     "heard": [
+      "AE1"
+     ],
+     "tip": "Touch the tip of your tongue to the ridge behind your top teeth."
+    },
+    {
+     "type": "substitute",
+     "index": 5,
+     "expected": [
+      "D"
+     ],
+     "heard": [
+      "OY1"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch the tip of your tongue to the ridge behind your top teeth.",
+    "Touch your tongue to the ridge behind your top teeth, then release."
+   ]
+  }
+ },
+ {
+  "target": [
+   "OY1",
+   "T",
+   "S",
+   "D",
+   "OY1"
+  ],
+  "predicted": [
+   "N",
+   "S",
+   "D",
+   "OY1"
+  ],
+  "confidence": 0.682,
+  "margin": 0.716,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ]
+  ],
+  "expected": {
+   "score": 7.6,
+   "wer": 0.2,
+   "per_with_stress": 0.4,
+   "metrics": {
+    "accuracy": 80,
+    "completeness": 100,
+    "fluency": 71
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "OY1",
+     "status": "unscored",
+     "heard": null,
+     "tip": "The model cannot judge this sound yet, so it is not counted."
+    },
+    {
+     "phoneme": "T",
+     "status": "error",
+     "heard": "N",
+     "tip": "Heard N instead.",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "S",
+     "status": "correct",
+     "heard": "S",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "D",
+     "status": "correct",
+     "heard": "D",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "OY1",
+     "status": "correct",
+     "heard": "OY1",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16,
+     "stress_match": true
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 1,
+     "expected": [
+      "T"
+     ],
+     "heard": [
+      "N"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release sharply."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch your tongue to the ridge behind your top teeth, then release sharply."
+   ]
+  }
+ },
+ {
+  "target": [
+   "N",
+   "D",
+   "N",
+   "OY1",
+   "OY1",
+   "K",
+   "OY1",
+   "S",
+   "AA1"
+  ],
+  "predicted": [
+   "N",
+   "UW1",
+   "OY1",
+   "OY1",
+   "K",
+   "W",
+   "AA1"
+  ],
+  "confidence": 0.407,
+  "margin": 0.666,
+  "native_score": 0.216,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ],
+   [
+    0.24,
+    0.28
+   ]
+  ],
+  "expected": {
+   "score": 3.7,
+   "wer": 0.33,
+   "per_with_stress": 0.44,
+   "metrics": {
+    "accuracy": 67,
+    "completeness": 89,
+    "fluency": 61
+   },
+   "stress": {
+    "matched": 3,
+    "total": 3
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "N",
+     "status": "correct",
+     "heard": "N",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "D",
+     "status": "missed",
+     "heard": null,
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release."
+    },
+    {
+     "phoneme": "N",
+     "status": "error",
+     "heard": "UW1",
+     "tip": "Heard UW instead.",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "OY1",
+     "status": "correct",
+     "heard": "OY1",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12,
+     "stress_match": true
+    },
+    {
+     "phoneme": "OY1",
+     "status": "correct",
+     "heard": "OY1",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16,
+     "stress_match": true
+    },
+    {
+     "phoneme": "K",
+     "status": "correct",
+     "heard": "K",
+     "tip": "",
+     "start": 0.16,
+     "end": 0.2
+    },
+    {
+     "phoneme": "OY1",
+     "status": "unscored",
+     "heard": null,
+     "tip": "The model cannot judge this sound yet, so it is not counted."
+    },
+    {
+     "phoneme": "S",
+     "status": "error",
+     "heard": "W",
+     "tip": "Heard W instead.",
+     "start": 0.2,
+     "end": 0.24
+    },
+    {
+     "phoneme": "AA1",
+     "status": "correct",
+     "heard": "AA1",
+     "tip": "",
+     "start": 0.24,
+     "end": 0.28,
+     "stress_match": true
+    }
+   ],
+   "errors": [
+    {
+     "type": "delete",
+     "index": 1,
+     "expected": [
+      "D"
+     ],
+     "heard": [],
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release."
+    },
+    {
+     "type": "substitute",
+     "index": 2,
+     "expected": [
+      "N"
+     ],
+     "heard": [
+      "UW1"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth and hum."
+    },
+    {
+     "type": "substitute",
+     "index": 7,
+     "expected": [
+      "S"
+     ],
+     "heard": [
+      "W"
+     ],
+     "tip": "Place your tongue close to the ridge behind your top teeth and push air through."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch your tongue to the ridge behind your top teeth, then release.",
+    "Touch your tongue to the ridge behind your top teeth and hum.",
+    "Place your tongue close to the ridge behind your top teeth and push air through."
+   ]
+  }
+ },
+ {
+  "target": [
+   "N",
+   "OY1",
+   "K",
+   "OY1",
+   "AE1"
+  ],
+  "predicted": [
+   "N",
+   "OY1",
+   "AA1",
+   "OY1",
+   "AE1"
+  ],
+  "confidence": 0.836,
+  "margin": 0.82,
+  "native_score": 0.651,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ]
+  ],
+  "expected": {
+   "score": 7.1,
+   "wer": 0.2,
+   "per_with_stress": 0.2,
+   "metrics": {
+    "accuracy": 80,
+    "completeness": 100,
+    "fluency": 91
+   },
+   "stress": {
+    "matched": 3,
+    "total": 3
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "N",
+     "status": "correct",
+     "heard": "N",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "OY1",
+     "status": "correct",
+     "heard": "OY1",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    },
+    {
+     "phoneme": "K",
+     "status": "error",
+     "heard": "AA1",
+     "tip": "Heard AA instead.",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "OY1",
+     "status": "correct",
+     "heard": "OY1",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16,
+     "stress_match": true
+    },
+    {
+     "phoneme": "AE1",
+     "status": "correct",
+     "heard": "AE1",
+     "tip": "",
+     "start": 0.16,
+     "end": 0.2,
+     "stress_match": true
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 2,
+     "expected": [
+      "K"
+     ],
+     "heard": [
+      "AA1"
+     ],
+     "tip": "Touch the back of your tongue to the soft palate, then release with a puff."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch the back of your tongue to the soft palate, then release with a puff."
+   ]
+  }
+ },
+ {
+  "target": [
+   "K",
+   "L"
+  ],
+  "predicted": [
+   "K",
+   "L",
+   "K"
+  ],
+  "confidence": 0.539,
+  "margin": 0.577,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ]
+  ],
+  "expected": {
+   "score": 4.6,
+   "wer": 0.5,
+   "per_with_stress": 0.5,
+   "metrics": {
+    "accuracy": 100,
+    "completeness": 100,
+    "fluency": 30
+   },
+   "stress": {
+    "matched": 0,
+    "total": 0
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "K",
+     "status": "correct",
+     "heard": "K",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "L",
+     "status": "correct",
+     "heard": "L",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08
+    }
+   ],
+   "errors": [],
+   "feedback": "Every sound was there. Say it a little more clearly for a top score.",
+   "coaching_tips": [
+    "Slow the word down and keep each sound clean without adding extra vowel sounds."
+   ]
+  }
+ },
+ {
+  "target": [
+   "TH",
+   "D",
+   "T",
+   "OY1",
+   "N",
+   "D",
+   "N",
+   "OY1"
+  ],
+  "predicted": [
+   "TH",
+   "R",
+   "IY0",
+   "OY1",
+   "D",
+   "N"
+  ],
+  "confidence": 0.879,
+  "margin": 0.301,
+  "native_score": 0.846,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ]
+  ],
+  "expected": {
+   "score": 7.6,
+   "wer": 0.38,
+   "per_with_stress": 0.5,
+   "metrics": {
+    "accuracy": 62,
+    "completeness": 88,
+    "fluency": 84
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "TH",
+     "status": "correct",
+     "heard": "TH",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "D",
+     "status": "error",
+     "heard": "R",
+     "tip": "Heard R instead.",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "T",
+     "status": "error",
+     "heard": "IY0",
+     "tip": "Heard IY instead.",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "OY1",
+     "status": "correct",
+     "heard": "OY1",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16,
+     "stress_match": true
+    },
+    {
+     "phoneme": "N",
+     "status": "missed",
+     "heard": null,
+     "tip": "Touch your tongue to the ridge behind your top teeth and hum."
+    },
+    {
+     "phoneme": "D",
+     "status": "correct",
+     "heard": "D",
+     "tip": "",
+     "start": 0.16,
+     "end": 0.2
+    },
+    {
+     "phoneme": "N",
+     "status": "correct",
+     "heard": "N",
+     "tip": "",
+     "start": 0.2,
+     "end": 0.24
+    },
+    {
+     "phoneme": "OY1",
+     "status": "unscored",
+     "heard": null,
+     "tip": "The model cannot judge this sound yet, so it is not counted."
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 1,
+     "expected": [
+      "D"
+     ],
+     "heard": [
+      "R"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release."
+    },
+    {
+     "type": "substitute",
+     "index": 2,
+     "expected": [
+      "T"
+     ],
+     "heard": [
+      "IY0"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release sharply."
+    },
+    {
+     "type": "delete",
+     "index": 4,
+     "expected": [
+      "N"
+     ],
+     "heard": [],
+     "tip": "Touch your tongue to the ridge behind your top teeth and hum."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch your tongue to the ridge behind your top teeth, then release.",
+    "Touch your tongue to the ridge behind your top teeth, then release sharply.",
+    "Touch your tongue to the ridge behind your top teeth and hum."
+   ]
+  }
+ },
+ {
+  "target": [
+   "D",
+   "D",
+   "AH0",
+   "AH0",
+   "W",
+   "TH",
+   "AH0"
+  ],
+  "predicted": [
+   "D",
+   "AH0",
+   "W",
+   "R",
+   "TH",
+   "AH0"
+  ],
+  "confidence": 0.717,
+  "margin": 0.356,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ]
+  ],
+  "expected": {
+   "score": 5.4,
+   "wer": 0.43,
+   "per_with_stress": 0.43,
+   "metrics": {
+    "accuracy": 57,
+    "completeness": 86,
+    "fluency": 67
+   },
+   "stress": {
+    "matched": 2,
+    "total": 2
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "D",
+     "status": "missed",
+     "heard": null,
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release."
+    },
+    {
+     "phoneme": "D",
+     "status": "correct",
+     "heard": "D",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "AH0",
+     "status": "correct",
+     "heard": "AH0",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    },
+    {
+     "phoneme": "AH0",
+     "status": "error",
+     "heard": "W",
+     "tip": "Heard W instead.",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "W",
+     "status": "error",
+     "heard": "R",
+     "tip": "Heard R instead.",
+     "start": 0.12,
+     "end": 0.16
+    },
+    {
+     "phoneme": "TH",
+     "status": "correct",
+     "heard": "TH",
+     "tip": "",
+     "start": 0.16,
+     "end": 0.2
+    },
+    {
+     "phoneme": "AH0",
+     "status": "correct",
+     "heard": "AH0",
+     "tip": "",
+     "start": 0.2,
+     "end": 0.24,
+     "stress_match": true
+    }
+   ],
+   "errors": [
+    {
+     "type": "delete",
+     "index": 0,
+     "expected": [
+      "D"
+     ],
+     "heard": [],
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release."
+    },
+    {
+     "type": "substitute",
+     "index": 3,
+     "expected": [
+      "AH0"
+     ],
+     "heard": [
+      "W"
+     ],
+     "tip": "Relax your mouth - a short, neutral 'uh' sound."
+    },
+    {
+     "type": "substitute",
+     "index": 4,
+     "expected": [
+      "W"
+     ],
+     "heard": [
+      "R"
+     ],
+     "tip": "Round your lips tightly and then open - 'w' as in 'we'."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch your tongue to the ridge behind your top teeth, then release.",
+    "Relax your mouth - a short, neutral 'uh' sound.",
+    "Round your lips tightly and then open - 'w' as in 'we'."
+   ]
+  }
+ },
+ {
+  "target": [
+   "T",
+   "W",
+   "R",
+   "AE1"
+  ],
+  "predicted": [
+   "OY1",
+   "UW1",
+   "R",
+   "AE1"
+  ],
+  "confidence": 0.432,
+  "margin": 0.747,
+  "native_score": 0.756,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ]
+  ],
+  "expected": {
+   "score": 6.4,
+   "wer": 0.5,
+   "per_with_stress": 0.5,
+   "metrics": {
+    "accuracy": 50,
+    "completeness": 100,
+    "fluency": 63
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "T",
+     "status": "error",
+     "heard": "OY1",
+     "tip": "Heard OY instead.",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "W",
+     "status": "error",
+     "heard": "UW1",
+     "tip": "Heard UW instead.",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "R",
+     "status": "correct",
+     "heard": "R",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "AE1",
+     "status": "correct",
+     "heard": "AE1",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16,
+     "stress_match": true
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 0,
+     "expected": [
+      "T"
+     ],
+     "heard": [
+      "OY1"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release sharply."
+    },
+    {
+     "type": "substitute",
+     "index": 1,
+     "expected": [
+      "W"
+     ],
+     "heard": [
+      "UW1"
+     ],
+     "tip": "Round your lips tightly and then open - 'w' as in 'we'."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch your tongue to the ridge behind your top teeth, then release sharply.",
+    "Round your lips tightly and then open - 'w' as in 'we'."
+   ]
+  }
+ },
+ {
+  "target": [
+   "D",
+   "TH",
+   "AE1",
+   "S",
+   "K"
+  ],
+  "predicted": [
+   "TH",
+   "AE1",
+   "S",
+   "ER0"
+  ],
+  "confidence": 0.746,
+  "margin": 0.565,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ]
+  ],
+  "expected": {
+   "score": 5.8,
+   "wer": 0.4,
+   "per_with_stress": 0.4,
+   "metrics": {
+    "accuracy": 60,
+    "completeness": 80,
+    "fluency": 73
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "D",
+     "status": "missed",
+     "heard": null,
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release."
+    },
+    {
+     "phoneme": "TH",
+     "status": "correct",
+     "heard": "TH",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "AE1",
+     "status": "correct",
+     "heard": "AE1",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    },
+    {
+     "phoneme": "S",
+     "status": "correct",
+     "heard": "S",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "K",
+     "status": "error",
+     "heard": "ER0",
+     "tip": "Heard ER instead.",
+     "start": 0.12,
+     "end": 0.16
+    }
+   ],
+   "errors": [
+    {
+     "type": "delete",
+     "index": 0,
+     "expected": [
+      "D"
+     ],
+     "heard": [],
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release."
+    },
+    {
+     "type": "substitute",
+     "index": 4,
+     "expected": [
+      "K"
+     ],
+     "heard": [
+      "ER0"
+     ],
+     "tip": "Touch the back of your tongue to the soft palate, then release with a puff."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch your tongue to the ridge behind your top teeth, then release.",
+    "Touch the back of your tongue to the soft palate, then release with a puff."
+   ]
+  }
+ },
+ {
+  "target": [
+   "W",
+   "K",
+   "AA1",
+   "OY1",
+   "ER0",
+   "ER0",
+   "IH0",
+   "D",
+   "IY0"
+  ],
+  "predicted": [
+   "W",
+   "OY1",
+   "ER0",
+   "ER0",
+   "IH0",
+   "D",
+   "IY0"
+  ],
+  "confidence": 0.883,
+  "margin": 0.56,
+  "native_score": 0.671,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ],
+   [
+    0.24,
+    0.28
+   ]
+  ],
+  "expected": {
+   "score": 7.1,
+   "wer": 0.22,
+   "per_with_stress": 0.22,
+   "metrics": {
+    "accuracy": 78,
+    "completeness": 78,
+    "fluency": 87
+   },
+   "stress": {
+    "matched": 5,
+    "total": 5
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "W",
+     "status": "correct",
+     "heard": "W",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "K",
+     "status": "missed",
+     "heard": null,
+     "tip": "Touch the back of your tongue to the soft palate, then release with a puff."
+    },
+    {
+     "phoneme": "AA1",
+     "status": "missed",
+     "heard": null,
+     "tip": "Open your mouth wide, like saying 'ah' at the doctor."
+    },
+    {
+     "phoneme": "OY1",
+     "status": "correct",
+     "heard": "OY1",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    },
+    {
+     "phoneme": "ER0",
+     "status": "correct",
+     "heard": "ER0",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12,
+     "stress_match": true
+    },
+    {
+     "phoneme": "ER0",
+     "status": "correct",
+     "heard": "ER0",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16,
+     "stress_match": true
+    },
+    {
+     "phoneme": "IH0",
+     "status": "correct",
+     "heard": "IH0",
+     "tip": "",
+     "start": 0.16,
+     "end": 0.2,
+     "stress_match": true
+    },
+    {
+     "phoneme": "D",
+     "status": "correct",
+     "heard": "D",
+     "tip": "",
+     "start": 0.2,
+     "end": 0.24
+    },
+    {
+     "phoneme": "IY0",
+     "status": "correct",
+     "heard": "IY0",
+     "tip": "",
+     "start": 0.24,
+     "end": 0.28,
+     "stress_match": true
+    }
+   ],
+   "errors": [
+    {
+     "type": "delete",
+     "index": 1,
+     "expected": [
+      "K"
+     ],
+     "heard": [],
+     "tip": "Touch the back of your tongue to the soft palate, then release with a puff."
+    },
+    {
+     "type": "delete",
+     "index": 2,
+     "expected": [
+      "AA1"
+     ],
+     "heard": [],
+     "tip": "Open your mouth wide, like saying 'ah' at the doctor."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch the back of your tongue to the soft palate, then release with a puff.",
+    "Open your mouth wide, like saying 'ah' at the doctor."
+   ]
+  }
+ },
+ {
+  "target": [
+   "D",
+   "UW1",
+   "D",
+   "ZH"
+  ],
+  "predicted": [
+   "D",
+   "UW1",
+   "AE1",
+   "ZH"
+  ],
+  "confidence": 0.963,
+  "margin": 0.962,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ]
+  ],
+  "expected": {
+   "score": 7.8,
+   "wer": 0.25,
+   "per_with_stress": 0.25,
+   "metrics": {
+    "accuracy": 75,
+    "completeness": 100,
+    "fluency": 100
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "D",
+     "status": "correct",
+     "heard": "D",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "UW1",
+     "status": "correct",
+     "heard": "UW1",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    },
+    {
+     "phoneme": "D",
+     "status": "error",
+     "heard": "AE1",
+     "tip": "Heard AE instead.",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "ZH",
+     "status": "correct",
+     "heard": "ZH",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 2,
+     "expected": [
+      "D"
+     ],
+     "heard": [
+      "AE1"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch your tongue to the ridge behind your top teeth, then release."
+   ]
+  }
+ },
+ {
+  "target": [
+   "S",
+   "ZH",
+   "IY0"
+  ],
+  "predicted": [
+   "S",
+   "ER0",
+   "IY0"
+  ],
+  "confidence": 0.812,
+  "margin": 0.619,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ]
+  ],
+  "expected": {
+   "score": 9.6,
+   "wer": 0.0,
+   "per_with_stress": 0.33,
+   "metrics": {
+    "accuracy": 100,
+    "completeness": 100,
+    "fluency": 81
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "S",
+     "status": "correct",
+     "heard": "S",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "ZH",
+     "status": "unscored",
+     "heard": "ER0",
+     "tip": "The model cannot judge this sound yet, so it is not counted.",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "IY0",
+     "status": "correct",
+     "heard": "IY0",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12,
+     "stress_match": true
+    }
+   ],
+   "errors": [],
+   "feedback": "Great! The phoneme match is strong.",
+   "coaching_tips": []
+  }
+ },
+ {
+  "target": [
+   "ZH",
+   "IH0",
+   "D",
+   "R",
+   "R",
+   "ZH"
+  ],
+  "predicted": [
+   "ZH",
+   "TH",
+   "D",
+   "AA1",
+   "R",
+   "ZH",
+   "OY1"
+  ],
+  "confidence": 0.987,
+  "margin": 0.389,
+  "native_score": 0.672,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ],
+   [
+    0.24,
+    0.28
+   ]
+  ],
+  "expected": {
+   "score": 6.1,
+   "wer": 0.5,
+   "per_with_stress": 0.5,
+   "metrics": {
+    "accuracy": 67,
+    "completeness": 100,
+    "fluency": 68
+   },
+   "stress": {
+    "matched": 0,
+    "total": 0
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "ZH",
+     "status": "correct",
+     "heard": "ZH",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "IH0",
+     "status": "error",
+     "heard": "TH",
+     "tip": "Heard TH instead.",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "D",
+     "status": "correct",
+     "heard": "D",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "R",
+     "status": "error",
+     "heard": "AA1",
+     "tip": "Heard AA instead.",
+     "start": 0.12,
+     "end": 0.16
+    },
+    {
+     "phoneme": "R",
+     "status": "correct",
+     "heard": "R",
+     "tip": "",
+     "start": 0.16,
+     "end": 0.2
+    },
+    {
+     "phoneme": "ZH",
+     "status": "correct",
+     "heard": "ZH",
+     "tip": "",
+     "start": 0.2,
+     "end": 0.24
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 1,
+     "expected": [
+      "IH0"
+     ],
+     "heard": [
+      "TH"
+     ],
+     "tip": "Relax your tongue slightly - 'ih' as in 'sit'."
+    },
+    {
+     "type": "substitute",
+     "index": 3,
+     "expected": [
+      "R"
+     ],
+     "heard": [
+      "AA1"
+     ],
+     "tip": "Curl your tongue slightly back without touching the roof."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Relax your tongue slightly - 'ih' as in 'sit'.",
+    "Curl your tongue slightly back without touching the roof."
+   ]
+  }
+ },
+ {
+  "target": [
+   "D",
+   "S",
+   "OY1",
+   "R",
+   "N"
+  ],
+  "predicted": [
+   "AE1",
+   "S",
+   "T",
+   "OY1",
+   "R",
+   "N"
+  ],
+  "confidence": 0.679,
+  "margin": 0.44,
+  "native_score": 0.731,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ]
+  ],
+  "expected": {
+   "score": 6.6,
+   "wer": 0.4,
+   "per_with_stress": 0.4,
+   "metrics": {
+    "accuracy": 80,
+    "completeness": 100,
+    "fluency": 36
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "D",
+     "status": "error",
+     "heard": "AE1",
+     "tip": "Heard AE instead.",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "S",
+     "status": "correct",
+     "heard": "S",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "OY1",
+     "status": "correct",
+     "heard": "OY1",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16,
+     "stress_match": true
+    },
+    {
+     "phoneme": "R",
+     "status": "correct",
+     "heard": "R",
+     "tip": "",
+     "start": 0.16,
+     "end": 0.2
+    },
+    {
+     "phoneme": "N",
+     "status": "correct",
+     "heard": "N",
+     "tip": "",
+     "start": 0.2,
+     "end": 0.24
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 0,
+     "expected": [
+      "D"
+     ],
+     "heard": [
+      "AE1"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch your tongue to the ridge behind your top teeth, then release."
+   ]
+  }
+ },
+ {
+  "target": [
+   "S",
+   "AA1",
+   "AA1",
+   "TH",
+   "R",
+   "UW1",
+   "IH0"
+  ],
+  "predicted": [
+   "S",
+   "W",
+   "TH",
+   "R",
+   "IH0",
+   "TH"
+  ],
+  "confidence": 0.729,
+  "margin": 0.352,
+  "native_score": 0.675,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ]
+  ],
+  "expected": {
+   "score": 5.7,
+   "wer": 0.57,
+   "per_with_stress": 0.57,
+   "metrics": {
+    "accuracy": 43,
+    "completeness": 86,
+    "fluency": 69
+   },
+   "stress": {
+    "matched": 0,
+    "total": 0
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "S",
+     "status": "correct",
+     "heard": "S",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "AA1",
+     "status": "missed",
+     "heard": null,
+     "tip": "Open your mouth wide, like saying 'ah' at the doctor."
+    },
+    {
+     "phoneme": "AA1",
+     "status": "error",
+     "heard": "W",
+     "tip": "Heard W instead.",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "TH",
+     "status": "correct",
+     "heard": "TH",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "R",
+     "status": "correct",
+     "heard": "R",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16
+    },
+    {
+     "phoneme": "UW1",
+     "status": "error",
+     "heard": "IH0",
+     "tip": "Heard IH instead.",
+     "start": 0.16,
+     "end": 0.2
+    },
+    {
+     "phoneme": "IH0",
+     "status": "error",
+     "heard": "TH",
+     "tip": "Heard TH instead.",
+     "start": 0.2,
+     "end": 0.24
+    }
+   ],
+   "errors": [
+    {
+     "type": "delete",
+     "index": 1,
+     "expected": [
+      "AA1"
+     ],
+     "heard": [],
+     "tip": "Open your mouth wide, like saying 'ah' at the doctor."
+    },
+    {
+     "type": "substitute",
+     "index": 2,
+     "expected": [
+      "AA1"
+     ],
+     "heard": [
+      "W"
+     ],
+     "tip": "Open your mouth wide, like saying 'ah' at the doctor."
+    },
+    {
+     "type": "substitute",
+     "index": 5,
+     "expected": [
+      "UW1"
+     ],
+     "heard": [
+      "IH0"
+     ],
+     "tip": "Round your lips tightly - 'oo' as in 'food'."
+    },
+    {
+     "type": "substitute",
+     "index": 6,
+     "expected": [
+      "IH0"
+     ],
+     "heard": [
+      "TH"
+     ],
+     "tip": "Relax your tongue slightly - 'ih' as in 'sit'."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Open your mouth wide, like saying 'ah' at the doctor.",
+    "Round your lips tightly - 'oo' as in 'food'.",
+    "Relax your tongue slightly - 'ih' as in 'sit'."
+   ]
+  }
+ },
+ {
+  "target": [
+   "ER0",
+   "AE1",
+   "AA1",
+   "L",
+   "N",
+   "N",
+   "L",
+   "ZH"
+  ],
+  "predicted": [
+   "ER0",
+   "AA1",
+   "L",
+   "N",
+   "L",
+   "N",
+   "W"
+  ],
+  "confidence": 0.781,
+  "margin": 0.669,
+  "native_score": 0.563,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ],
+   [
+    0.24,
+    0.28
+   ]
+  ],
+  "expected": {
+   "score": 5.8,
+   "wer": 0.38,
+   "per_with_stress": 0.5,
+   "metrics": {
+    "accuracy": 62,
+    "completeness": 88,
+    "fluency": 80
+   },
+   "stress": {
+    "matched": 2,
+    "total": 2
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "ER0",
+     "status": "correct",
+     "heard": "ER0",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04,
+     "stress_match": true
+    },
+    {
+     "phoneme": "AE1",
+     "status": "missed",
+     "heard": null,
+     "tip": "Open your mouth and spread your lips slightly, like 'cat'."
+    },
+    {
+     "phoneme": "AA1",
+     "status": "correct",
+     "heard": "AA1",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    },
+    {
+     "phoneme": "L",
+     "status": "correct",
+     "heard": "L",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "N",
+     "status": "correct",
+     "heard": "N",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16
+    },
+    {
+     "phoneme": "N",
+     "status": "error",
+     "heard": "L",
+     "tip": "Heard L instead.",
+     "start": 0.16,
+     "end": 0.2
+    },
+    {
+     "phoneme": "L",
+     "status": "error",
+     "heard": "N",
+     "tip": "Heard N instead.",
+     "start": 0.2,
+     "end": 0.24
+    },
+    {
+     "phoneme": "ZH",
+     "status": "unscored",
+     "heard": "W",
+     "tip": "The model cannot judge this sound yet, so it is not counted.",
+     "start": 0.24,
+     "end": 0.28
+    }
+   ],
+   "errors": [
+    {
+     "type": "delete",
+     "index": 1,
+     "expected": [
+      "AE1"
+     ],
+     "heard": [],
+     "tip": "Open your mouth and spread your lips slightly, like 'cat'."
+    },
+    {
+     "type": "substitute",
+     "index": 5,
+     "expected": [
+      "N"
+     ],
+     "heard": [
+      "L"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth and hum."
+    },
+    {
+     "type": "substitute",
+     "index": 6,
+     "expected": [
+      "L"
+     ],
+     "heard": [
+      "N"
+     ],
+     "tip": "Touch the tip of your tongue to the ridge behind your top teeth."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Open your mouth and spread your lips slightly, like 'cat'.",
+    "Touch your tongue to the ridge behind your top teeth and hum.",
+    "Touch the tip of your tongue to the ridge behind your top teeth."
+   ]
+  }
+ },
+ {
+  "target": [
+   "AA1",
+   "AH0"
+  ],
+  "predicted": [
+   "AA1",
+   "AH0"
+  ],
+  "confidence": 0.822,
+  "margin": 0.981,
+  "native_score": 0.251,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ]
+  ],
+  "expected": {
+   "score": 5.4,
+   "wer": 0.0,
+   "per_with_stress": 0.0,
+   "metrics": {
+    "accuracy": 100,
+    "completeness": 100,
+    "fluency": 92
+   },
+   "stress": {
+    "matched": 2,
+    "total": 2
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "AA1",
+     "status": "correct",
+     "heard": "AA1",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04,
+     "stress_match": true
+    },
+    {
+     "phoneme": "AH0",
+     "status": "correct",
+     "heard": "AH0",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    }
+   ],
+   "errors": [],
+   "feedback": "Every sound was there. Say it a little more clearly for a top score.",
+   "coaching_tips": [
+    "Keep /AA/ open and steady without drifting toward /AH/ or /AO/.",
+    "Use a short, central /AH/ instead of a broad open vowel."
+   ]
+  }
+ },
+ {
+  "target": [
+   "S",
+   "W",
+   "W",
+   "T",
+   "S",
+   "AA1"
+  ],
+  "predicted": [
+   "S",
+   "W",
+   "W",
+   "AA1",
+   "S",
+   "ZH",
+   "AA1"
+  ],
+  "confidence": 0.734,
+  "margin": 0.913,
+  "native_score": 0.397,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ],
+   [
+    0.24,
+    0.28
+   ]
+  ],
+  "expected": {
+   "score": 5.0,
+   "wer": 0.33,
+   "per_with_stress": 0.33,
+   "metrics": {
+    "accuracy": 83,
+    "completeness": 100,
+    "fluency": 64
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "S",
+     "status": "correct",
+     "heard": "S",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "W",
+     "status": "correct",
+     "heard": "W",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "W",
+     "status": "correct",
+     "heard": "W",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "T",
+     "status": "error",
+     "heard": "AA1",
+     "tip": "Heard AA instead.",
+     "start": 0.12,
+     "end": 0.16
+    },
+    {
+     "phoneme": "S",
+     "status": "correct",
+     "heard": "S",
+     "tip": "",
+     "start": 0.16,
+     "end": 0.2
+    },
+    {
+     "phoneme": "AA1",
+     "status": "correct",
+     "heard": "AA1",
+     "tip": "",
+     "start": 0.24,
+     "end": 0.28,
+     "stress_match": true
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 3,
+     "expected": [
+      "T"
+     ],
+     "heard": [
+      "AA1"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release sharply."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch your tongue to the ridge behind your top teeth, then release sharply."
+   ]
+  }
+ },
+ {
+  "target": [
+   "OY1",
+   "N"
+  ],
+  "predicted": [],
+  "confidence": 0.589,
+  "margin": 0.652,
+  "native_score": 0.254,
+  "spans": [],
+  "expected": {
+   "score": 0,
+   "wer": 1.0,
+   "per_with_stress": 1.0,
+   "metrics": {
+    "accuracy": 0,
+    "completeness": 0,
+    "fluency": 0
+   },
+   "stress": {
+    "matched": 0,
+    "total": 0
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "OY1",
+     "status": "missed",
+     "heard": null,
+     "tip": "Round your lips for 'aw' then glide to 'ee' - 'oy' as in 'boy'."
+    },
+    {
+     "phoneme": "N",
+     "status": "missed",
+     "heard": null,
+     "tip": "Touch your tongue to the ridge behind your top teeth and hum."
+    }
+   ],
+   "errors": [],
+   "feedback": "I didn't hear anything clearly. Try again?",
+   "coaching_tips": []
+  }
+ },
+ {
+  "target": [
+   "AA1",
+   "N",
+   "N",
+   "IY0",
+   "D",
+   "L",
+   "S"
+  ],
+  "predicted": [
+   "AA1",
+   "N",
+   "N",
+   "IY0",
+   "R",
+   "L",
+   "UW1"
+  ],
+  "confidence": 0.72,
+  "margin": 0.636,
+  "native_score": 0.899,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ],
+   [
+    0.24,
+    0.28
+   ]
+  ],
+  "expected": {
+   "score": 8.1,
+   "wer": 0.29,
+   "per_with_stress": 0.29,
+   "metrics": {
+    "accuracy": 71,
+    "completeness": 100,
+    "fluency": 72
+   },
+   "stress": {
+    "matched": 2,
+    "total": 2
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "AA1",
+     "status": "correct",
+     "heard": "AA1",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04,
+     "stress_match": true
+    },
+    {
+     "phoneme": "N",
+     "status": "correct",
+     "heard": "N",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "N",
+     "status": "correct",
+     "heard": "N",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "IY0",
+     "status": "correct",
+     "heard": "IY0",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16,
+     "stress_match": true
+    },
+    {
+     "phoneme": "D",
+     "status": "error",
+     "heard": "R",
+     "tip": "Heard R instead.",
+     "start": 0.16,
+     "end": 0.2
+    },
+    {
+     "phoneme": "L",
+     "status": "correct",
+     "heard": "L",
+     "tip": "",
+     "start": 0.2,
+     "end": 0.24
+    },
+    {
+     "phoneme": "S",
+     "status": "error",
+     "heard": "UW1",
+     "tip": "Heard UW instead.",
+     "start": 0.24,
+     "end": 0.28
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 4,
+     "expected": [
+      "D"
+     ],
+     "heard": [
+      "R"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release."
+    },
+    {
+     "type": "substitute",
+     "index": 6,
+     "expected": [
+      "S"
+     ],
+     "heard": [
+      "UW1"
+     ],
+     "tip": "Place your tongue close to the ridge behind your top teeth and push air through."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch your tongue to the ridge behind your top teeth, then release.",
+    "Place your tongue close to the ridge behind your top teeth and push air through."
+   ]
+  }
+ },
+ {
+  "target": [
+   "AA1",
+   "AH0",
+   "N",
+   "ZH",
+   "ER0",
+   "R",
+   "K",
+   "N",
+   "IH0"
+  ],
+  "predicted": [
+   "AA1",
+   "AH0",
+   "AE1",
+   "OY1",
+   "K",
+   "TH",
+   "R",
+   "L",
+   "S",
+   "N"
+  ],
+  "confidence": 0.924,
+  "margin": 0.858,
+  "native_score": 0.257,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ],
+   [
+    0.24,
+    0.28
+   ],
+   [
+    0.28,
+    0.32
+   ],
+   [
+    0.32,
+    0.36
+   ],
+   [
+    0.36,
+    0.4
+   ]
+  ],
+  "expected": {
+   "score": 3.1,
+   "wer": 0.67,
+   "per_with_stress": 0.78,
+   "metrics": {
+    "accuracy": 44,
+    "completeness": 100,
+    "fluency": 85
+   },
+   "stress": {
+    "matched": 2,
+    "total": 2
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "AA1",
+     "status": "correct",
+     "heard": "AA1",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04,
+     "stress_match": true
+    },
+    {
+     "phoneme": "AH0",
+     "status": "correct",
+     "heard": "AH0",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    },
+    {
+     "phoneme": "N",
+     "status": "error",
+     "heard": "OY1",
+     "tip": "Heard OY instead.",
+     "start": 0.12,
+     "end": 0.16
+    },
+    {
+     "phoneme": "ZH",
+     "status": "unscored",
+     "heard": "K",
+     "tip": "The model cannot judge this sound yet, so it is not counted.",
+     "start": 0.16,
+     "end": 0.2
+    },
+    {
+     "phoneme": "ER0",
+     "status": "error",
+     "heard": "TH",
+     "tip": "Heard TH instead.",
+     "start": 0.2,
+     "end": 0.24
+    },
+    {
+     "phoneme": "R",
+     "status": "correct",
+     "heard": "R",
+     "tip": "",
+     "start": 0.24,
+     "end": 0.28
+    },
+    {
+     "phoneme": "K",
+     "status": "error",
+     "heard": "L",
+     "tip": "Heard L instead.",
+     "start": 0.28,
+     "end": 0.32
+    },
+    {
+     "phoneme": "N",
+     "status": "error",
+     "heard": "S",
+     "tip": "Heard S instead.",
+     "start": 0.32,
+     "end": 0.36
+    },
+    {
+     "phoneme": "IH0",
+     "status": "error",
+     "heard": "N",
+     "tip": "Heard N instead.",
+     "start": 0.36,
+     "end": 0.4
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 2,
+     "expected": [
+      "N"
+     ],
+     "heard": [
+      "OY1"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth and hum."
+    },
+    {
+     "type": "substitute",
+     "index": 4,
+     "expected": [
+      "ER0"
+     ],
+     "heard": [
+      "TH"
+     ],
+     "tip": "Curl your tongue slightly back - 'er' as in 'bird'."
+    },
+    {
+     "type": "substitute",
+     "index": 6,
+     "expected": [
+      "K"
+     ],
+     "heard": [
+      "L"
+     ],
+     "tip": "Touch the back of your tongue to the soft palate, then release with a puff."
+    },
+    {
+     "type": "substitute",
+     "index": 7,
+     "expected": [
+      "N"
+     ],
+     "heard": [
+      "S"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth and hum."
+    },
+    {
+     "type": "substitute",
+     "index": 8,
+     "expected": [
+      "IH0"
+     ],
+     "heard": [
+      "N"
+     ],
+     "tip": "Relax your tongue slightly - 'ih' as in 'sit'."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch your tongue to the ridge behind your top teeth and hum.",
+    "Curl your tongue slightly back - 'er' as in 'bird'.",
+    "Touch the back of your tongue to the soft palate, then release with a puff."
+   ]
+  }
+ },
+ {
+  "target": [
+   "D",
+   "OY1",
+   "OY1",
+   "IY0",
+   "N",
+   "ER0",
+   "AH0",
+   "AH0",
+   "S"
+  ],
+  "predicted": [
+   "D",
+   "OY1",
+   "OY1",
+   "IY0",
+   "N",
+   "ER0",
+   "K",
+   "TH",
+   "S"
+  ],
+  "confidence": 0.689,
+  "margin": 0.804,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ],
+   [
+    0.24,
+    0.28
+   ],
+   [
+    0.28,
+    0.32
+   ],
+   [
+    0.32,
+    0.36
+   ]
+  ],
+  "expected": {
+   "score": 7.4,
+   "wer": 0.22,
+   "per_with_stress": 0.22,
+   "metrics": {
+    "accuracy": 78,
+    "completeness": 100,
+    "fluency": 75
+   },
+   "stress": {
+    "matched": 4,
+    "total": 4
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "D",
+     "status": "correct",
+     "heard": "D",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "OY1",
+     "status": "correct",
+     "heard": "OY1",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    },
+    {
+     "phoneme": "OY1",
+     "status": "correct",
+     "heard": "OY1",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12,
+     "stress_match": true
+    },
+    {
+     "phoneme": "IY0",
+     "status": "correct",
+     "heard": "IY0",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16,
+     "stress_match": true
+    },
+    {
+     "phoneme": "N",
+     "status": "correct",
+     "heard": "N",
+     "tip": "",
+     "start": 0.16,
+     "end": 0.2
+    },
+    {
+     "phoneme": "ER0",
+     "status": "correct",
+     "heard": "ER0",
+     "tip": "",
+     "start": 0.2,
+     "end": 0.24,
+     "stress_match": true
+    },
+    {
+     "phoneme": "AH0",
+     "status": "error",
+     "heard": "K",
+     "tip": "Heard K instead.",
+     "start": 0.24,
+     "end": 0.28
+    },
+    {
+     "phoneme": "AH0",
+     "status": "error",
+     "heard": "TH",
+     "tip": "Heard TH instead.",
+     "start": 0.28,
+     "end": 0.32
+    },
+    {
+     "phoneme": "S",
+     "status": "correct",
+     "heard": "S",
+     "tip": "",
+     "start": 0.32,
+     "end": 0.36
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 6,
+     "expected": [
+      "AH0"
+     ],
+     "heard": [
+      "K"
+     ],
+     "tip": "Relax your mouth - a short, neutral 'uh' sound."
+    },
+    {
+     "type": "substitute",
+     "index": 7,
+     "expected": [
+      "AH0"
+     ],
+     "heard": [
+      "TH"
+     ],
+     "tip": "Relax your mouth - a short, neutral 'uh' sound."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Relax your mouth - a short, neutral 'uh' sound."
+   ]
+  }
+ },
+ {
+  "target": [
+   "ZH"
+  ],
+  "predicted": [
+   "IY0",
+   "L"
+  ],
+  "confidence": 0.521,
+  "margin": 0.697,
+  "native_score": 0.906,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ]
+  ],
+  "expected": {
+   "score": 3.1,
+   "wer": 1.0,
+   "per_with_stress": 2.0,
+   "metrics": {
+    "accuracy": 100,
+    "completeness": 100,
+    "fluency": 34
+   },
+   "stress": {
+    "matched": 0,
+    "total": 0
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "ZH",
+     "status": "unscored",
+     "heard": "L",
+     "tip": "The model cannot judge this sound yet, so it is not counted.",
+     "start": 0.04,
+     "end": 0.08
+    }
+   ],
+   "errors": [],
+   "feedback": "Every sound was there. Say it a little more clearly for a top score.",
+   "coaching_tips": [
+    "Slow the word down and keep each sound clean without adding extra vowel sounds."
+   ]
+  }
+ },
+ {
+  "target": [
+   "D",
+   "R",
+   "ZH",
+   "ZH",
+   "AE1"
+  ],
+  "predicted": [
+   "ZH",
+   "R",
+   "ZH",
+   "TH",
+   "AE1"
+  ],
+  "confidence": 0.46,
+  "margin": 0.914,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ]
+  ],
+  "expected": {
+   "score": 7.5,
+   "wer": 0.2,
+   "per_with_stress": 0.4,
+   "metrics": {
+    "accuracy": 80,
+    "completeness": 100,
+    "fluency": 68
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "D",
+     "status": "error",
+     "heard": "ZH",
+     "tip": "Heard ZH instead.",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "R",
+     "status": "correct",
+     "heard": "R",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "ZH",
+     "status": "correct",
+     "heard": "ZH",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "ZH",
+     "status": "unscored",
+     "heard": "TH",
+     "tip": "The model cannot judge this sound yet, so it is not counted.",
+     "start": 0.12,
+     "end": 0.16
+    },
+    {
+     "phoneme": "AE1",
+     "status": "correct",
+     "heard": "AE1",
+     "tip": "",
+     "start": 0.16,
+     "end": 0.2,
+     "stress_match": true
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 0,
+     "expected": [
+      "D"
+     ],
+     "heard": [
+      "ZH"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch your tongue to the ridge behind your top teeth, then release."
+   ]
+  }
+ },
+ {
+  "target": [
+   "R",
+   "IH0"
+  ],
+  "predicted": [
+   "D",
+   "OY1",
+   "UW1"
+  ],
+  "confidence": 0.514,
+  "margin": 0.466,
+  "native_score": 0.467,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ]
+  ],
+  "expected": {
+   "score": 2.8,
+   "wer": 1.5,
+   "per_with_stress": 1.5,
+   "metrics": {
+    "accuracy": 0,
+    "completeness": 100,
+    "fluency": 28
+   },
+   "stress": {
+    "matched": 0,
+    "total": 0
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "R",
+     "status": "error",
+     "heard": "OY1",
+     "tip": "Heard OY instead.",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "IH0",
+     "status": "error",
+     "heard": "UW1",
+     "tip": "Heard UW instead.",
+     "start": 0.08,
+     "end": 0.12
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 0,
+     "expected": [
+      "R"
+     ],
+     "heard": [
+      "OY1"
+     ],
+     "tip": "Curl your tongue slightly back without touching the roof."
+    },
+    {
+     "type": "substitute",
+     "index": 1,
+     "expected": [
+      "IH0"
+     ],
+     "heard": [
+      "UW1"
+     ],
+     "tip": "Relax your tongue slightly - 'ih' as in 'sit'."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Curl your tongue slightly back without touching the roof.",
+    "Relax your tongue slightly - 'ih' as in 'sit'."
+   ]
+  }
+ },
+ {
+  "target": [
+   "IY0"
+  ],
+  "predicted": [],
+  "confidence": 0.784,
+  "margin": 0.869,
+  "native_score": 0.825,
+  "spans": [],
+  "expected": {
+   "score": 0,
+   "wer": 1.0,
+   "per_with_stress": 1.0,
+   "metrics": {
+    "accuracy": 0,
+    "completeness": 0,
+    "fluency": 0
+   },
+   "stress": {
+    "matched": 0,
+    "total": 0
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "IY0",
+     "status": "missed",
+     "heard": null,
+     "tip": "Spread your lips and raise the front of your tongue - 'ee' as in 'see'."
+    }
+   ],
+   "errors": [],
+   "feedback": "I didn't hear anything clearly. Try again?",
+   "coaching_tips": []
+  }
+ },
+ {
+  "target": [
+   "AE1",
+   "OY1",
+   "AH0",
+   "T",
+   "OY1",
+   "ZH"
+  ],
+  "predicted": [
+   "D",
+   "OY1",
+   "ZH",
+   "T",
+   "OY1"
+  ],
+  "confidence": 0.799,
+  "margin": 0.764,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ]
+  ],
+  "expected": {
+   "score": 6.7,
+   "wer": 0.33,
+   "per_with_stress": 0.5,
+   "metrics": {
+    "accuracy": 67,
+    "completeness": 100,
+    "fluency": 85
+   },
+   "stress": {
+    "matched": 2,
+    "total": 2
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "AE1",
+     "status": "error",
+     "heard": "D",
+     "tip": "Heard D instead.",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "OY1",
+     "status": "correct",
+     "heard": "OY1",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    },
+    {
+     "phoneme": "AH0",
+     "status": "error",
+     "heard": "ZH",
+     "tip": "Heard ZH instead.",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "T",
+     "status": "correct",
+     "heard": "T",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16
+    },
+    {
+     "phoneme": "OY1",
+     "status": "correct",
+     "heard": "OY1",
+     "tip": "",
+     "start": 0.16,
+     "end": 0.2,
+     "stress_match": true
+    },
+    {
+     "phoneme": "ZH",
+     "status": "unscored",
+     "heard": null,
+     "tip": "The model cannot judge this sound yet, so it is not counted."
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 0,
+     "expected": [
+      "AE1"
+     ],
+     "heard": [
+      "D"
+     ],
+     "tip": "Open your mouth and spread your lips slightly, like 'cat'."
+    },
+    {
+     "type": "substitute",
+     "index": 2,
+     "expected": [
+      "AH0"
+     ],
+     "heard": [
+      "ZH"
+     ],
+     "tip": "Relax your mouth - a short, neutral 'uh' sound."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Open your mouth and spread your lips slightly, like 'cat'.",
+    "Relax your mouth - a short, neutral 'uh' sound."
+   ]
+  }
+ },
+ {
+  "target": [
+   "K",
+   "R"
+  ],
+  "predicted": [
+   "K",
+   "R"
+  ],
+  "confidence": 0.981,
+  "margin": 0.608,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ]
+  ],
+  "expected": {
+   "score": 9.8,
+   "wer": 0.0,
+   "per_with_stress": 0.0,
+   "metrics": {
+    "accuracy": 100,
+    "completeness": 100,
+    "fluency": 90
+   },
+   "stress": {
+    "matched": 0,
+    "total": 0
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "K",
+     "status": "correct",
+     "heard": "K",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "R",
+     "status": "correct",
+     "heard": "R",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08
+    }
+   ],
+   "errors": [],
+   "feedback": "Great! The phoneme match is strong.",
+   "coaching_tips": []
+  }
+ },
+ {
+  "target": [
+   "UW1",
+   "N",
+   "UW1",
+   "ER0",
+   "ZH",
+   "K"
+  ],
+  "predicted": [
+   "UW1",
+   "N",
+   "UW1",
+   "ZH",
+   "N",
+   "AA1",
+   "IH0"
+  ],
+  "confidence": 0.934,
+  "margin": 0.508,
+  "native_score": 0.296,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ],
+   [
+    0.24,
+    0.28
+   ]
+  ],
+  "expected": {
+   "score": 3.9,
+   "wer": 0.5,
+   "per_with_stress": 0.67,
+   "metrics": {
+    "accuracy": 67,
+    "completeness": 100,
+    "fluency": 68
+   },
+   "stress": {
+    "matched": 2,
+    "total": 2
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "UW1",
+     "status": "correct",
+     "heard": "UW1",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04,
+     "stress_match": true
+    },
+    {
+     "phoneme": "N",
+     "status": "correct",
+     "heard": "N",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "UW1",
+     "status": "correct",
+     "heard": "UW1",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12,
+     "stress_match": true
+    },
+    {
+     "phoneme": "ER0",
+     "status": "error",
+     "heard": "N",
+     "tip": "Heard N instead.",
+     "start": 0.16,
+     "end": 0.2
+    },
+    {
+     "phoneme": "ZH",
+     "status": "unscored",
+     "heard": "AA1",
+     "tip": "The model cannot judge this sound yet, so it is not counted.",
+     "start": 0.2,
+     "end": 0.24
+    },
+    {
+     "phoneme": "K",
+     "status": "error",
+     "heard": "IH0",
+     "tip": "Heard IH instead.",
+     "start": 0.24,
+     "end": 0.28
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 3,
+     "expected": [
+      "ER0"
+     ],
+     "heard": [
+      "N"
+     ],
+     "tip": "Curl your tongue slightly back - 'er' as in 'bird'."
+    },
+    {
+     "type": "substitute",
+     "index": 5,
+     "expected": [
+      "K"
+     ],
+     "heard": [
+      "IH0"
+     ],
+     "tip": "Touch the back of your tongue to the soft palate, then release with a puff."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Curl your tongue slightly back - 'er' as in 'bird'.",
+    "Touch the back of your tongue to the soft palate, then release with a puff."
+   ]
+  }
+ },
+ {
+  "target": [
+   "L",
+   "W",
+   "K",
+   "OY1",
+   "AA1",
+   "R",
+   "S"
+  ],
+  "predicted": [
+   "L",
+   "W",
+   "K",
+   "OY1",
+   "K",
+   "R",
+   "S"
+  ],
+  "confidence": 0.953,
+  "margin": 0.708,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ],
+   [
+    0.24,
+    0.28
+   ]
+  ],
+  "expected": {
+   "score": 8.6,
+   "wer": 0.14,
+   "per_with_stress": 0.14,
+   "metrics": {
+    "accuracy": 86,
+    "completeness": 100,
+    "fluency": 94
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "L",
+     "status": "correct",
+     "heard": "L",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "W",
+     "status": "correct",
+     "heard": "W",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "K",
+     "status": "correct",
+     "heard": "K",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "OY1",
+     "status": "correct",
+     "heard": "OY1",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16,
+     "stress_match": true
+    },
+    {
+     "phoneme": "AA1",
+     "status": "error",
+     "heard": "K",
+     "tip": "Heard K instead.",
+     "start": 0.16,
+     "end": 0.2
+    },
+    {
+     "phoneme": "R",
+     "status": "correct",
+     "heard": "R",
+     "tip": "",
+     "start": 0.2,
+     "end": 0.24
+    },
+    {
+     "phoneme": "S",
+     "status": "correct",
+     "heard": "S",
+     "tip": "",
+     "start": 0.24,
+     "end": 0.28
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 4,
+     "expected": [
+      "AA1"
+     ],
+     "heard": [
+      "K"
+     ],
+     "tip": "Open your mouth wide, like saying 'ah' at the doctor."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Open your mouth wide, like saying 'ah' at the doctor."
+   ]
+  }
+ },
+ {
+  "target": [
+   "T",
+   "W",
+   "ZH",
+   "IY0",
+   "T",
+   "TH",
+   "L",
+   "AA1",
+   "T"
+  ],
+  "predicted": [
+   "W",
+   "TH",
+   "IY0",
+   "T",
+   "L",
+   "OY1",
+   "AA1",
+   "T"
+  ],
+  "confidence": 0.946,
+  "margin": 0.402,
+  "native_score": 0.228,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ],
+   [
+    0.24,
+    0.28
+   ],
+   [
+    0.28,
+    0.32
+   ]
+  ],
+  "expected": {
+   "score": 4.0,
+   "wer": 0.33,
+   "per_with_stress": 0.44,
+   "metrics": {
+    "accuracy": 67,
+    "completeness": 89,
+    "fluency": 86
+   },
+   "stress": {
+    "matched": 2,
+    "total": 2
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "T",
+     "status": "missed",
+     "heard": null,
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release sharply."
+    },
+    {
+     "phoneme": "W",
+     "status": "correct",
+     "heard": "W",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "ZH",
+     "status": "unscored",
+     "heard": "TH",
+     "tip": "The model cannot judge this sound yet, so it is not counted.",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "IY0",
+     "status": "correct",
+     "heard": "IY0",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12,
+     "stress_match": true
+    },
+    {
+     "phoneme": "T",
+     "status": "correct",
+     "heard": "T",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16
+    },
+    {
+     "phoneme": "TH",
+     "status": "error",
+     "heard": "L",
+     "tip": "Heard L instead.",
+     "start": 0.16,
+     "end": 0.2
+    },
+    {
+     "phoneme": "L",
+     "status": "error",
+     "heard": "OY1",
+     "tip": "Heard OY instead.",
+     "start": 0.2,
+     "end": 0.24
+    },
+    {
+     "phoneme": "AA1",
+     "status": "correct",
+     "heard": "AA1",
+     "tip": "",
+     "start": 0.24,
+     "end": 0.28,
+     "stress_match": true
+    },
+    {
+     "phoneme": "T",
+     "status": "correct",
+     "heard": "T",
+     "tip": "",
+     "start": 0.28,
+     "end": 0.32
+    }
+   ],
+   "errors": [
+    {
+     "type": "delete",
+     "index": 0,
+     "expected": [
+      "T"
+     ],
+     "heard": [],
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release sharply."
+    },
+    {
+     "type": "substitute",
+     "index": 5,
+     "expected": [
+      "TH"
+     ],
+     "heard": [
+      "L"
+     ],
+     "tip": "Put your tongue between your teeth and push air - 'th' as in 'think'."
+    },
+    {
+     "type": "substitute",
+     "index": 6,
+     "expected": [
+      "L"
+     ],
+     "heard": [
+      "OY1"
+     ],
+     "tip": "Touch the tip of your tongue to the ridge behind your top teeth."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch your tongue to the ridge behind your top teeth, then release sharply.",
+    "Put your tongue between your teeth and push air - 'th' as in 'think'.",
+    "Touch the tip of your tongue to the ridge behind your top teeth."
+   ]
+  }
+ },
+ {
+  "target": [
+   "TH",
+   "S",
+   "K",
+   "IY0",
+   "AH0",
+   "S",
+   "OY1"
+  ],
+  "predicted": [
+   "TH",
+   "D",
+   "K",
+   "AE1",
+   "AH0",
+   "OY1"
+  ],
+  "confidence": 0.78,
+  "margin": 0.475,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ]
+  ],
+  "expected": {
+   "score": 5.6,
+   "wer": 0.43,
+   "per_with_stress": 0.43,
+   "metrics": {
+    "accuracy": 57,
+    "completeness": 86,
+    "fluency": 74
+   },
+   "stress": {
+    "matched": 2,
+    "total": 2
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "TH",
+     "status": "correct",
+     "heard": "TH",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "S",
+     "status": "error",
+     "heard": "D",
+     "tip": "Heard D instead.",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "K",
+     "status": "correct",
+     "heard": "K",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "IY0",
+     "status": "error",
+     "heard": "AE1",
+     "tip": "Heard AE instead.",
+     "start": 0.12,
+     "end": 0.16
+    },
+    {
+     "phoneme": "AH0",
+     "status": "correct",
+     "heard": "AH0",
+     "tip": "",
+     "start": 0.16,
+     "end": 0.2,
+     "stress_match": true
+    },
+    {
+     "phoneme": "S",
+     "status": "missed",
+     "heard": null,
+     "tip": "Place your tongue close to the ridge behind your top teeth and push air through."
+    },
+    {
+     "phoneme": "OY1",
+     "status": "correct",
+     "heard": "OY1",
+     "tip": "",
+     "start": 0.2,
+     "end": 0.24,
+     "stress_match": true
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 1,
+     "expected": [
+      "S"
+     ],
+     "heard": [
+      "D"
+     ],
+     "tip": "Place your tongue close to the ridge behind your top teeth and push air through."
+    },
+    {
+     "type": "substitute",
+     "index": 3,
+     "expected": [
+      "IY0"
+     ],
+     "heard": [
+      "AE1"
+     ],
+     "tip": "Spread your lips and raise the front of your tongue - 'ee' as in 'see'."
+    },
+    {
+     "type": "delete",
+     "index": 5,
+     "expected": [
+      "S"
+     ],
+     "heard": [],
+     "tip": "Place your tongue close to the ridge behind your top teeth and push air through."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Place your tongue close to the ridge behind your top teeth and push air through.",
+    "Spread your lips and raise the front of your tongue - 'ee' as in 'see'."
+   ]
+  }
+ },
+ {
+  "target": [
+   "T",
+   "S",
+   "T",
+   "UW1"
+  ],
+  "predicted": [
+   "T",
+   "S",
+   "T",
+   "UW1"
+  ],
+  "confidence": 0.82,
+  "margin": 0.967,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ]
+  ],
+  "expected": {
+   "score": 9.8,
+   "wer": 0.0,
+   "per_with_stress": 0.0,
+   "metrics": {
+    "accuracy": 100,
+    "completeness": 100,
+    "fluency": 92
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "T",
+     "status": "correct",
+     "heard": "T",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "S",
+     "status": "correct",
+     "heard": "S",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "T",
+     "status": "correct",
+     "heard": "T",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "UW1",
+     "status": "correct",
+     "heard": "UW1",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16,
+     "stress_match": true
+    }
+   ],
+   "errors": [],
+   "feedback": "Great! The phoneme match is strong.",
+   "coaching_tips": []
+  }
+ },
+ {
+  "target": [
+   "T",
+   "AA1",
+   "IY0"
+  ],
+  "predicted": [
+   "AA1",
+   "IY0"
+  ],
+  "confidence": 0.519,
+  "margin": 0.488,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ]
+  ],
+  "expected": {
+   "score": 6.0,
+   "wer": 0.33,
+   "per_with_stress": 0.33,
+   "metrics": {
+    "accuracy": 67,
+    "completeness": 67,
+    "fluency": 55
+   },
+   "stress": {
+    "matched": 2,
+    "total": 2
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "T",
+     "status": "missed",
+     "heard": null,
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release sharply."
+    },
+    {
+     "phoneme": "AA1",
+     "status": "correct",
+     "heard": "AA1",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04,
+     "stress_match": true
+    },
+    {
+     "phoneme": "IY0",
+     "status": "correct",
+     "heard": "IY0",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    }
+   ],
+   "errors": [
+    {
+     "type": "delete",
+     "index": 0,
+     "expected": [
+      "T"
+     ],
+     "heard": [],
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release sharply."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch your tongue to the ridge behind your top teeth, then release sharply."
+   ]
+  }
+ },
+ {
+  "target": [
+   "W",
+   "W",
+   "AH0",
+   "T",
+   "IY0",
+   "N",
+   "T",
+   "TH",
+   "AE1"
+  ],
+  "predicted": [
+   "W",
+   "AH0",
+   "T",
+   "IH0",
+   "IY0",
+   "AE1",
+   "T",
+   "W",
+   "L"
+  ],
+  "confidence": 0.711,
+  "margin": 0.326,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ],
+   [
+    0.24,
+    0.28
+   ],
+   [
+    0.28,
+    0.32
+   ],
+   [
+    0.32,
+    0.36
+   ]
+  ],
+  "expected": {
+   "score": 4.3,
+   "wer": 0.56,
+   "per_with_stress": 0.56,
+   "metrics": {
+    "accuracy": 56,
+    "completeness": 89,
+    "fluency": 53
+   },
+   "stress": {
+    "matched": 2,
+    "total": 2
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "W",
+     "status": "missed",
+     "heard": null,
+     "tip": "Round your lips tightly and then open - 'w' as in 'we'."
+    },
+    {
+     "phoneme": "W",
+     "status": "correct",
+     "heard": "W",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "AH0",
+     "status": "correct",
+     "heard": "AH0",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    },
+    {
+     "phoneme": "T",
+     "status": "correct",
+     "heard": "T",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "IY0",
+     "status": "correct",
+     "heard": "IY0",
+     "tip": "",
+     "start": 0.16,
+     "end": 0.2,
+     "stress_match": true
+    },
+    {
+     "phoneme": "N",
+     "status": "error",
+     "heard": "AE1",
+     "tip": "Heard AE instead.",
+     "start": 0.2,
+     "end": 0.24
+    },
+    {
+     "phoneme": "T",
+     "status": "correct",
+     "heard": "T",
+     "tip": "",
+     "start": 0.24,
+     "end": 0.28
+    },
+    {
+     "phoneme": "TH",
+     "status": "error",
+     "heard": "W",
+     "tip": "Heard W instead.",
+     "start": 0.28,
+     "end": 0.32
+    },
+    {
+     "phoneme": "AE1",
+     "status": "error",
+     "heard": "L",
+     "tip": "Heard L instead.",
+     "start": 0.32,
+     "end": 0.36
+    }
+   ],
+   "errors": [
+    {
+     "type": "delete",
+     "index": 0,
+     "expected": [
+      "W"
+     ],
+     "heard": [],
+     "tip": "Round your lips tightly and then open - 'w' as in 'we'."
+    },
+    {
+     "type": "substitute",
+     "index": 5,
+     "expected": [
+      "N"
+     ],
+     "heard": [
+      "AE1"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth and hum."
+    },
+    {
+     "type": "substitute",
+     "index": 7,
+     "expected": [
+      "TH"
+     ],
+     "heard": [
+      "W"
+     ],
+     "tip": "Put your tongue between your teeth and push air - 'th' as in 'think'."
+    },
+    {
+     "type": "substitute",
+     "index": 8,
+     "expected": [
+      "AE1"
+     ],
+     "heard": [
+      "L"
+     ],
+     "tip": "Open your mouth and spread your lips slightly, like 'cat'."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Round your lips tightly and then open - 'w' as in 'we'.",
+    "Touch your tongue to the ridge behind your top teeth and hum.",
+    "Put your tongue between your teeth and push air - 'th' as in 'think'."
+   ]
+  }
+ },
+ {
+  "target": [
+   "AH0",
+   "TH"
+  ],
+  "predicted": [
+   "TH"
+  ],
+  "confidence": 0.567,
+  "margin": 0.673,
+  "native_score": 0.424,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ]
+  ],
+  "expected": {
+   "score": 4.4,
+   "wer": 0.5,
+   "per_with_stress": 0.5,
+   "metrics": {
+    "accuracy": 50,
+    "completeness": 50,
+    "fluency": 61
+   },
+   "stress": {
+    "matched": 0,
+    "total": 0
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "AH0",
+     "status": "missed",
+     "heard": null,
+     "tip": "Relax your mouth - a short, neutral 'uh' sound."
+    },
+    {
+     "phoneme": "TH",
+     "status": "correct",
+     "heard": "TH",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    }
+   ],
+   "errors": [
+    {
+     "type": "delete",
+     "index": 0,
+     "expected": [
+      "AH0"
+     ],
+     "heard": [],
+     "tip": "Relax your mouth - a short, neutral 'uh' sound."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Relax your mouth - a short, neutral 'uh' sound."
+   ]
+  }
+ },
+ {
+  "target": [
+   "N",
+   "ER0",
+   "UW1",
+   "UW1",
+   "D",
+   "AH0",
+   "R",
+   "T",
+   "TH"
+  ],
+  "predicted": [
+   "ER0",
+   "IY0",
+   "AH0",
+   "UW1",
+   "D",
+   "AH0",
+   "R",
+   "T",
+   "AH0",
+   "D"
+  ],
+  "confidence": 0.441,
+  "margin": 0.386,
+  "native_score": 0.673,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ],
+   [
+    0.24,
+    0.28
+   ],
+   [
+    0.28,
+    0.32
+   ],
+   [
+    0.32,
+    0.36
+   ],
+   [
+    0.36,
+    0.4
+   ]
+  ],
+  "expected": {
+   "score": 5.6,
+   "wer": 0.56,
+   "per_with_stress": 0.56,
+   "metrics": {
+    "accuracy": 56,
+    "completeness": 100,
+    "fluency": 41
+   },
+   "stress": {
+    "matched": 2,
+    "total": 2
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "N",
+     "status": "error",
+     "heard": "ER0",
+     "tip": "Heard ER instead.",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "ER0",
+     "status": "error",
+     "heard": "IY0",
+     "tip": "Heard IY instead.",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "UW1",
+     "status": "error",
+     "heard": "AH0",
+     "tip": "Heard AH instead.",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "UW1",
+     "status": "correct",
+     "heard": "UW1",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16,
+     "stress_match": true
+    },
+    {
+     "phoneme": "D",
+     "status": "correct",
+     "heard": "D",
+     "tip": "",
+     "start": 0.16,
+     "end": 0.2
+    },
+    {
+     "phoneme": "AH0",
+     "status": "correct",
+     "heard": "AH0",
+     "tip": "",
+     "start": 0.2,
+     "end": 0.24,
+     "stress_match": true
+    },
+    {
+     "phoneme": "R",
+     "status": "correct",
+     "heard": "R",
+     "tip": "",
+     "start": 0.24,
+     "end": 0.28
+    },
+    {
+     "phoneme": "T",
+     "status": "correct",
+     "heard": "T",
+     "tip": "",
+     "start": 0.28,
+     "end": 0.32
+    },
+    {
+     "phoneme": "TH",
+     "status": "error",
+     "heard": "D",
+     "tip": "Heard D instead.",
+     "start": 0.36,
+     "end": 0.4
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 0,
+     "expected": [
+      "N"
+     ],
+     "heard": [
+      "ER0"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth and hum."
+    },
+    {
+     "type": "substitute",
+     "index": 1,
+     "expected": [
+      "ER0"
+     ],
+     "heard": [
+      "IY0"
+     ],
+     "tip": "Curl your tongue slightly back - 'er' as in 'bird'."
+    },
+    {
+     "type": "substitute",
+     "index": 2,
+     "expected": [
+      "UW1"
+     ],
+     "heard": [
+      "AH0"
+     ],
+     "tip": "Round your lips tightly - 'oo' as in 'food'."
+    },
+    {
+     "type": "substitute",
+     "index": 8,
+     "expected": [
+      "TH"
+     ],
+     "heard": [
+      "D"
+     ],
+     "tip": "Put your tongue between your teeth and push air - 'th' as in 'think'."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch your tongue to the ridge behind your top teeth and hum.",
+    "Curl your tongue slightly back - 'er' as in 'bird'.",
+    "Round your lips tightly - 'oo' as in 'food'."
+   ]
+  }
+ },
+ {
+  "target": [
+   "AE1"
+  ],
+  "predicted": [
+   "AE1"
+  ],
+  "confidence": 0.745,
+  "margin": 0.783,
+  "native_score": 0.598,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ]
+  ],
+  "expected": {
+   "score": 7.4,
+   "wer": 0.0,
+   "per_with_stress": 0.0,
+   "metrics": {
+    "accuracy": 100,
+    "completeness": 100,
+    "fluency": 80
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "AE1",
+     "status": "correct",
+     "heard": "AE1",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04,
+     "stress_match": true
+    }
+   ],
+   "errors": [],
+   "feedback": "Every sound was there. Say it a little more clearly for a top score.",
+   "coaching_tips": [
+    "Open the jaw more for /AE/ and keep it bright, not flat."
+   ]
+  }
+ },
+ {
+  "target": [
+   "TH",
+   "IY0",
+   "L",
+   "AE1",
+   "AH0",
+   "TH",
+   "TH",
+   "UW1"
+  ],
+  "predicted": [
+   "TH",
+   "IY0",
+   "L",
+   "AE1",
+   "AH0",
+   "TH",
+   "TH",
+   "UW1"
+  ],
+  "confidence": 0.875,
+  "margin": 0.312,
+  "native_score": 0.623,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ],
+   [
+    0.24,
+    0.28
+   ],
+   [
+    0.28,
+    0.32
+   ]
+  ],
+  "expected": {
+   "score": 7.6,
+   "wer": 0.0,
+   "per_with_stress": 0.0,
+   "metrics": {
+    "accuracy": 100,
+    "completeness": 100,
+    "fluency": 84
+   },
+   "stress": {
+    "matched": 4,
+    "total": 4
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "TH",
+     "status": "correct",
+     "heard": "TH",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "IY0",
+     "status": "correct",
+     "heard": "IY0",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08,
+     "stress_match": true
+    },
+    {
+     "phoneme": "L",
+     "status": "correct",
+     "heard": "L",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "AE1",
+     "status": "correct",
+     "heard": "AE1",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16,
+     "stress_match": true
+    },
+    {
+     "phoneme": "AH0",
+     "status": "correct",
+     "heard": "AH0",
+     "tip": "",
+     "start": 0.16,
+     "end": 0.2,
+     "stress_match": true
+    },
+    {
+     "phoneme": "TH",
+     "status": "correct",
+     "heard": "TH",
+     "tip": "",
+     "start": 0.2,
+     "end": 0.24
+    },
+    {
+     "phoneme": "TH",
+     "status": "correct",
+     "heard": "TH",
+     "tip": "",
+     "start": 0.24,
+     "end": 0.28
+    },
+    {
+     "phoneme": "UW1",
+     "status": "correct",
+     "heard": "UW1",
+     "tip": "",
+     "start": 0.28,
+     "end": 0.32,
+     "stress_match": true
+    }
+   ],
+   "errors": [],
+   "feedback": "Every sound was there. Say it a little more clearly for a top score.",
+   "coaching_tips": [
+    "Keep the tongue lightly between the teeth for /TH/, not behind them.",
+    "Keep /IY/ high and tense, like a clear 'ee' sound.",
+    "Open the jaw more for /AE/ and keep it bright, not flat."
+   ]
+  }
+ },
+ {
+  "target": [
+   "D",
+   "ER0"
+  ],
+  "predicted": [
+   "D",
+   "TH"
+  ],
+  "confidence": 0.911,
+  "margin": 0.65,
+  "native_score": 0.792,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ]
+  ],
+  "expected": {
+   "score": 6.9,
+   "wer": 0.5,
+   "per_with_stress": 0.5,
+   "metrics": {
+    "accuracy": 50,
+    "completeness": 100,
+    "fluency": 92
+   },
+   "stress": {
+    "matched": 0,
+    "total": 0
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "D",
+     "status": "correct",
+     "heard": "D",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "ER0",
+     "status": "error",
+     "heard": "TH",
+     "tip": "Heard TH instead.",
+     "start": 0.04,
+     "end": 0.08
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 1,
+     "expected": [
+      "ER0"
+     ],
+     "heard": [
+      "TH"
+     ],
+     "tip": "Curl your tongue slightly back - 'er' as in 'bird'."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Curl your tongue slightly back - 'er' as in 'bird'."
+   ]
+  }
+ },
+ {
+  "target": [
+   "K",
+   "T",
+   "OY1",
+   "AE1"
+  ],
+  "predicted": [
+   "K",
+   "W",
+   "OY1",
+   "ZH"
+  ],
+  "confidence": 0.946,
+  "margin": 0.506,
+  "native_score": 0.914,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ]
+  ],
+  "expected": {
+   "score": 7.6,
+   "wer": 0.5,
+   "per_with_stress": 0.5,
+   "metrics": {
+    "accuracy": 50,
+    "completeness": 100,
+    "fluency": 87
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "K",
+     "status": "correct",
+     "heard": "K",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "T",
+     "status": "error",
+     "heard": "W",
+     "tip": "Heard W instead.",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "OY1",
+     "status": "correct",
+     "heard": "OY1",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12,
+     "stress_match": true
+    },
+    {
+     "phoneme": "AE1",
+     "status": "error",
+     "heard": "ZH",
+     "tip": "Heard ZH instead.",
+     "start": 0.12,
+     "end": 0.16
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 1,
+     "expected": [
+      "T"
+     ],
+     "heard": [
+      "W"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release sharply."
+    },
+    {
+     "type": "substitute",
+     "index": 3,
+     "expected": [
+      "AE1"
+     ],
+     "heard": [
+      "ZH"
+     ],
+     "tip": "Open your mouth and spread your lips slightly, like 'cat'."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch your tongue to the ridge behind your top teeth, then release sharply.",
+    "Open your mouth and spread your lips slightly, like 'cat'."
+   ]
+  }
+ },
+ {
+  "target": [
+   "AE1",
+   "N",
+   "AE1"
+  ],
+  "predicted": [
+   "AE1",
+   "ER0",
+   "AE1"
+  ],
+  "confidence": 0.619,
+  "margin": 0.957,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ]
+  ],
+  "expected": {
+   "score": 6.3,
+   "wer": 0.33,
+   "per_with_stress": 0.33,
+   "metrics": {
+    "accuracy": 67,
+    "completeness": 100,
+    "fluency": 70
+   },
+   "stress": {
+    "matched": 2,
+    "total": 2
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "AE1",
+     "status": "correct",
+     "heard": "AE1",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04,
+     "stress_match": true
+    },
+    {
+     "phoneme": "N",
+     "status": "error",
+     "heard": "ER0",
+     "tip": "Heard ER instead.",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "AE1",
+     "status": "correct",
+     "heard": "AE1",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12,
+     "stress_match": true
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 1,
+     "expected": [
+      "N"
+     ],
+     "heard": [
+      "ER0"
+     ],
+     "tip": "Touch your tongue to the ridge behind your top teeth and hum."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch your tongue to the ridge behind your top teeth and hum."
+   ]
+  }
+ },
+ {
+  "target": [
+   "ER0",
+   "L"
+  ],
+  "predicted": [
+   "ER0",
+   "L"
+  ],
+  "confidence": 0.845,
+  "margin": 0.417,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ]
+  ],
+  "expected": {
+   "score": 9.6,
+   "wer": 0.0,
+   "per_with_stress": 0.0,
+   "metrics": {
+    "accuracy": 100,
+    "completeness": 100,
+    "fluency": 81
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "ER0",
+     "status": "correct",
+     "heard": "ER0",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04,
+     "stress_match": true
+    },
+    {
+     "phoneme": "L",
+     "status": "correct",
+     "heard": "L",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08
+    }
+   ],
+   "errors": [],
+   "feedback": "Great! The phoneme match is strong.",
+   "coaching_tips": []
+  }
+ },
+ {
+  "target": [
+   "N",
+   "W",
+   "D",
+   "AA1",
+   "AH0",
+   "T",
+   "W"
+  ],
+  "predicted": [
+   "N",
+   "W",
+   "AA1",
+   "AH0",
+   "T",
+   "W",
+   "IH0"
+  ],
+  "confidence": 0.899,
+  "margin": 0.541,
+  "native_score": null,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ],
+   [
+    0.24,
+    0.28
+   ]
+  ],
+  "expected": {
+   "score": 7.2,
+   "wer": 0.29,
+   "per_with_stress": 0.29,
+   "metrics": {
+    "accuracy": 86,
+    "completeness": 86,
+    "fluency": 69
+   },
+   "stress": {
+    "matched": 2,
+    "total": 2
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "N",
+     "status": "correct",
+     "heard": "N",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "W",
+     "status": "correct",
+     "heard": "W",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "D",
+     "status": "missed",
+     "heard": null,
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release."
+    },
+    {
+     "phoneme": "AA1",
+     "status": "correct",
+     "heard": "AA1",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12,
+     "stress_match": true
+    },
+    {
+     "phoneme": "AH0",
+     "status": "correct",
+     "heard": "AH0",
+     "tip": "",
+     "start": 0.12,
+     "end": 0.16,
+     "stress_match": true
+    },
+    {
+     "phoneme": "T",
+     "status": "correct",
+     "heard": "T",
+     "tip": "",
+     "start": 0.16,
+     "end": 0.2
+    },
+    {
+     "phoneme": "W",
+     "status": "correct",
+     "heard": "W",
+     "tip": "",
+     "start": 0.2,
+     "end": 0.24
+    }
+   ],
+   "errors": [
+    {
+     "type": "delete",
+     "index": 2,
+     "expected": [
+      "D"
+     ],
+     "heard": [],
+     "tip": "Touch your tongue to the ridge behind your top teeth, then release."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch your tongue to the ridge behind your top teeth, then release."
+   ]
+  }
+ },
+ {
+  "target": [
+   "S",
+   "R",
+   "K",
+   "IH0",
+   "OY1",
+   "ZH",
+   "R",
+   "N"
+  ],
+  "predicted": [
+   "S",
+   "R",
+   "K",
+   "TH",
+   "OY1",
+   "ZH",
+   "AE1",
+   "N"
+  ],
+  "confidence": 0.71,
+  "margin": 0.9,
+  "native_score": 0.21,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ],
+   [
+    0.24,
+    0.28
+   ],
+   [
+    0.28,
+    0.32
+   ]
+  ],
+  "expected": {
+   "score": 4.2,
+   "wer": 0.25,
+   "per_with_stress": 0.25,
+   "metrics": {
+    "accuracy": 75,
+    "completeness": 100,
+    "fluency": 80
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "S",
+     "status": "correct",
+     "heard": "S",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "R",
+     "status": "correct",
+     "heard": "R",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "K",
+     "status": "correct",
+     "heard": "K",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12
+    },
+    {
+     "phoneme": "IH0",
+     "status": "error",
+     "heard": "TH",
+     "tip": "Heard TH instead.",
+     "start": 0.12,
+     "end": 0.16
+    },
+    {
+     "phoneme": "OY1",
+     "status": "correct",
+     "heard": "OY1",
+     "tip": "",
+     "start": 0.16,
+     "end": 0.2,
+     "stress_match": true
+    },
+    {
+     "phoneme": "ZH",
+     "status": "correct",
+     "heard": "ZH",
+     "tip": "",
+     "start": 0.2,
+     "end": 0.24
+    },
+    {
+     "phoneme": "R",
+     "status": "error",
+     "heard": "AE1",
+     "tip": "Heard AE instead.",
+     "start": 0.24,
+     "end": 0.28
+    },
+    {
+     "phoneme": "N",
+     "status": "correct",
+     "heard": "N",
+     "tip": "",
+     "start": 0.28,
+     "end": 0.32
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 3,
+     "expected": [
+      "IH0"
+     ],
+     "heard": [
+      "TH"
+     ],
+     "tip": "Relax your tongue slightly - 'ih' as in 'sit'."
+    },
+    {
+     "type": "substitute",
+     "index": 6,
+     "expected": [
+      "R"
+     ],
+     "heard": [
+      "AE1"
+     ],
+     "tip": "Curl your tongue slightly back without touching the roof."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Relax your tongue slightly - 'ih' as in 'sit'.",
+    "Curl your tongue slightly back without touching the roof."
+   ]
+  }
+ },
+ {
+  "target": [
+   "L",
+   "IY0",
+   "UW1",
+   "IY0"
+  ],
+  "predicted": [
+   "T",
+   "N",
+   "IY0"
+  ],
+  "confidence": 0.433,
+  "margin": 0.488,
+  "native_score": 0.747,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ]
+  ],
+  "expected": {
+   "score": 5.2,
+   "wer": 0.75,
+   "per_with_stress": 0.75,
+   "metrics": {
+    "accuracy": 25,
+    "completeness": 75,
+    "fluency": 55
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "L",
+     "status": "missed",
+     "heard": null,
+     "tip": "Touch the tip of your tongue to the ridge behind your top teeth."
+    },
+    {
+     "phoneme": "IY0",
+     "status": "error",
+     "heard": "T",
+     "tip": "Heard T instead.",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "UW1",
+     "status": "error",
+     "heard": "N",
+     "tip": "Heard N instead.",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "IY0",
+     "status": "correct",
+     "heard": "IY0",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12,
+     "stress_match": true
+    }
+   ],
+   "errors": [
+    {
+     "type": "delete",
+     "index": 0,
+     "expected": [
+      "L"
+     ],
+     "heard": [],
+     "tip": "Touch the tip of your tongue to the ridge behind your top teeth."
+    },
+    {
+     "type": "substitute",
+     "index": 1,
+     "expected": [
+      "IY0"
+     ],
+     "heard": [
+      "T"
+     ],
+     "tip": "Spread your lips and raise the front of your tongue - 'ee' as in 'see'."
+    },
+    {
+     "type": "substitute",
+     "index": 2,
+     "expected": [
+      "UW1"
+     ],
+     "heard": [
+      "N"
+     ],
+     "tip": "Round your lips tightly - 'oo' as in 'food'."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Touch the tip of your tongue to the ridge behind your top teeth.",
+    "Spread your lips and raise the front of your tongue - 'ee' as in 'see'.",
+    "Round your lips tightly - 'oo' as in 'food'."
+   ]
+  }
+ },
+ {
+  "target": [
+   "ER0",
+   "IY0",
+   "IY0",
+   "TH",
+   "UW1",
+   "R",
+   "IY0"
+  ],
+  "predicted": [
+   "ER0",
+   "AE1",
+   "IY0",
+   "AH0",
+   "UW1",
+   "R",
+   "IY0"
+  ],
+  "confidence": 0.776,
+  "margin": 0.633,
+  "native_score": 0.503,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ],
+   [
+    0.12,
+    0.16
+   ],
+   [
+    0.16,
+    0.2
+   ],
+   [
+    0.2,
+    0.24
+   ],
+   [
+    0.24,
+    0.28
+   ]
+  ],
+  "expected": {
+   "score": 5.8,
+   "wer": 0.29,
+   "per_with_stress": 0.29,
+   "metrics": {
+    "accuracy": 71,
+    "completeness": 100,
+    "fluency": 78
+   },
+   "stress": {
+    "matched": 4,
+    "total": 4
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "ER0",
+     "status": "correct",
+     "heard": "ER0",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04,
+     "stress_match": true
+    },
+    {
+     "phoneme": "IY0",
+     "status": "error",
+     "heard": "AE1",
+     "tip": "Heard AE instead.",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "IY0",
+     "status": "correct",
+     "heard": "IY0",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12,
+     "stress_match": true
+    },
+    {
+     "phoneme": "TH",
+     "status": "error",
+     "heard": "AH0",
+     "tip": "Heard AH instead.",
+     "start": 0.12,
+     "end": 0.16
+    },
+    {
+     "phoneme": "UW1",
+     "status": "correct",
+     "heard": "UW1",
+     "tip": "",
+     "start": 0.16,
+     "end": 0.2,
+     "stress_match": true
+    },
+    {
+     "phoneme": "R",
+     "status": "correct",
+     "heard": "R",
+     "tip": "",
+     "start": 0.2,
+     "end": 0.24
+    },
+    {
+     "phoneme": "IY0",
+     "status": "correct",
+     "heard": "IY0",
+     "tip": "",
+     "start": 0.24,
+     "end": 0.28,
+     "stress_match": true
+    }
+   ],
+   "errors": [
+    {
+     "type": "substitute",
+     "index": 1,
+     "expected": [
+      "IY0"
+     ],
+     "heard": [
+      "AE1"
+     ],
+     "tip": "Spread your lips and raise the front of your tongue - 'ee' as in 'see'."
+    },
+    {
+     "type": "substitute",
+     "index": 3,
+     "expected": [
+      "TH"
+     ],
+     "heard": [
+      "AH0"
+     ],
+     "tip": "Put your tongue between your teeth and push air - 'th' as in 'think'."
+    }
+   ],
+   "feedback": "Focus on the highlighted sounds.",
+   "coaching_tips": [
+    "Spread your lips and raise the front of your tongue - 'ee' as in 'see'.",
+    "Put your tongue between your teeth and push air - 'th' as in 'think'."
+   ]
+  }
+ },
+ {
+  "target": [
+   "D",
+   "D",
+   "ER0"
+  ],
+  "predicted": [
+   "D",
+   "D",
+   "ER0"
+  ],
+  "confidence": 0.788,
+  "margin": 0.576,
+  "native_score": 0.765,
+  "spans": [
+   [
+    0.0,
+    0.04
+   ],
+   [
+    0.04,
+    0.08
+   ],
+   [
+    0.08,
+    0.12
+   ]
+  ],
+  "expected": {
+   "score": 8.4,
+   "wer": 0.0,
+   "per_with_stress": 0.0,
+   "metrics": {
+    "accuracy": 100,
+    "completeness": 100,
+    "fluency": 77
+   },
+   "stress": {
+    "matched": 1,
+    "total": 1
+   },
+   "phoneme_results": [
+    {
+     "phoneme": "D",
+     "status": "correct",
+     "heard": "D",
+     "tip": "",
+     "start": 0.0,
+     "end": 0.04
+    },
+    {
+     "phoneme": "D",
+     "status": "correct",
+     "heard": "D",
+     "tip": "",
+     "start": 0.04,
+     "end": 0.08
+    },
+    {
+     "phoneme": "ER0",
+     "status": "correct",
+     "heard": "ER0",
+     "tip": "",
+     "start": 0.08,
+     "end": 0.12,
+     "stress_match": true
+    }
+   ],
+   "errors": [],
+   "feedback": "Every sound was there. Say it a little more clearly for a top score.",
+   "coaching_tips": [
+    "Keep /D/ short and voiced without turning it into a flap or extra syllable.",
+    "Hold the vowel-r color together as one smooth sound instead of splitting it apart."
+   ]
+  }
+ }
+]

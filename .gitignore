@@ -49,3 +49,6 @@ web/.vite/
 # Environment files
 .env
 .env.*
+
+# Personal history exports
+practice-history*.json

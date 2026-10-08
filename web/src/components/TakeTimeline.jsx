@@ -28,7 +28,7 @@ async function readPeaks(blob) {
 
 // The learner's own recording with each heard sound pinned where it occurred.
 // Tapping a sound plays just that slice.
-function TakeTimeline({ blob, results, onPlay }) {
+function TakeTimeline({ blob, results, accent = 'ga', onPlay }) {
   const [shape, setShape] = useState(null)
 
   useEffect(() => {
@@ -60,7 +60,7 @@ function TakeTimeline({ blob, results, onPlay }) {
             onClick={() => onPlay(result.start, result.end)}
             aria-label={`Play ${result.heard ?? result.phoneme}${result.status === 'error' ? ', substituted' : ''}`}
           >
-            <span className="ipa">{toIpa(result.heard ?? result.phoneme)}</span>
+            <span className="ipa">{toIpa(result.heard ?? result.phoneme, accent)}</span>
           </button>
         ))}
       </div>

@@ -5,11 +5,11 @@ import json
 import db
 
 
-def post_attempt(client, wav_bytes, word="ship", phonemes=None):
+def post_attempt(client, wav_bytes, word="ship", phonemes=None, accent="ga"):
     return client.post(
         "/api/analyze",
         files={"audio": ("recording.wav", wav_bytes, "audio/wav")},
-        data={"word": word, "phonemes": json.dumps(phonemes or [])},
+        data={"word": word, "phonemes": json.dumps(phonemes or []), "accent": accent},
     )
 
 
@@ -45,11 +45,33 @@ def test_analyze_uses_server_phonemes_for_known_words(client, recognizer, wav_by
     assert body["target_phonemes"] == ["SH", "IH1", "P"]
 
 
-def test_analyze_custom_word_uses_client_phonemes(client, recognizer, wav_bytes):
-    recognizer.phonemes = ["K", "AE1", "T"]
-    body = post_attempt(client, wav_bytes, word="cat", phonemes=["K", "AE1", "T"]).json()
-    assert body["target_phonemes"] == ["K", "AE1", "T"]
+def test_analyze_word_outside_dictionary_uses_client_phonemes(client, recognizer, wav_bytes):
+    recognizer.phonemes = ["Z", "IH1", "Z"]
+    body = post_attempt(client, wav_bytes, word="zzyzx", phonemes=["Z", "IH1", "Z"]).json()
+    assert body["target_phonemes"] == ["Z", "IH1", "Z"]
     assert body["score"] == 10.0
+
+
+def test_analyze_scores_against_the_chosen_accent(client, recognizer, wav_bytes):
+    # An American rendition of "water": right for American, wrong ending for British.
+    recognizer.phonemes = ["W", "AO1", "T", "ER0"]
+    american = post_attempt(client, wav_bytes, word="water", accent="ga").json()
+    british = post_attempt(client, wav_bytes, word="water", accent="rp").json()
+    assert american["target_phonemes"] == ["W", "AO1", "T", "ER0"]
+    assert british["target_phonemes"] == ["W", "AO1", "T", "AH0"]
+    assert american["errors"] == []
+    assert [e["expected"] for e in british["errors"]] == [["AH0"]]
+    assert british["accent"] == "rp"
+    assert american["score"] > british["score"]
+    assert post_attempt(client, wav_bytes, word="water", accent="cockney").status_code == 422
+
+
+def test_words_and_phonemes_follow_the_accent(client):
+    assert set(client.get("/api/accents").json()) == {"ga", "rp", "au"}
+    british = {w["word"]: w["phonemes"] for w in client.get("/api/words", params={"accent": "rp"}).json()}
+    assert british["car"] == ["K", "AA1"]
+    assert client.get("/api/phonemes", params={"text": "dance", "accent": "au"}).json()["phonemes"] == ["D", "AE1", "N", "S"]
+    assert client.get("/api/words", params={"accent": "xx"}).status_code == 422
 
 
 def test_analyze_rejects_bad_input(client, wav_bytes):
@@ -148,7 +170,16 @@ def test_phonemes_for_known_word_uses_curated_entry(client):
 
 def test_phonemes_for_custom_phrase(client):
     body = client.get("/api/phonemes", params={"text": "Go on, 42!"}).json()
-    assert body == {"word": "go on", "phonemes": ["G", "O", "O", "N"], "difficulty": "custom"}
+    assert body == {"word": "go on", "phonemes": ["G", "OW1", "AA1", "N"], "difficulty": "custom"}
+
+
+def test_phonemes_outside_dictionary_fall_back_for_american_only(client):
+    # The test double spells one letter per phoneme.
+    american = client.get("/api/phonemes", params={"text": "zzyzx"}).json()
+    assert american["phonemes"] == ["Z", "Z", "Y", "Z", "X"]
+    british = client.get("/api/phonemes", params={"text": "zzyzx", "accent": "rp"})
+    assert british.status_code == 422
+    assert "zzyzx" in british.json()["detail"]
 
 
 def test_phonemes_rejects_unusable_text(client):

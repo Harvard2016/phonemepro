@@ -196,3 +196,18 @@ def test_asr_fallback_still_scores_every_sound():
         phoneme_model=False, word="vision", recognized_text="vigin", **HIGH,
     )
     assert result["phoneme_results"][2]["status"] == "error"
+
+
+def test_python_scorer_matches_shared_fixtures():
+    import json
+    from pathlib import Path
+
+    cases = json.loads((Path(__file__).parent / "fixtures" / "scoring_cases.json").read_text())
+    assert len(cases) > 50
+    for case in cases:
+        result = score_attempt(
+            case["target"], case["predicted"], case["confidence"], case["margin"],
+            native_score=case["native_score"], spans=[tuple(span) for span in case["spans"]],
+        )
+        # JSON has no tuples, so compare through a JSON round trip.
+        assert json.loads(json.dumps(result)) == case["expected"]

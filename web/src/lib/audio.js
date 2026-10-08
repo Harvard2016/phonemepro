@@ -32,7 +32,8 @@ function encodeWav(samples, sampleRate) {
   return new Blob([buffer], { type: 'audio/wav' })
 }
 
-export async function toWav(blob) {
+// Decode a recording to 16 kHz mono samples for the model, plus a WAV blob for playback.
+export async function toTake(blob) {
   const context = createAudioContext()
   try {
     const decoded = await context.decodeAudioData(await blob.arrayBuffer())
@@ -43,13 +44,27 @@ export async function toWav(blob) {
     source.connect(offline.destination)
     source.start()
     const rendered = await offline.startRendering()
-    return encodeWav(rendered.getChannelData(0), TARGET_RATE)
+    const samples = rendered.getChannelData(0)
+    return { samples, seconds: samples.length / TARGET_RATE, wav: encodeWav(samples, TARGET_RATE) }
   } finally {
     context.close()
   }
 }
 
-export function speak(text, rate = 0.76) {
+const VOICE_LANGUAGE = { ga: 'en-US', rp: 'en-GB', au: 'en-AU' }
+
+// Play a human reference recording.
+export function playClip(url) {
+  return new Promise((resolve, reject) => {
+    const audio = new Audio(url)
+    audio.onended = resolve
+    audio.onerror = () => reject(new Error('The recording could not be played.'))
+    audio.play().catch(reject)
+  })
+}
+
+// Synthetic fallback for text with no human recording, using a voice from the accent's locale if one is installed.
+export function speak(text, accent = 'ga', rate = 0.8) {
   return new Promise((resolve) => {
     if (!window.speechSynthesis) {
       resolve()
@@ -57,7 +72,10 @@ export function speak(text, rate = 0.76) {
     }
     window.speechSynthesis.cancel()
     const utterance = new SpeechSynthesisUtterance(text)
-    utterance.lang = 'en-US'
+    const language = VOICE_LANGUAGE[accent] ?? 'en-US'
+    utterance.lang = language
+    const voice = window.speechSynthesis.getVoices().find((v) => v.lang.replace('_', '-') === language)
+    if (voice) utterance.voice = voice
     utterance.rate = rate
     utterance.onend = resolve
     utterance.onerror = resolve

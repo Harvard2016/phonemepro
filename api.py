@@ -6,7 +6,6 @@ import csv
 import io
 import json
 import os
-import re
 import tempfile
 from collections import defaultdict
 from contextlib import asynccontextmanager
@@ -17,10 +16,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 
 from db import clear_history, get_history, get_today_count, save_attempt
+from pronunciation.lexicon import DEFAULT_ACCENT, UnknownWord, accents, normalize_text, text_phonemes
 from pronunciation.model_info import build_model_info
 from pronunciation.phonemes import strip_stress
 from pronunciation.scoring import score_attempt
-from word_list import DIFFICULTY_LEVELS, PRACTICE_WORDS, get_all_words, get_random_word
+from word_list import DIFFICULTY_LEVELS, find_word, get_all_words, get_random_word
 
 ROOT_DIR = Path(__file__).resolve().parent
 MIN_RECORDING_SECONDS = 0.3
@@ -112,7 +112,7 @@ def build_insights(attempts: list[dict]) -> dict:
     weights = {item["phoneme"]: item["error_rate"] for item in weak}
 
     ranked = []
-    for entry in PRACTICE_WORDS:
+    for entry in get_all_words():
         focus = [p for p in dict.fromkeys(strip_stress(p) for p in entry["phonemes"]) if p in weights]
         if focus:
             ranked.append((sum(weights[p] for p in focus), {**entry, "focus": focus}))
@@ -134,17 +134,29 @@ def health(request: Request):
     return {"status": "ok", "model_loaded": recognizer is not None}
 
 
+def check_accent(accent: str) -> str:
+    if accent not in accents():
+        raise HTTPException(status_code=422, detail=f"Unknown accent. Choose one of: {', '.join(accents())}.")
+    return accent
+
+
+@app.get("/api/accents")
+def list_accents():
+    """Return the accents that have a pronunciation dictionary."""
+    return accents()
+
+
 @app.get("/api/word")
-def random_word(level: str = Query("medium")):
-    """Return a random practice word with its canonical phonemes."""
-    return get_random_word(level.lower())
+def random_word(level: str = Query("medium"), accent: str = Query(DEFAULT_ACCENT)):
+    """Return a random practice word with its target phonemes in the chosen accent."""
+    return get_random_word(level.lower(), check_accent(accent))
 
 
 @app.get("/api/words")
-def all_words(level: str | None = Query(None)):
+def all_words(level: str | None = Query(None), accent: str = Query(DEFAULT_ACCENT)):
     """Return practice words, optionally filtered by difficulty."""
     normalized_level = level.lower() if level else None
-    return get_all_words(normalized_level)
+    return get_all_words(normalized_level, check_accent(accent))
 
 
 @app.get("/api/levels")
@@ -154,29 +166,38 @@ def levels():
 
 
 @app.get("/api/phonemes")
-def phonemes_for_text(request: Request, text: str = Query(..., min_length=1)):
-    """Return dictionary phonemes for a word or short phrase the learner typed."""
-    cleaned = re.sub(r"[^a-z' ]+", " ", text.lower())
-    cleaned = " ".join(cleaned.split())
+def phonemes_for_text(
+    request: Request,
+    text: str = Query(..., min_length=1),
+    accent: str = Query(DEFAULT_ACCENT),
+):
+    """Return dictionary phonemes for a word or short phrase in the chosen accent."""
+    check_accent(accent)
+    words = normalize_text(text)
+    cleaned = " ".join(words)
     if not cleaned:
         raise HTTPException(status_code=422, detail="Type a word or short phrase using letters.")
-    if len(cleaned) > MAX_CUSTOM_TEXT_CHARS or len(cleaned.split()) > MAX_CUSTOM_TEXT_WORDS:
+    if len(cleaned) > MAX_CUSTOM_TEXT_CHARS or len(words) > MAX_CUSTOM_TEXT_WORDS:
         raise HTTPException(
             status_code=422,
             detail=f"Keep it to {MAX_CUSTOM_TEXT_WORDS} words and {MAX_CUSTOM_TEXT_CHARS} characters.",
         )
 
-    known = next((w for w in PRACTICE_WORDS if w["word"] == cleaned), None)
+    known = find_word(cleaned, accent)
     if known:
         return known
 
-    g2p = get_g2p(request)
-    if g2p is None:
-        raise HTTPException(status_code=503, detail="Pronunciation lookup is unavailable on this server.")
-    phonemes = [p for p in g2p(cleaned) if p.strip() and p[0].isalnum()]
-    if not phonemes:
-        raise HTTPException(status_code=422, detail="Could not work out how to pronounce that.")
-    return {"word": cleaned, "phonemes": phonemes, "difficulty": "custom"}
+    try:
+        return {"word": cleaned, "phonemes": text_phonemes(cleaned, accent), "difficulty": "custom"}
+    except UnknownWord as unknown:
+        # Only American has a fallback for words outside the dictionary: a grapheme-to-phoneme model.
+        g2p = get_g2p(request) if accent == DEFAULT_ACCENT else None
+        if g2p is None:
+            raise HTTPException(status_code=422, detail=f'"{unknown.args[0]}" is not in the dictionary yet.')
+        phonemes = [p for p in g2p(cleaned) if p.strip() and p[0].isalnum()]
+        if not phonemes:
+            raise HTTPException(status_code=422, detail="Could not work out how to pronounce that.")
+        return {"word": cleaned, "phonemes": phonemes, "difficulty": "custom"}
 
 
 @app.get("/api/history")
@@ -245,19 +266,22 @@ async def analyze(
     audio: UploadFile = File(...),
     word: str = Form(...),
     phonemes: str = Form("[]"),
+    accent: str = Form(DEFAULT_ACCENT),
 ):
     """
     Analyze a recorded audio file against expected phonemes.
     - audio: WAV/WebM audio file
-    - word: the target word (string)
-    - phonemes: JSON-encoded list of canonical phonemes (used only for words outside the built-in list)
+    - word: the target word or phrase
+    - accent: which accent's dictionary supplies the target (ga, rp or au)
+    - phonemes: JSON-encoded list of phonemes, used only for text outside the dictionary
     """
-    # The frontend state might be stale (e.g. user switched words rapidly),
-    # so the server's canonical phonemes win for known words.
-    server_word = next((w for w in PRACTICE_WORDS if w["word"].lower() == word.lower()), None)
-    if server_word:
-        target_phonemes = server_word["phonemes"]
-    else:
+    check_accent(accent)
+    # The dictionary's phonemes win over the client's, which may be stale.
+    try:
+        target_phonemes = text_phonemes(word, accent)
+    except UnknownWord:
+        target_phonemes = []
+    if not target_phonemes:
         try:
             target_phonemes = json.loads(phonemes)
         except json.JSONDecodeError:
@@ -302,6 +326,7 @@ async def analyze(
 
     return {
         "word": word,
+        "accent": accent,
         "target_phonemes": target_phonemes,
         "predicted_phonemes": recognition.phonemes,
         **result,

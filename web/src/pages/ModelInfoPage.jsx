@@ -2,13 +2,20 @@ import { useEffect, useState } from 'react'
 import { motion } from 'motion/react'
 import LineChart from '../components/LineChart'
 import { LoadingState, MessageState } from '../components/States'
-import { getModelInfo } from '../lib/api'
 import { toIpa } from '../lib/phonemes'
 
 const MODE_LABEL = {
   multitask: 'Multitask model with learned scoring',
   finetuned: 'Fine-tuned phoneme model',
   'asr-fallback': 'Public ASR fallback',
+}
+
+const ACCENT_LABEL = {
+  english_southern: 'Southern English',
+  american: 'American',
+  scottish: 'Scottish',
+  irish: 'Irish',
+  australian: 'Australian (2 speakers)',
 }
 
 const percent = (value, digits = 1) => `${(value * 100).toFixed(digits)}%`
@@ -19,7 +26,13 @@ function ModelInfoPage() {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    getModelInfo().then(setInfo).catch((failure) => setError(failure.message))
+    fetch('/model/report.json')
+      .then((response) => {
+        if (!response.ok) throw new Error('The model report is missing from this deployment.')
+        return response.json()
+      })
+      .then(setInfo)
+      .catch((failure) => setError(failure.message))
   }, [])
 
   if (error) return <MessageState title="Model details are unavailable">{error}</MessageState>
@@ -28,9 +41,10 @@ function ModelInfoPage() {
   const { evaluation, training, config, runtime, dataset } = info
   const trainLoss = info.log_history.filter((e) => e.loss !== undefined).map((e) => ({ x: e.step, y: e.loss }))
   const evalLoss = info.log_history.filter((e) => e.eval_loss !== undefined).map((e) => ({ x: e.step, y: e.eval_loss }))
-  const isFallback = runtime.mode === 'asr-fallback'
   const detection = evaluation?.mispronunciation_detection
   const learned = evaluation?.learned_score
+  const accents = evaluation?.accents
+  const megabytes = runtime.bytes ? `${Math.round(runtime.bytes / 1e6)} MB` : null
 
   return (
     <div className="page">
@@ -41,19 +55,12 @@ function ModelInfoPage() {
           A wav2vec 2.0 encoder fine-tuned to transcribe speech into ARPABET phonemes, measured on{' '}
           {evaluation ? `${evaluation.utterances.toLocaleString()} test-split utterances from ${evaluation.speakers} speakers` : 'the test split'}.
         </p>
-        <p className={`status${isFallback ? ' status--warn' : ''}`}>
+        <p className="status">
           <span className="status__dot" aria-hidden="true" />
-          Running: {MODE_LABEL[runtime.mode] ?? runtime.mode}
-          <code>{runtime.model_source}</code>
+          Running in your browser: {MODE_LABEL[runtime.mode] ?? runtime.mode}
+          {megabytes && <code>{megabytes}, 8-bit weights</code>}
         </p>
       </header>
-
-      {isFallback && (
-        <p className="notice notice--static">
-          The fine-tuned weights are not installed, so scores come from a general speech recognizer and are rough.
-          The figures below describe the fine-tuned model, not what is running now.
-        </p>
-      )}
 
       {evaluation ? (
         <dl className="figures">
@@ -96,7 +103,55 @@ function ModelInfoPage() {
           Reference phonemes are the dictionary pronunciation, and the speakers are learners, so part of the error
           rate is real mispronunciation rather than model error. The model flags far more sounds than human raters
           do: treat a red mark as a prompt to listen again, not a verdict.
+          {runtime.per_quantized !== undefined && ` The browser build uses 8-bit weights: ${percent(runtime.per_quantized)} error rate against ${percent(runtime.per_full)} at full precision on the same ${runtime.parity_utterances} utterances.`}
         </p>
+      )}
+
+      {accents && (
+        <section aria-label="Accents">
+          <h2 className="section-title">Does it hear accents?</h2>
+          <div className="spread spread--flush">
+            <div className="spread__main">
+              <p className="prose">
+                Two checks on native speakers from VCTK that the model never trained on. First, does the
+                phoneme model transcribe an accent the way that accent's own dictionary writes it? A lower
+                error rate against the matching dictionary means yes.
+              </p>
+              <table className="table">
+                <thead>
+                  <tr><th scope="col">Speakers</th><th scope="col">vs American dictionary</th><th scope="col">vs British dictionary</th></tr>
+                </thead>
+                <tbody>
+                  {Object.entries(accents.phoneme_error_rate_by_dictionary).map(([name, row]) => (
+                    <tr key={name}>
+                      <th scope="row">{ACCENT_LABEL[name] ?? name}</th>
+                      <td className={row.per_vs_ga <= row.per_vs_rp ? 'table__best' : ''}>{percent(row.per_vs_ga)}</td>
+                      <td className={row.per_vs_rp < row.per_vs_ga ? 'table__best' : ''}>{percent(row.per_vs_rp)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="spread__side">
+              <p className="prose">
+                Second, an accent head guesses which of {accents.classes.length} accents a recording is closest to.
+                Chance is {percent(accents.chance, 0)}.
+              </p>
+              <dl className="spec">
+                <div><dt>One-second clips</dt><dd>{percent(accents.test_accuracy_one_second, 0)} correct</dd></div>
+                <div><dt>Whole sentences</dt><dd>{percent(accents.test_accuracy_full_utterance, 0)} correct</dd></div>
+                <div><dt>Unseen speakers named right</dt><dd>{accents.test_speakers_identified}</dd></div>
+                <div><dt>Test speakers</dt><dd>{Object.values(accents.speakers).reduce((sum, split) => sum + split.test, 0)} (small sample)</dd></div>
+              </dl>
+              <p className="caveat">
+                Trained on studio recordings of adults reading sentences. A learner saying one word into a laptop
+                microphone is a harder case, so read the accent guess as a hint. Australian and Irish are not
+                among the guessed accents: this data has two Australian speakers, and five Irish training
+                speakers were too few to learn from.
+              </p>
+            </div>
+          </div>
+        </section>
       )}
 
       <div className="spread">

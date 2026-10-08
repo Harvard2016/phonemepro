@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react'
 import { BrowserRouter, NavLink, Route, Routes, useLocation } from 'react-router-dom'
 import { AnimatePresence, MotionConfig, motion } from 'motion/react'
 import ErrorBoundary from './ErrorBoundary'
-import { getModelInfo } from './lib/api'
+import CreditsPage from './pages/CreditsPage'
 import HistoryPage from './pages/HistoryPage'
 import ModelInfoPage from './pages/ModelInfoPage'
 import PracticePage from './pages/PracticePage'
+import { AppProvider, useApp } from './state'
 
 const NAV = [
   ['/', 'Practice'],
@@ -13,24 +14,25 @@ const NAV = [
   ['/model', 'Model'],
 ]
 
-const STATUS = {
-  loading: null,
-  finetuned: { label: 'Fine-tuned model', tone: 'ok' },
-  multitask: { label: 'Multitask model', tone: 'ok' },
-  'asr-fallback': { label: 'Fallback model', tone: 'warn' },
-  offline: { label: 'Backend offline', tone: 'warn' },
+function ModelStatus() {
+  const { model } = useApp()
+  if (model.status === 'idle') return null
+  const label = {
+    loading: `Loading model ${Math.round(model.progress * 100)}%`,
+    ready: 'Model ready, on this device',
+    error: 'Model did not load',
+  }[model.status]
+  return (
+    <span className={`status status--compact${model.status === 'error' ? ' status--warn' : ''}`}>
+      <span className="status__dot" aria-hidden="true" />
+      {label}
+    </span>
+  )
 }
 
 function Shell() {
   const location = useLocation()
-  const [mode, setMode] = useState('loading')
   const [scrolled, setScrolled] = useState(false)
-
-  useEffect(() => {
-    getModelInfo()
-      .then((info) => setMode(info.runtime?.mode ?? 'asr-fallback'))
-      .catch(() => setMode('offline'))
-  }, [])
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
@@ -38,8 +40,6 @@ function Shell() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
-
-  const status = STATUS[mode]
 
   return (
     <div className="app">
@@ -55,19 +55,8 @@ function Shell() {
             </NavLink>
           ))}
         </nav>
-        {status && (
-          <span className={`status status--compact${status.tone === 'warn' ? ' status--warn' : ''}`}>
-            <span className="status__dot" aria-hidden="true" />
-            {status.label}
-          </span>
-        )}
+        <ModelStatus />
       </header>
-
-      {mode === 'offline' && (
-        <p className="banner" role="alert">
-          The backend is not running. Start it with <code>uvicorn api:app</code> and reload.
-        </p>
-      )}
 
       <main id="main" className="main">
         <ErrorBoundary key={location.pathname}>
@@ -83,6 +72,7 @@ function Shell() {
                 <Route path="/" element={<PracticePage />} />
                 <Route path="/history" element={<HistoryPage />} />
                 <Route path="/model" element={<ModelInfoPage />} />
+                <Route path="/credits" element={<CreditsPage />} />
                 <Route path="*" element={<PracticePage />} />
               </Routes>
             </motion.div>
@@ -91,8 +81,8 @@ function Shell() {
       </main>
 
       <footer className="colophon">
-        <span>wav2vec 2.0 fine-tuned on SpeechOcean762</span>
-        <span>Set in Fraunces, Instrument Sans and IBM Plex Mono</span>
+        <span>Runs in your browser. Your voice never leaves this device.</span>
+        <NavLink to="/credits">Credits, data and voices</NavLink>
       </footer>
 
       <svg className="grain" aria-hidden="true">
@@ -110,7 +100,9 @@ function App() {
   return (
     <MotionConfig reducedMotion="user">
       <BrowserRouter>
-        <Shell />
+        <AppProvider>
+          <Shell />
+        </AppProvider>
       </BrowserRouter>
     </MotionConfig>
   )

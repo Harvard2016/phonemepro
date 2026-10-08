@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { createAudioContext, toWav } from '../lib/audio'
+import { createAudioContext, toTake } from '../lib/audio'
 
 const MIN_BLOB_BYTES = 1200
 
@@ -9,7 +9,7 @@ export const RECORDER_ERRORS = {
   decode: "I couldn't read that recording. Try once more.",
 }
 
-// Records from the microphone and hands back a 16 kHz WAV blob.
+// Records from the microphone and hands back 16 kHz samples plus a WAV blob for playback.
 // `analyserRef` exposes a live AnalyserNode while recording, for the waveform.
 export function useRecorder({ onComplete, onError }) {
   const [isStarting, setIsStarting] = useState(false)
@@ -66,7 +66,7 @@ export function useRecorder({ onComplete, onError }) {
         return
       }
       try {
-        callbacksRef.current.onComplete(await toWav(blob))
+        callbacksRef.current.onComplete(await toTake(blob))
       } catch {
         callbacksRef.current.onError(RECORDER_ERRORS.decode)
       }
