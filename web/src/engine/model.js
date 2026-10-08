@@ -5,9 +5,14 @@ import { decodeCtc, normalizeAudio, softmax } from './decode'
 
 const CACHE_NAME = 'phonemepro-model'
 
-// The runtime's WebAssembly binary is copied into /ort by scripts/copy-ort.mjs. Only the
-// binary is redirected: its JavaScript loader is already bundled with this import.
-ort.env.wasm.wasmPaths = { wasm: '/ort/ort-wasm-simd-threaded.wasm' }
+// The runtime's WebAssembly binary and its loader are copied into /ort by scripts/copy-ort.mjs.
+// In a production build the loader must be its own file. Left bundled, each worker thread loads
+// the whole app bundle as its script, which has no `document` to run in: the model then
+// downloads and never starts. The dev server keeps modules apart, so the bundled loader is fine
+// there, and it will not serve a file from /public as a module anyway.
+ort.env.wasm.wasmPaths = import.meta.env.DEV
+  ? { wasm: '/ort/ort-wasm-simd-threaded.wasm' }
+  : { wasm: '/ort/ort-wasm-simd-threaded.wasm', mjs: '/ort/ort-wasm-simd-threaded.mjs' }
 // Threads need cross-origin isolation headers; fall back to one thread without them.
 ort.env.wasm.numThreads = globalThis.crossOriginIsolated ? Math.min(4, navigator.hardwareConcurrency || 1) : 1
 
