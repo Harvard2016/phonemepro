@@ -55,9 +55,10 @@ function Shell() {
     <div className="app">
       <a className="skip-link" href="#main">Skip to content</a>
       <header className={`masthead${scrolled ? ' masthead--scrolled' : ''}`}>
-        <NavLink to="/" className="wordmark" aria-label="PhonemePro home">
+        {/* A plain link, so a click reloads the app at the home page even when already on it. */}
+        <a href="/" className="wordmark" aria-label="PhonemePro home">
           Phoneme<em>Pro</em>
-        </NavLink>
+        </a>
         <nav className="masthead__nav" aria-label="Main">
           {NAV.map(([to, label]) => (
             <NavLink key={to} to={to} end={to === '/'} className="masthead__link">
