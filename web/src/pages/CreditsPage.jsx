@@ -8,6 +8,8 @@ const SOURCES = [
   ['VCTK Corpus 0.92', 'Native speakers with labelled accents. Trains and tests the accent head.', 'CC BY 4.0', 'https://datashare.ed.ac.uk/handle/10283/3443'],
   ['wav2vec 2.0 base', 'The pretrained speech encoder the model is fine-tuned from.', 'Apache 2.0', 'https://huggingface.co/facebook/wav2vec2-base'],
   ['CMUdict', 'American pronunciations.', 'BSD-style', 'http://www.speech.cs.cmu.edu/cgi-bin/cmudict'],
+  ['Piper voices', 'The synthetic voices for text with no human recording: Joe (American, CC0), Cori (British, public domain) and VCTK speaker p326 (Australian, CC BY 4.0).', 'per voice', 'https://huggingface.co/rhasspy/piper-voices'],
+  ['eSpeak NG', 'Turns typed text into the sounds the synthetic voices read, through the phonemizer package.', 'GPL 3.0', 'https://github.com/espeak-ng/espeak-ng'],
   ['Britfone 3.0.1', 'British pronunciations. Australian entries are derived from these by rule.', 'MIT', 'https://github.com/JoseLlarena/Britfone'],
 ]
 

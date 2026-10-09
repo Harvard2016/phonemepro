@@ -1,4 +1,5 @@
 // Playback helpers: a WAV of the learner's take, reference recordings, and a synthetic fallback.
+import { loadVoices, pickVoice } from './voices'
 
 export const createAudioContext = () => new (window.AudioContext || window.webkitAudioContext)()
 
@@ -31,8 +32,6 @@ export function encodeWav(samples, sampleRate) {
   return new Blob([buffer], { type: 'audio/wav' })
 }
 
-const VOICE_LANGUAGE = { ga: 'en-US', rp: 'en-GB', au: 'en-AU' }
-
 // Play a human reference recording.
 export function playClip(url) {
   return new Promise((resolve, reject) => {
@@ -43,22 +42,22 @@ export function playClip(url) {
   })
 }
 
-// Synthetic fallback for text with no human recording, using a voice from the accent's locale if one is installed.
-export function speak(text, accent = 'ga', rate = 0.8) {
+// Synthetic fallback for text with no human recording. Resolves with the name of the voice
+// used, or null when this device has no voice for the accent: saying the text in a
+// different accent would teach the wrong thing, so nothing is spoken.
+export async function speak(text, accent = 'ga', rate = 0.8) {
+  const synth = window.speechSynthesis
+  if (!synth) return null
+  const voice = pickVoice(await loadVoices(synth), accent)
+  if (!voice) return null
   return new Promise((resolve) => {
-    if (!window.speechSynthesis) {
-      resolve()
-      return
-    }
-    window.speechSynthesis.cancel()
+    synth.cancel()
     const utterance = new SpeechSynthesisUtterance(text)
-    const language = VOICE_LANGUAGE[accent] ?? 'en-US'
-    utterance.lang = language
-    const voice = window.speechSynthesis.getVoices().find((v) => v.lang.replace('_', '-') === language)
-    if (voice) utterance.voice = voice
+    utterance.voice = voice
+    utterance.lang = voice.lang
     utterance.rate = rate
-    utterance.onend = resolve
-    utterance.onerror = resolve
-    window.speechSynthesis.speak(utterance)
+    utterance.onend = () => resolve(voice.name)
+    utterance.onerror = () => resolve(voice.name)
+    synth.speak(utterance)
   })
 }

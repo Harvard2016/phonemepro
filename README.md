@@ -7,7 +7,7 @@ Pronunciation practice that teaches accents, not just words. Pick American, Brit
 Everything runs in your browser. A fine-tuned wav2vec 2.0 model transcribes your recording into phonemes on your own device, so there is no server, no account, and your voice is never uploaded.
 
 - **Three accent targets.** "water" is `W AO T ER` in American and `W AO T AH` in British; "dance" has the short *a* in American and Australian and the long one in British. 6,326 of the 14,541 dictionary words differ between American and British.
-- **Human reference voices.** 181 recordings by volunteers on Wikimedia Commons cover the 80 practice words (American 80, British 57, Australian 44). Where there is no recording yet, the app says so and falls back to the browser's synthetic voice.
+- **Human reference voices.** 181 recordings by volunteers on Wikimedia Commons cover the 80 practice words (American 80, British 57, Australian 44). Where there is no recording yet, and for any text you type yourself, the app says so and uses its own synthetic voice for that accent, which runs in the browser and sounds the same on every device (see [Data, voices and licences](#data-voices-and-licences)).
 - **Feedback per sound.** Substituted and missed sounds are marked, with the slice of your recording for each one playable on its own, and accent-specific coaching ("British English has no r here").
 - **A guess at your accent.** An accent head says whether a take sounds closest to Southern English, American or Scottish.
 - **Your own text.** Any word or phrase of up to eight words from the dictionary.
@@ -428,5 +428,9 @@ Code: MIT, see [LICENSE](LICENSE).
 | CMUdict | American pronunciations | BSD-style |
 | [Britfone](https://github.com/JoseLlarena/Britfone) | British pronunciations | MIT |
 | Wikimedia Commons | Reference recordings | CC BY, CC BY-SA, CC0 or public domain, per file |
+| [Piper voices](https://huggingface.co/rhasspy/piper-voices) | Synthetic voices: Joe (American), Cori (British), VCTK speaker p326 (Australian) | CC0, public domain and CC BY 4.0 |
+| [eSpeak NG](https://github.com/espeak-ng/espeak-ng), through [phonemizer](https://www.npmjs.com/package/phonemizer) | Turns typed text into the sounds the synthetic voices read | GPL 3.0 |
+
+The synthetic voices are fetched with `python -m scripts.fetch_voices` into `web/public/voices`. They run in the browser with the same ONNX runtime as the phoneme model, and a voice is downloaded the first time it is needed. The American voice was chosen because it was trained on American phoneme strings: several American Piper voices were trained on British ones and say "tomato" the British way. The deployed site includes eSpeak NG, which is GPL 3.0; the code in this repository stays MIT.
 
 Each recording's speaker, licence and source page is listed in `web/public/audio/credits.json` and on the app's Credits page. The recordings were converted to MP3, trimmed and loudness-normalized; those under a ShareAlike licence remain under it.

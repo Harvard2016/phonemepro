@@ -18,8 +18,11 @@ ort.env.wasm.numThreads = globalThis.crossOriginIsolated ? Math.min(4, navigator
 
 let loading = null
 
-async function fetchCached(url, onBytes) {
-  const cache = 'caches' in globalThis ? await caches.open(CACHE_NAME).catch(() => null) : null
+// Shared with the synthetic voices (tts.js), which are stored the same way.
+export { ort }
+
+export async function fetchCached(url, onBytes, cacheName = CACHE_NAME) {
+  const cache = 'caches' in globalThis ? await caches.open(cacheName).catch(() => null) : null
   let response = cache ? await cache.match(url) : null
   if (!response) {
     response = await fetch(url)

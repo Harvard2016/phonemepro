@@ -18,6 +18,8 @@ import { soundsSameClass } from '../engine/soundMatch'
 import { heardNoSpeech } from '../engine/takeChecks'
 import { RECORDER_ERRORS, useRecorder } from '../hooks/useRecorder'
 import { playClip, speak } from '../lib/audio'
+import { ACCENT_NAME } from '../lib/voices'
+import { speakNeural } from '../engine/tts'
 import { basePhoneme, toIpa } from '../lib/phonemes'
 import { useApp } from '../state'
 
@@ -48,6 +50,8 @@ function PracticePage() {
   const [word, setWord] = useState(null)
   const [result, setResult] = useState(null)
   const [notice, setNotice] = useState(null)
+  const [voiceName, setVoiceName] = useState(null)
+  const [voiceProgress, setVoiceProgress] = useState(null)
   const [analysing, setAnalysing] = useState(false)
   const [playingWord, setPlayingWord] = useState(false)
   const [repeatAfterMe, setRepeatAfterMe] = useState(false)
@@ -215,10 +219,24 @@ function PracticePage() {
   const sayWord = useCallback(async (entry) => {
     setPlayingWord(true)
     try {
-      if (entry.recording) await playClip(recordingUrl(accent, entry.word))
-      else await speak(entry.word, accent)
-    } catch {
-      await speak(entry.word, accent)
+      if (entry.recording) {
+        try {
+          await playClip(recordingUrl(accent, entry.word))
+          return
+        } catch {
+          // Fall through to the browser's voice.
+        }
+      }
+      // The app's own voice for this accent; the device's voice only if that cannot run here.
+      let voice = null
+      try {
+        voice = await speakNeural(entry.word, accent, setVoiceProgress)
+      } catch {
+        voice = await speak(entry.word, accent)
+      }
+      setVoiceProgress(null)
+      setVoiceName(voice && { accent, name: voice })
+      if (!voice) setNotice(`No ${ACCENT_NAME[accent]} voice could be played on this device. You can still record it.`)
     } finally {
       setPlayingWord(false)
     }
@@ -386,13 +404,13 @@ function PracticePage() {
         <Headword word={word} accent={accent} />
         <div className="stage__listen">
           <button type="button" className="text-button" onClick={() => sayWord(word)} disabled={busy || takeActive}>
-            {playingWord ? 'Playing' : 'Hear it'}
+            {playingWord ? (voiceProgress !== null && voiceProgress < 1 ? `Loading voice ${Math.round(voiceProgress * 100)}%` : 'Playing') : 'Hear it'}
           </button>
           <span className="stage__voice">
             {word.recording ? (
               <>human voice · <a href={word.recording.page} target="_blank" rel="noreferrer">{word.recording.author}</a>, {word.recording.license}</>
             ) : (
-              'synthetic voice · no human recording for this one yet'
+              `synthetic voice${voiceName?.accent === accent ? ` (${voiceName.name})` : ''} · no human recording for this one yet`
             )}
           </span>
         </div>
